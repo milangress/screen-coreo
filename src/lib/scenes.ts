@@ -11,46 +11,21 @@ const defaultAnimation = {
   }
 };
 
-async function setWindowContent(window: WebviewWindow, component: string, props: any = {}, maxRetries = 3) {
-  console.log(`Setting content for window: ${window.label}, component: ${component}`);
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      await window.emit('set-content', { component, props });
-      console.log(`Content set event emitted for window: ${window.label}`);
-      
-      await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Timeout waiting for content-set event'));
-        }, 500);
-
-        window.once('content-set', () => {
-          clearTimeout(timeout);
-          console.log(`Content-set event received for window: ${window.label}`);
-          resolve();
-        });
-      });
-
-      console.log(`Content set successfully for window: ${window.label}`);
-      return;
-    } catch (error) {
-      console.error(`Attempt ${attempt} failed for window: ${window.label}`, error);
-      if (attempt === maxRetries) {
-        throw new Error(`Failed to set content after ${maxRetries} attempts`);
-      }
-    }
-  }
-}
 
 export function registerScenes() {
   sceneManager.registerScene('bg', async () => {
     await new MyWindow('bg')
-      .size(80, 60)
+      .size(100, 100)
       .position(0, 0)
       .content('BackgroundVideo', { src: 'test.MOV' })
       .listen('SPACE', () => {
-        sceneManager.nextScene('bg');
+        sceneManager.nextScene('bg2');
       });
+  });
+  sceneManager.registerScene('bg2', async () => {
+    await new MyWindow('bg')
+      .size(50, 100)
+      .open();
   });
 
   sceneManager.registerScene('scene1', async () => {
@@ -63,7 +38,7 @@ export function registerScenes() {
     //   title: 'on the wrong side of the river bank',
     //   imageSrc: '/land1.gif'
     // });
-    await setWindowContent(riverBank, 'BackgroundVideo', { src: 'test2.MOV' });
+    //await setWindowContent(riverBank, 'BackgroundVideo', { src: 'test2.MOV' });
 
 
     await riverBank.listen('CLICK', () => {

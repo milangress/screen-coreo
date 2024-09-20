@@ -25,6 +25,12 @@ export function registerScenes() {
         e.nextScene('bg3');
       })
       .open();
+      
+    await new MyWindow('bg2')
+      .size(50, 100)
+      .position(50, 0)
+      .content('BackgroundVideo', { src: 'test.MOV' })
+      .open();
   });
 
   sceneManager.registerScene('bg3', async () => {

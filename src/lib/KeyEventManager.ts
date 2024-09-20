@@ -1,4 +1,4 @@
-import { listen } from '@tauri-apps/api/event';
+import { register, unregister } from '@tauri-apps/api/globalShortcut';
 
 type KeyHandler = (event: KeyboardEvent) => void;
 
@@ -7,7 +7,7 @@ export class KeyEventManager {
   private keyHandlers: Map<string, KeyHandler[]> = new Map();
 
   private constructor() {
-    this.initializeKeyListener();
+    // Remove initializeKeyListener as we're using Tauri's global shortcuts
   }
 
   static getInstance(): KeyEventManager {
@@ -17,29 +17,33 @@ export class KeyEventManager {
     return KeyEventManager.instance;
   }
 
-  private async initializeKeyListener() {
-    await listen('tauri://key-press', (event: any) => {
-      const keyEvent = event.payload as KeyboardEvent;
-      const handlers = this.keyHandlers.get(keyEvent.code);
-      if (handlers) {
-        handlers.forEach(handler => handler(keyEvent));
-      }
-    });
-  }
-
-  addKeyHandler(key: string, handler: KeyHandler) {
+  async addKeyHandler(key: string, handler: KeyHandler) {
     if (!this.keyHandlers.has(key)) {
       this.keyHandlers.set(key, []);
+      // Register the global shortcut
+      await register(key, () => {
+        const handlers = this.keyHandlers.get(key);
+        if (handlers) {
+          // Create a mock KeyboardEvent since Tauri doesn't provide one
+          const mockEvent = { code: key } as KeyboardEvent;
+          handlers.forEach(h => h(mockEvent));
+        }
+      });
     }
     this.keyHandlers.get(key)!.push(handler);
   }
 
-  removeKeyHandler(key: string, handler: KeyHandler) {
+  async removeKeyHandler(key: string, handler: KeyHandler) {
     const handlers = this.keyHandlers.get(key);
     if (handlers) {
       const index = handlers.indexOf(handler);
       if (index !== -1) {
         handlers.splice(index, 1);
+        if (handlers.length === 0) {
+          // If no handlers left, unregister the global shortcut
+          await unregister(key);
+          this.keyHandlers.delete(key);
+        }
       }
     }
   }

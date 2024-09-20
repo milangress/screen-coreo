@@ -4,28 +4,21 @@
     import BackgroundVideo from './BackgroundVideo.svelte';
     import RiverBank from './RiverBank.svelte';
     
-    let component: any = null;
-    let props: any = {};
+    let componentName: string | null = null;
+    let componentProps: any = {};
+    let key = 0; // Add this line to force re-renders
   
+    $: component = getComponent(componentName);
+
     onMount(async () => {
       console.log('Window component mounted');
       const { emit } = await import('@tauri-apps/api/event');
       console.log('Emitting window-ready event');
       await emit('window-ready');
       console.log('window-ready event emitted');
-
-      await listen('set-content', (event: any) => {
-        console.log('Received set-content event', event);
-        const { component: componentName, props: componentProps } = event.payload;
-        component = getComponent(componentName);
-        props = componentProps;
-        console.log('Component set:', componentName);
-        console.log('Emitting content-set event');
-        emit('content-set');
-      });
     });
   
-    function getComponent(name: string) {
+    function getComponent(name: string | null) {
       switch (name) {
         case 'BackgroundVideo':
           return BackgroundVideo;
@@ -36,15 +29,26 @@
           return null;
       }
     }
+
+    listen('set-content', async (event: any) => {
+      console.log('Received set-content event', event);
+      const { component: newComponentName, props: newComponentProps } = event.payload;
+      componentName = newComponentName;
+      componentProps = newComponentProps;
+      key += 1; // Increment key to force re-render
+      console.log('Component set:', componentName);
+      console.log('Emitting content-set event');
+      const { emit } = await import('@tauri-apps/api/event');
+      await emit('content-set');
+    });
   </script>
    
   <main>
     {#if component}
-      <svelte:component this={component} {...props} />
+      <svelte:component this={component} {...componentProps} {key} />
     {:else}
-      <div>components not found</div>
+      <div>Component not found</div>
     {/if}
-
   </main>
   
   <style>

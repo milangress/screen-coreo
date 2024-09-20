@@ -35,7 +35,7 @@
   }
 </script>
 
-<main>
+<main data-tauri-drag-region>
   <h1>Presentation Controller</h1>
   <button on:click={startPresentation}>Start</button>
   <button on:click={nextScene}>Next</button>
@@ -57,11 +57,23 @@
 </main>
 
 <style>
+  :global(html) {
+    background-color: #fff;
+    border-radius: 1rem;
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+  }
+  :global(body) {
+    position: relative;
+    width: 100%;
+  }
+
   main {
     text-align: center;
     padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
+    width: 100%;
+    overflow-x: scroll;
   }
 
   h1 {

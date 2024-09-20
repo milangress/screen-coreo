@@ -28,6 +28,12 @@ export function registerScenes() {
       .open();
   });
 
+  sceneManager.registerScene('bg3', async () => {
+    await new MyWindow('bg')
+      .content('BackgroundVideo', { src: 'test2.MOV' })
+      .open();
+  });
+
   sceneManager.registerScene('scene1', async () => {
     const riverBank = await windowManager.createWindow('riverBank', {
       width: 280,

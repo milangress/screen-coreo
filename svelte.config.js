@@ -9,6 +9,15 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter(),
+    csp: {
+			mode: 'hash',
+			directives: {
+				'default-src': ['none'],
+				'img-src': ['self'],
+				'script-src': ['self'],
+				'style-src': ['self', 'unsafe-inline'],
+			}
+		}
   },
 };
 

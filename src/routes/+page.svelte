@@ -20,7 +20,7 @@
   });
 
   function startPresentation() {
-    sceneManager.runScene('bg');
+    sceneManager.runScene('start');
   }
 
   function nextScene() {

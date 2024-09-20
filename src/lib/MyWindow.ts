@@ -156,4 +156,63 @@ export class MyWindow {
       }
     }
   }
+
+  async animate(options: {
+    from?: {
+      position?: [number, number];
+      size?: [number, number];
+    };
+    to?: {
+      position?: [number, number];
+      size?: [number, number];
+    };
+    duration: number;
+    steps: number;
+  }): Promise<MyWindow> {
+    const window = await this.getOrCreateWindow();
+    const { from, to, duration, steps } = options;
+
+    const { width: screenWidth, height: screenHeight } = await this.getLogicalScreenSize();
+
+    const currentSize = await window.innerSize();
+    const currentPosition = await window.outerPosition();
+
+    const fromPosition = from?.position ? [
+      this.calculatePixels(from.position[0], screenWidth),
+      this.calculatePixels(from.position[1], screenHeight)
+    ] : [currentPosition.x, currentPosition.y];
+
+    const fromSize = from?.size ? [
+      this.calculatePixels(from.size[0], screenWidth),
+      this.calculatePixels(from.size[1], screenHeight)
+    ] : [currentSize.width, currentSize.height];
+
+    const toPosition = to?.position ? [
+      this.calculatePixels(to.position[0], screenWidth),
+      this.calculatePixels(to.position[1], screenHeight)
+    ] : fromPosition;
+
+    const toSize = to?.size ? [
+      this.calculatePixels(to.size[0], screenWidth),
+      this.calculatePixels(to.size[1], screenHeight)
+    ] : fromSize;
+
+    const stepDuration = duration / steps;
+
+    for (let i = 0; i <= steps; i++) {
+      const progress = i / steps;
+
+      const width = Math.round(fromSize[0] + (toSize[0] - fromSize[0]) * progress);
+      const height = Math.round(fromSize[1] + (toSize[1] - fromSize[1]) * progress);
+      await window.setSize(new LogicalSize(width, height));
+
+      const x = Math.round(fromPosition[0] + (toPosition[0] - fromPosition[0]) * progress);
+      const y = Math.round(fromPosition[1] + (toPosition[1] - fromPosition[1]) * progress);
+      await window.setPosition(new LogicalPosition(x, y));
+
+      await new Promise(resolve => setTimeout(resolve, stepDuration));
+    }
+
+    return this;
+  }
 }

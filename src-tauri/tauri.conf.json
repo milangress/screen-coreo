@@ -26,10 +26,13 @@
     "windows": [
       {
         "title": "Presentation Controller",
-        "width": 500,
+        "width": 1000,
         "height": 300,
+        "x": 0,
+        "y": 0,
         "resizable": false,
-        "fullscreen": false
+        "fullscreen": false,
+        "decorations": false
       }
     ],
     "security": {

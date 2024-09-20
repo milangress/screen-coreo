@@ -10,14 +10,15 @@ const config = {
   kit: {
     adapter: adapter(),
     csp: {
-			mode: 'hash',
-			directives: {
-				'default-src': ['none'],
-				'img-src': ['self'],
-				'script-src': ['self'],
-				'style-src': ['self', 'unsafe-inline'],
-			}
-		}
+      mode: 'auto',
+      directives: {
+        'default-src': ['self', 'http://localhost:1420'],
+        'img-src': ['self', 'data:', 'blob:'],
+        'media-src': ['self', 'http://localhost:1420'],
+        'script-src': ['self', 'unsafe-inline'],
+        'style-src': ['self', 'unsafe-inline'],
+      }
+    }
   },
 };
 

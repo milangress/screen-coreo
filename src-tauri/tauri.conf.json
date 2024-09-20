@@ -54,7 +54,8 @@
       }
     ],
     "security": {
-       "csp": "default-src blob: data: filesystem: wss: https: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; script-src 'self'"
+      "csp": "default-src 'self' asset: https://asset.localhost http://localhost:1420; img-src 'self' asset: https://asset.localhost; media-src 'self' asset: https://asset.localhost http://localhost:1420",
+      "dangerousDisableAssetCspModification": false
     },
     "bundle": {
       "active": true,

@@ -1,9 +1,15 @@
 import { windowManager } from './WindowManager';
+import { KeyEventManager } from './KeyEventManager';
 
 type SceneFunction = () => void;
 
 class SceneManager {
   private scenes: Map<string, SceneFunction> = new Map();
+  private keyEventManager: KeyEventManager;
+
+  constructor() {
+    this.keyEventManager = KeyEventManager.getInstance();
+  }
 
   registerScene(name: string, sceneFunc: SceneFunction): void {
     this.scenes.set(name, sceneFunc);
@@ -27,6 +33,16 @@ class SceneManager {
     } else {
       console.log('Presentation ended');
     }
+  }
+
+  on(event: string, callback: (e: any) => void) {
+    if (event.startsWith('KEY_')) {
+      const key = event.replace('KEY_', '');
+      this.keyEventManager.addKeyHandler(key, (keyEvent) => {
+        callback({ nextScene: this.runScene.bind(this) });
+      });
+    }
+    return this;
   }
 }
 

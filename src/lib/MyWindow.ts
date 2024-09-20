@@ -1,7 +1,9 @@
 import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/window';
 import { windowManager } from './WindowManager';
+import { sceneManager } from './SceneManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/window';
+import { KeyEventManager } from './KeyEventManager';
 
 export class MyWindow {
   private label: string;
@@ -9,10 +11,12 @@ export class MyWindow {
   private customOptions: any = {};
   private contentComponent: string | null = null;
   private contentProps: any = {};
+  private keyEventManager: KeyEventManager;
 
   constructor(label: string) {
     this.label = label;
     console.log('MyWindow constructor', label);
+    this.keyEventManager = KeyEventManager.getInstance();
   }
 
   size(widthPercent: number, heightPercent: number): MyWindow {
@@ -47,6 +51,30 @@ export class MyWindow {
   async open(): Promise<MyWindow> {
     await this.getOrCreateWindow();
     return this;
+  }
+
+  on(event: string, callback: (e: any) => void): MyWindow {
+    if (event.startsWith('KEY_')) {
+      const key = event.replace('KEY_', '');
+      this.keyEventManager.addKeyHandler(key, (keyEvent) => {
+        callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) });
+      });
+    } else {
+      // Handle other events (e.g., 'CLICK') as before
+      this.listen(event, () => callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) }));
+    }
+    return this;
+  }
+
+  private async nextScene(sceneName: string) {
+    await sceneManager.runScene(sceneName);
+  }
+
+  private async close() {
+    const window = windowManager.getWindow(this.label);
+    if (window) {
+      await window.close();
+    }
   }
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {

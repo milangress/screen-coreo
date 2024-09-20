@@ -1,16 +1,6 @@
 import { windowManager } from './WindowManager';
-import { WebviewWindow } from '@tauri-apps/api/window';
 import { sceneManager } from './SceneManager';
 import { MyWindow } from './MyWindow';
-
-const defaultAnimation = {
-  duration: 1000,
-  steps: '10',
-  onUpdate: (progress: number) => {
-    console.log(`Animation progress: ${progress * 100}%`);
-  }
-};
-
 
 export function registerScenes() {
   sceneManager.registerScene('bg', async () => {
@@ -18,39 +8,47 @@ export function registerScenes() {
       .size(100, 100)
       .position(0, 0)
       .content('BackgroundVideo', { src: 'test.MOV' })
-      .listen('SPACE', () => {
-        sceneManager.nextScene('bg2');
-      });
+      .on('KEY_SPACE', (e) => {
+        e.nextScene('bg2');
+      })
+      .open();
   });
+
+  sceneManager.on('KEY_ARROWRIGHT', (e) => {
+    e.nextScene('scene1');
+  });
+
   sceneManager.registerScene('bg2', async () => {
     await new MyWindow('bg')
       .size(50, 100)
+      .on('KEY_SPACE', (e) => {
+        e.nextScene('bg3');
+      })
       .open();
   });
 
   sceneManager.registerScene('bg3', async () => {
     await new MyWindow('bg')
       .content('BackgroundVideo', { src: 'test2.MOV' })
+      .on('KEY_SPACE', (e) => {
+        e.close();
+        e.nextScene('scene1');
+      })
       .open();
   });
 
   sceneManager.registerScene('scene1', async () => {
-    const riverBank = await windowManager.createWindow('riverBank', {
-      width: 280,
-      height: 480,
-    });
-
-    // await setWindowContent(riverBank, 'RiverBank', {
-    //   title: 'on the wrong side of the river bank',
-    //   imageSrc: '/land1.gif'
-    // });
-    //await setWindowContent(riverBank, 'BackgroundVideo', { src: 'test2.MOV' });
-
-
-    await riverBank.listen('CLICK', () => {
-      riverBank.close();
-      sceneManager.runScene('sceneAnimateRiver');
-    });
+    const riverBank = await new MyWindow('riverBank')
+      .size(28, 48)
+      .content('RiverBank', {
+        title: 'on the wrong side of the river bank',
+        imageSrc: '/land1.gif'
+      })
+      .on('CLICK', (e) => {
+        e.close();
+        e.nextScene('sceneAnimateRiver');
+      })
+      .open();
   });
 
   // Register other scenes (sceneAnimateRiver, scene2, scene3, gridScene) similarly

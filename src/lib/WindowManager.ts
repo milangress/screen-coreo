@@ -37,13 +37,17 @@ class WindowManager {
 
   closeAllWindows(): void {
     const allWindows = getAll();
+    if (!allWindows) {
+      console.log('No windows to close');
+      return;
+    }
     allWindows.forEach((window) => {
       if (window.label !== 'main') {
         console.log(`Closing window: ${window.label}`);
         window.close();
       }
     });
-    this.windows.clear();
+    //this.windows.clear();
   }
 
   setCurrentScene(scene: string): void {

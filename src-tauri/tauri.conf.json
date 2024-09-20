@@ -10,14 +10,32 @@
     "version": "0.1.0"
   },
   "tauri": {
+    "macOSPrivateApi": true,
     "allowlist": {
-      "all": false,
+      "all": true,
+      "protocol": {
+        "asset": true,
+        "assetScope": [
+          "$APPCACHE/**",
+          "$RESOURCE/**",
+          "$APPDATA/assets/*",
+          "**/*"
+        ]
+      },
       "shell": {
         "all": true,
         "open": true
       },
       "window": {
-        "all": true
+        "all": true,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
       },
       "globalShortcut": {
         "all": true
@@ -26,17 +44,17 @@
     "windows": [
       {
         "title": "Presentation Controller",
-        "width": 1000,
         "height": 300,
         "x": 0,
         "y": 0,
-        "resizable": false,
+        "resizable": true,
         "fullscreen": false,
-        "decorations": false
+        "decorations": false,
+        "transparent": true
       }
     ],
     "security": {
-      "csp": null
+       "csp": "default-src blob: data: filesystem: wss: https: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; script-src 'self'"
     },
     "bundle": {
       "active": true,

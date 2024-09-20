@@ -1,4 +1,4 @@
-import { WebviewWindow } from '@tauri-apps/api/window';
+import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/window';
 import { windowManager } from './WindowManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/window';
@@ -51,22 +51,7 @@ export class MyWindow {
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);
-    const monitor = await currentMonitor();
-    console.log('monitor', monitor);
-    if (!monitor) {
-      throw new Error('Unable to get current monitor information');
-    }
-
-    const { width: rawWidth, height: rawHeight, type } = monitor.size;
-    const scaleFactor = monitor.scaleFactor;
-
-    const screenWidth = type === 'PhysicalSize' ? rawWidth / scaleFactor : rawWidth;
-    const screenHeight = type === 'PhysicalSize' ? rawHeight / scaleFactor : rawHeight;
-
-    console.log('rawHeight', rawHeight);
-    console.log('rawWidth', rawWidth);
-    console.log('screenHeight', screenHeight);
-    console.log('screenWidth', screenWidth);
+    const { width: screenWidth, height: screenHeight } = await this.getLogicalScreenSize();
 
     if (!window) {
       const options = {
@@ -82,12 +67,12 @@ export class MyWindow {
       if (this.options.widthPercent && this.options.heightPercent) {
         const width = this.calculatePixels(this.options.widthPercent, screenWidth);
         const height = this.calculatePixels(this.options.heightPercent, screenHeight);
-        await window.setSize(new PhysicalSize(width, height));
+        await window.setSize(new LogicalSize(width, height));
       }
       if (this.options.xPercent !== undefined && this.options.yPercent !== undefined) {
         const x = this.calculatePixels(this.options.xPercent, screenWidth);
         const y = this.calculatePixels(this.options.yPercent, screenHeight);
-        await window.setPosition(new PhysicalPosition(x, y));
+        await window.setPosition(new LogicalPosition(x, y));
       }
     }
 
@@ -98,29 +83,49 @@ export class MyWindow {
     return window;
   }
 
+  private async getLogicalScreenSize() {
+    const monitor = await currentMonitor();
+    if (monitor) {
+      const { width, height } = monitor.size;
+      const scaleFactor = monitor.scaleFactor;
+      const logicalSize = new PhysicalSize(width, height).toLogical(scaleFactor);
+      console.log(`Logical screen size: ${logicalSize.width}x${logicalSize.height}`);
+      return logicalSize;
+    } else {
+      console.error('Unable to get current monitor information');
+      return { width: 500, height: 500 };
+    }
+  }
+
   private calculatePixels(percent: number, total: number): number {
     return Math.round((percent / 100) * total);
   }
 
-  private async setWindowContent(window: WebviewWindow): Promise<void> {
-    debugger
+  private async setWindowContent(window: WebviewWindow, maxRetries = 3): Promise<void> {
     if (!this.contentComponent) return;
 
-    try {
-      await window.emit('set-content', { component: this.contentComponent, props: this.contentProps });
-      await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Timeout waiting for content-set event'));
-        }, 500);
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await window.emit('set-content', { component: this.contentComponent, props: this.contentProps });
+        await new Promise<void>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Timeout waiting for content-set event'));
+          }, 500);
 
-        window.once('content-set', () => {
-          clearTimeout(timeout);
-          resolve();
+          window.once('content-set', () => {
+            clearTimeout(timeout);
+            resolve();
+          });
         });
-      });
-    } catch (error) {
-      console.error(`Failed to set content for window: ${this.label}`, error);
-      throw error;
+
+        console.log(`Content set successfully for window: ${this.label}`);
+        return;
+      } catch (error) {
+        console.error(`Attempt ${attempt} failed to set content for window: ${this.label}`, error);
+        if (attempt === maxRetries) {
+          throw new Error(`Failed to set content after ${maxRetries} attempts for window: ${this.label}`);
+        }
+      }
     }
   }
 }

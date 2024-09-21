@@ -114,7 +114,7 @@ export class MyWindow {
     return window;
   }
 
-  private async getLogicalScreenSize() {
+  public static async getLogicalScreenSize() {
     const monitor = await currentMonitor();
     if (monitor) {
       const { width, height } = monitor.size;

@@ -44,6 +44,7 @@
   </script>
    
   <main data-tauri-drag-region>
+    <div class="titlebar" data-tauri-drag-region></div>
     {#if component}
       <svelte:component this={component} {...componentProps} {key} />
     {:else}
@@ -61,5 +62,22 @@
       height: 100%;
       margin: 0;
       padding: 0;
+    }
+    .titlebar {
+      height: 28px;
+      /* background: #373737; */
+      background: transparent;
+      /* border-bottom: 1px solid rgba(0, 0, 0, 0.226); */
+      user-select: none;
+      display: flex;
+      justify-content: flex-end;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      transition: background 0.3s;
+    }
+    .titlebar:hover {
+      background: #000;
     }
   </style>

@@ -86,6 +86,7 @@ export class MyWindow {
         ...this.customOptions,
         title: this.label,
         //hiddenTitle: true,
+        titleBarStyle: 'Overlay',
         width: this.calculatePixels(this.options.widthPercent, screenWidth),
         height: this.calculatePixels(this.options.heightPercent, screenHeight),
         x: this.calculatePixels(this.options.xPercent, screenWidth),

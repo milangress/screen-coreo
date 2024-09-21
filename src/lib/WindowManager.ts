@@ -25,7 +25,7 @@ class WindowManager {
     console.log(`Creating window: ${label}`);
     const window = new WebviewWindow(label, {
       ...options,
-      url: 'window',
+      url: options.url || 'window',
     });
     console.log(`Window created: ${label}`);
     window.once('tauri://created', () => {

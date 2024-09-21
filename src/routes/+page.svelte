@@ -80,6 +80,14 @@
     await appWindow.setSize(newSize);
     await appWindow.setSize(oldSize);
   };
+  async function openOverview() {
+    await windowManager.createWindow('overview', {
+      title: 'Scene Overview',
+      width: 1200,
+      height: 800,
+      url: 'overview'
+    });
+  }
 </script>
 
 <main
@@ -138,10 +146,9 @@ class:faded={isFaded}>
       {/each}
     </ul>
   </div>
+  <button on:click={openOverview}>View Overview</button>
 </div>
-</main>
-
-<style>
+</main><style>
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -210,3 +217,4 @@ class:faded={isFaded}>
     align-items: baseline;
   }
 </style>
+

@@ -1,19 +1,56 @@
 import { windowManager } from './WindowManager';
 import { KeyEventManager } from './KeyEventManager';
 import { currentScene } from './stores';
+import type { SerializedScene, SerializedWindow } from './types';
 
 type SceneFunction = () => void;
 
 class SceneManager {
+  private static instance: SceneManager;
   private scenes: Map<string, SceneFunction> = new Map();
   private keyEventManager: KeyEventManager;
+  private serializedScenes: Map<string, SerializedScene> = new Map();
 
-  constructor() {
+  private constructor() {
     this.keyEventManager = KeyEventManager.getInstance();
+  }
+
+  public static getInstance(): SceneManager {
+    if (!SceneManager.instance) {
+      SceneManager.instance = new SceneManager();
+    }
+    return SceneManager.instance;
   }
 
   registerScene(name: string, sceneFunc: SceneFunction): void {
     this.scenes.set(name, sceneFunc);
+    
+    // Serialize the scene
+    const serializedWindows: SerializedWindow[] = [];
+    const originalCreateWindow = windowManager.createWindow;
+    
+    windowManager.createWindow = async (label: string, options: any) => {
+      serializedWindows.push({
+        label,
+        size: { width: options.width, height: options.height },
+        position: { x: options.x, y: options.y },
+        content: {
+          component: options.content?.component || '',
+          props: options.content?.props || {}
+        }
+      });
+      return originalCreateWindow(label, options);
+    };
+
+    sceneFunc();
+    
+    windowManager.createWindow = originalCreateWindow;
+
+    this.serializedScenes.set(name, {
+      name,
+      windows: serializedWindows,
+      code: sceneFunc.toString()
+    });
   }
 
   runScene(name: string): void {
@@ -72,6 +109,10 @@ class SceneManager {
     return Array.from(this.scenes.keys());
   }
 
+  getSerializedScenes(): SerializedScene[] {
+    return Array.from(this.serializedScenes.values());
+  }
+
   // New methods for handling current scene
   setCurrentScene(scene: string): void {
     currentScene.set(scene);
@@ -86,4 +127,4 @@ class SceneManager {
   }
 }
 
-export const sceneManager = new SceneManager();
+export const sceneManager = SceneManager.getInstance();

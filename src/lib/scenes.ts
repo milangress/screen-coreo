@@ -2,7 +2,11 @@ import { windowManager } from './WindowManager';
 import { sceneManager } from './SceneManager';
 import { MyWindow } from './MyWindow';
 
+let scenesRegistered = false;
+
 export function registerScenes() {
+    if (scenesRegistered) return;
+
     sceneManager.registerScene('start', async () => {
     await new MyWindow('start')
         .size(50, 50)
@@ -99,4 +103,6 @@ export function registerScenes() {
   });
 
   // Register other scenes (sceneAnimateRiver, scene2, scene3, gridScene) similarly
+
+  scenesRegistered = true;
 }

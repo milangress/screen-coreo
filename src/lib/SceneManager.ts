@@ -1,5 +1,6 @@
 import { windowManager } from './WindowManager';
 import { KeyEventManager } from './KeyEventManager';
+import { currentScene } from './stores';
 
 type SceneFunction = () => void;
 
@@ -18,16 +19,16 @@ class SceneManager {
   runScene(name: string): void {
     const scene = this.scenes.get(name);
     if (scene) {
-      windowManager.setCurrentScene(name);
+      this.setCurrentScene(name);
       scene();
     } else {
       console.error(`Scene "${name}" not found`);
     }
   }
 
-  nextScene(currentScene: string): void {
+  nextScene(currentSceneName: string): void {
     const sceneNames = Array.from(this.scenes.keys());
-    const currentIndex = sceneNames.indexOf(currentScene);
+    const currentIndex = sceneNames.indexOf(currentSceneName);
     if (currentIndex !== -1 && currentIndex < sceneNames.length - 1) {
       this.runScene(sceneNames[currentIndex + 1]);
     } else {
@@ -47,6 +48,19 @@ class SceneManager {
 
   getAllScenes(): string[] {
     return Array.from(this.scenes.keys());
+  }
+
+  // New methods for handling current scene
+  setCurrentScene(scene: string): void {
+    currentScene.set(scene);
+  }
+
+  getCurrentScene(): string | null {
+    let scene: string | null = null;
+    currentScene.subscribe(value => {
+      scene = value;
+    })();
+    return scene;
   }
 }
 

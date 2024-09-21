@@ -33,7 +33,7 @@
   onMount(async () => {
     registerScenes();
     scenes = sceneManager.getAllScenes();
-    currentScene.set(windowManager.getCurrentScene());
+    currentScene.set(sceneManager.getCurrentScene());
     monitors = await availableMonitors();
     if (monitors.length > 0) {
       selectedMonitor = monitors[0];
@@ -50,11 +50,11 @@
   }
 
   function nextScene() {
-    if ($currentScene) {
-      sceneManager.nextScene($currentScene);
+    const current = sceneManager.getCurrentScene();
+    if (current) {
+      sceneManager.nextScene(current);
     }
   }
-
 
   function handleSceneChange(event: Event) {
     const selectedScene = (event.target as HTMLSelectElement).value;
@@ -79,7 +79,7 @@
     const newSize = new LogicalSize(oldSize.width, oldSize.height + 1);
     await appWindow.setSize(newSize);
     await appWindow.setSize(oldSize);
-};
+  };
 </script>
 
 <main

@@ -1,5 +1,4 @@
 import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
-import { currentScene } from './stores';
 
 class WindowManager {
   private windows: Map<string, WebviewWindow> = new Map();
@@ -15,10 +14,12 @@ class WindowManager {
       url: 'window',
     });
     console.log(`Window created: ${label}`);
-    window.once('tauri://created')
-    console.log(`Window 'tauri://created' event received: ${label}`);
-    window.once('tauri://event::window-ready');
-    console.log(`Window 'window-ready' event received: ${label}`);
+    window.once('tauri://created', () => {
+      console.log(`Window 'tauri://created' event received: ${label}`);
+    });
+    window.once('tauri://event::window-ready', () => {
+      console.log(`Window 'window-ready' event received: ${label}`);
+    });
     this.windows.set(label, window);
     return window;
   }
@@ -50,17 +51,7 @@ class WindowManager {
     //this.windows.clear();
   }
 
-  setCurrentScene(scene: string): void {
-    currentScene.set(scene);
-  }
-
-  getCurrentScene(): string | null {
-    let scene: string | null = null;
-    currentScene.subscribe(value => {
-      scene = value;
-    })();
-    return scene;
-  }
+  // Remove setCurrentScene and getCurrentScene methods
 }
 
 export const windowManager = new WindowManager();

@@ -1,3 +1,4 @@
 import { writable } from 'svelte/store';
 
 export const currentScene = writable<string | null>(null);
+export const currentWindows = writable<string[]>([]);

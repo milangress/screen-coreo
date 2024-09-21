@@ -3,7 +3,7 @@
   import { windowManager } from '$lib/WindowManager';
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes } from '$lib/scenes';
-  import { currentScene } from '$lib/stores';
+  import { currentScene, currentWindows } from '$lib/stores';
   import { availableMonitors, appWindow, LogicalSize } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
   import { resourceDir } from '@tauri-apps/api/path';
@@ -91,6 +91,11 @@
 <div class="mini-info" class:faded={!isFaded}>
   <div class="scene-info">
     <h1> {$currentScene || 'Not started'}</h1>
+    <ul class="open-windows-list">
+      {#each $currentWindows as window}
+        <li>{window}</li>
+      {/each}
+    </ul>
 </div>
 </div>
 <div 
@@ -124,6 +129,14 @@ class:faded={isFaded}>
   {#if selectedMonitor}
     <p>Selected Monitor: {selectedMonitor.name} ({selectedMonitor.size.width}x{selectedMonitor.size.height})</p>
   {/if}
+  </div>
+  <div class="open-windows">
+    <p>Open Windows:</p>
+    <ul class="open-windows-list">
+      {#each $currentWindows as window}
+        <li>{window}</li>
+      {/each}
+    </ul>
   </div>
 </div>
 </main>
@@ -177,6 +190,16 @@ class:faded={isFaded}>
   }
   .controlls > * {
     margin-right: 1em;
+  }
+  .open-windows {
+    display: flex;
+    align-items: baseline;
+  }
+  .open-windows-list {
+    display: flex;
+    align-items: baseline;
+    list-style: circle;
+    gap: 1.5em;
   }
   .scene-info {
     color: #1500ff;

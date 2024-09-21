@@ -1,13 +1,27 @@
 import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
+import { currentWindows } from '$lib/stores';
 
 class WindowManager {
   private windows: Map<string, WebviewWindow> = new Map();
 
   constructor() {
     this.windows.set('main', getCurrent());
+    this.updateCurrentWindows();
+
+    // Listen for window close events
+    getAll().forEach(window => {
+      window.onCloseRequested(() => {
+        this.windows.delete(window.label);
+        this.updateCurrentWindows();
+      });
+    });
   }
 
-  async createWindow(label: string, options: any): Promise<WebviewWindow> {
+  private updateCurrentWindows = (): void => {
+    currentWindows.set(Array.from(this.windows.keys()));
+  }
+
+  createWindow = async (label: string, options: any): Promise<WebviewWindow> => {
     console.log(`Creating window: ${label}`);
     const window = new WebviewWindow(label, {
       ...options,
@@ -16,42 +30,47 @@ class WindowManager {
     console.log(`Window created: ${label}`);
     window.once('tauri://created', () => {
       console.log(`Window 'tauri://created' event received: ${label}`);
+      this.windows.set(label, window);
+      this.updateCurrentWindows();
     });
     window.once('tauri://event::window-ready', () => {
       console.log(`Window 'window-ready' event received: ${label}`);
     });
-    this.windows.set(label, window);
+    window.once('tauri://error', (e) => {
+      console.error(`Error creating window: ${label}`, e);
+    });
+    window.onCloseRequested(() => {
+      this.windows.delete(label);
+      this.updateCurrentWindows();
+    });
     return window;
   }
 
-  getWindow(label: string): WebviewWindow | null {
-    return WebviewWindow.getByLabel(label);
+  getWindow = (label: string): WebviewWindow | null => {
+    return this.windows.get(label) || null;
   }
 
-  closeWindow(label: string): void {
+  closeWindow = (label: string): void => {
     const window = this.getWindow(label);
     if (window) {
       window.close();
       this.windows.delete(label);
+      this.updateCurrentWindows();
+    }else{
+      console.error(`Closing Window Error:Window ${label} not found`);
     }
   }
 
-  closeAllWindows(): void {
-    const allWindows = getAll();
-    if (!allWindows) {
-      console.log('No windows to close');
-      return;
-    }
-    allWindows.forEach((window) => {
-      if (window.label !== 'main') {
-        console.log(`Closing window: ${window.label}`);
-        window.close();
+  closeAllWindows = (): void => {
+    console.log('Closing all windows');
+    console.log('Current windows:', this.windows);
+    this.windows.forEach((window, label) => {
+      if (label !== 'main') {
+        console.log(`Closing window: ${label}`);
+        this.closeWindow(label);
       }
     });
-    //this.windows.clear();
   }
-
-  // Remove setCurrentScene and getCurrentScene methods
 }
 
 export const windowManager = new WindowManager();

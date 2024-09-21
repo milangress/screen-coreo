@@ -43,7 +43,7 @@
     });
   </script>
    
-  <main>
+  <main data-tauri-drag-region>
     {#if component}
       <svelte:component this={component} {...componentProps} {key} />
     {:else}

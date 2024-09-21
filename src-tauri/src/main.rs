@@ -7,7 +7,7 @@ use tauri::{CustomMenuItem, Menu, Submenu, MenuItem, Manager, Window};
 
 // New Tauri command
 #[tauri::command]
-fn close_all_windows_except_main(window: Window) {
+fn close_all_windows_force(window: Window) {
     let app = window.app_handle();
     let windows = app.windows();
     
@@ -18,11 +18,25 @@ fn close_all_windows_except_main(window: Window) {
     }
 }
 
+// New Tauri command
+#[tauri::command]
+fn close_all_windows_except_main_prefix(window: Window) {
+    let app = window.app_handle();
+    let windows = app.windows();
+    
+    for (window_label, window) in windows.iter() {
+        if !window_label.starts_with("main") {
+            window.close().unwrap();
+        }
+    }
+}
+
 fn main() {
     // Custom menu items
     let start = CustomMenuItem::new("start".to_string(), "Start");
     let reload = CustomMenuItem::new("reload".to_string(), "Reload This");
     let close_all = CustomMenuItem::new("close_all".to_string(), "Close All");
+    let close_all_non_main = CustomMenuItem::new("close_all_non_main".to_string(), "Close All (No Main)");
     let close_all_force = CustomMenuItem::new("close_all_force".to_string(), "Close All (Force)");
     let next = CustomMenuItem::new("next".to_string(), "Next");
     let view_overview = CustomMenuItem::new("view_overview".to_string(), "View Overview");
@@ -36,6 +50,7 @@ fn main() {
         .add_native_item(MenuItem::Separator)
         .add_item(close_all)
         .add_item(close_all_force)
+        .add_item(close_all_non_main)
         .add_native_item(MenuItem::Separator)
         .add_item(view_overview)
     );
@@ -82,15 +97,23 @@ fn main() {
             match event.menu_item_id() {
                 "close_all_force" => {
                     let window = event.window();
-                    close_all_windows_except_main(window.clone());
+                    close_all_windows_force(window.clone());
                     event.window().emit("menu-event", "close_all").unwrap();
+                },
+                "close_all_non_main" => {
+                    let window = event.window();
+                    close_all_windows_except_main_prefix(window.clone());
+                    event.window().emit("menu-event", "close_all_non_main").unwrap();
                 },
                 _ => {
                     event.window().emit("menu-event", event.menu_item_id()).unwrap();
                 }
             }
         })
-        .invoke_handler(tauri::generate_handler![close_all_windows_except_main])
+        .invoke_handler(tauri::generate_handler![
+            close_all_windows_force,
+            close_all_windows_except_main_prefix
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

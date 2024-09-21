@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { windowManager } from '$lib/WindowManager';
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes } from '$lib/scenes';
@@ -7,6 +7,7 @@
   import { availableMonitors, appWindow, LogicalSize } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
   import { resourceDir } from '@tauri-apps/api/path';
+  import { listen } from '@tauri-apps/api/event';
 
   let isFaded = false;
   let fadeTimeout: number | null = null;
@@ -30,6 +31,8 @@
     startFadeTimer();
   }
 
+  let unlistenFunction: (() => void) | undefined;
+
   onMount(async () => {
     registerScenes();
     scenes = sceneManager.getAllScenes();
@@ -40,9 +43,32 @@
     }
 
     startFadeTimer();
-    return () => {
-      if (fadeTimeout) clearTimeout(fadeTimeout);
-    };
+
+    unlistenFunction = await listen('menu-event', (event) => {
+      const command = event.payload as string;
+      switch (command) {
+        case 'start':
+          startPresentation();
+          break;
+        case 'reload':
+          reloadScene();
+          break;
+        case 'close_all':
+          windowManager.closeAllWindows();
+          break;
+        case 'next':
+          nextScene();
+          break;
+        case 'view_overview':
+          openOverview();
+          break;
+      }
+    });
+  });
+
+  onDestroy(() => {
+    if (fadeTimeout) clearTimeout(fadeTimeout);
+    if (unlistenFunction) unlistenFunction();
   });
 
   function startPresentation() {

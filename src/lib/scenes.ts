@@ -106,3 +106,9 @@ export function registerScenes() {
 
   scenesRegistered = true;
 }
+
+export function runInitialScene() {
+  // Implement logic to run the initial scene
+  // For example:
+  sceneManager.runScene('start');
+}

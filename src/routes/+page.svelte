@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { windowManager } from '$lib/WindowManager';
   import { sceneManager } from '$lib/SceneManager';
-  import { registerScenes } from '$lib/scenes';
+  import { registerScenes, runInitialScene } from '$lib/scenes';
   import { currentScene, currentWindows } from '$lib/stores';
   import { availableMonitors, appWindow, LogicalSize } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
@@ -10,7 +10,7 @@
   import { listen } from '@tauri-apps/api/event';
 
   let isFaded = false;
-  let fadeTimeout: number | null = null;
+  let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
   const FADE_DELAY = 5000; // 5 seconds
 
   let scenes: any[] = [];
@@ -35,6 +35,7 @@
 
   onMount(async () => {
     registerScenes();
+    // Don't run the initial scene here
     scenes = sceneManager.getAllScenes();
     currentScene.set(sceneManager.getCurrentScene());
     monitors = await availableMonitors();
@@ -44,9 +45,8 @@
 
     startFadeTimer();
 
-    // Update this part
     unlistenFunction = await listen('menu-event', (event) => {
-      console.log('Received menu event:', event);  // Add this line for debugging
+      console.log('Received menu event:', event);
       const command = event.payload as string;
       handleMenuEvent(command);
     });
@@ -81,7 +81,8 @@
   });
 
   function startPresentation() {
-    sceneManager.runScene('start');
+    // Modify this function to run the initial scene
+    runInitialScene();
   }
 
   function nextScene() {
@@ -213,16 +214,18 @@ class:faded={isFaded}>
     background-color: transparent;
     pointer-events: none;
   }
+  .mini-info {
+    position: fixed;
+    pointer-events: auto;
+  }
 
   .faded {
     opacity: 0.05;
     background-color: transparent;
     box-shadow: none;
+    pointer-events: none;
   }
-  .mini-info {
-    position: fixed;
-    pointer-events: auto;
-  }
+  
 
   button {
     font-size: 1em;

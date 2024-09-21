@@ -115,11 +115,16 @@
         lang: 'typescript', 
         theme: 'min-light' 
       });
-    } catch (error) {
-      console.error('Error highlighting code:', error);
-      return `Error highlighting code: ${error.message}`;
-    }
+    } catch (error: unknown) {
+    console.error('Error highlighting code:', error);
+    return `Error highlighting code: ${getErrorMessage(error)}`;
   }
+  }
+
+  function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
 
   onMount(async () => {
     try {
@@ -130,9 +135,9 @@
       if (scenes.length === 0) {
         error = "No scenes found. Make sure scenes are registered before opening the overview.";
       }
-    } catch (e) {
+    } catch (e: unknown) {
       console.error('Error loading scenes:', e);
-      error = "An error occurred while loading scenes: " + e.message;
+      error = "An error occurred while loading scenes: " + getErrorMessage(e);
     }
   });
 
@@ -208,11 +213,6 @@
   .code {
     width: 50%;
     overflow-x: auto;
-  }
-  pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-all;
   }
   .error {
     color: red;

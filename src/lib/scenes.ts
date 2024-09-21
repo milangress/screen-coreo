@@ -35,7 +35,7 @@ export function registerScenes() {
     await new MyWindow('bg')
       .size(100, 100)
       .position(0, 0)
-      .content('BackgroundVideo', { src: 'test.MOV' })
+      .content('BackgroundVideo', { src: 'BusBG.mp4' })
       .on('KEY_SPACE', (e) => {
         e.nextScene('bg2');
       })

@@ -15,7 +15,7 @@ const config = {
         'default-src': ['self', 'http://localhost:1420'],
         'img-src': ['self', 'data:', 'blob:', 'asset:', 'https://asset.localhost'],
         'media-src': ['self', 'http://localhost:1420', 'asset:', 'https://asset.localhost'],
-        'script-src': ['self', 'unsafe-inline'],
+        'script-src': ['self', 'unsafe-inline', 'unsafe-eval', 'wasm-unsafe-eval'],
         'style-src': ['self', 'unsafe-inline'],
       }
     }

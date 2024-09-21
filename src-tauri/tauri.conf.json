@@ -62,7 +62,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self' asset: https://asset.localhost http://localhost:1420; img-src 'self' asset: https://asset.localhost; media-src 'self' asset: https://asset.localhost http://localhost:1420",
+      "csp": "default-src 'self' asset: https://asset.localhost http://localhost:1420; img-src 'self' asset: https://asset.localhost data: blob:; media-src 'self' asset: https://asset.localhost http://localhost:1420; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'",
       "dangerousDisableAssetCspModification": false
     },
     "bundle": {

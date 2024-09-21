@@ -44,27 +44,36 @@
 
     startFadeTimer();
 
+    // Update this part
     unlistenFunction = await listen('menu-event', (event) => {
+      console.log('Received menu event:', event);  // Add this line for debugging
       const command = event.payload as string;
-      switch (command) {
-        case 'start':
-          startPresentation();
-          break;
-        case 'reload':
-          reloadScene();
-          break;
-        case 'close_all':
-          windowManager.closeAllWindows();
-          break;
-        case 'next':
-          nextScene();
-          break;
-        case 'view_overview':
-          openOverview();
-          break;
-      }
+      handleMenuEvent(command);
     });
   });
+
+  // Add this function to handle menu events
+  function handleMenuEvent(command: string) {
+    switch (command) {
+      case 'start':
+        startPresentation();
+        break;
+      case 'reload':
+        reloadScene();
+        break;
+      case 'close_all':
+        windowManager.closeAllWindows();
+        break;
+      case 'next':
+        nextScene();
+        break;
+      case 'view_overview':
+        openOverview();
+        break;
+      default:
+        console.log('Unhandled menu event:', command);
+    }
+  }
 
   onDestroy(() => {
     if (fadeTimeout) clearTimeout(fadeTimeout);

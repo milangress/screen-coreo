@@ -84,6 +84,8 @@ export class MyWindow {
     if (!window) {
       const options = {
         ...this.customOptions,
+        title: this.label,
+        //hiddenTitle: true,
         width: this.calculatePixels(this.options.widthPercent, screenWidth),
         height: this.calculatePixels(this.options.heightPercent, screenHeight),
         x: this.calculatePixels(this.options.xPercent, screenWidth),

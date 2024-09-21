@@ -116,7 +116,7 @@
     await appWindow.setSize(oldSize);
   };
   async function openOverview() {
-    await windowManager.createWindow('overview', {
+    await windowManager.createWindow('main-overview', {
       title: 'Scene Overview',
       width: 1200,
       height: 800,
@@ -193,10 +193,12 @@ class:faded={isFaded}>
     height: 100vh;
     position: fixed;
     width: 100%;
+    pointer-events: none;
   }
   :global(body) {
     position: relative;
     width: 100%;
+    pointer-events: none;
   }
 
   main {
@@ -205,9 +207,11 @@ class:faded={isFaded}>
     overflow-x: scroll;
     transition: opacity 0.3s ease-in-out;
     background-color: white;
+    pointer-events: auto;
   }
   main.isFaded {
     background-color: transparent;
+    pointer-events: none;
   }
 
   .faded {
@@ -217,7 +221,7 @@ class:faded={isFaded}>
   }
   .mini-info {
     position: fixed;
-    pointer-events: none;
+    pointer-events: auto;
   }
 
   button {

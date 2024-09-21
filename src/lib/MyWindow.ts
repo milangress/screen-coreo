@@ -79,7 +79,7 @@ export class MyWindow {
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);
-    const { width: screenWidth, height: screenHeight } = await this.getLogicalScreenSize();
+    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
 
     if (!window) {
       const options = {
@@ -175,7 +175,7 @@ export class MyWindow {
     const window = await this.getOrCreateWindow();
     const { from, to, duration, steps } = options;
 
-    const { width: screenWidth, height: screenHeight } = await this.getLogicalScreenSize();
+    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
 
     const currentSize = await window.innerSize();
     const currentPosition = await window.outerPosition();

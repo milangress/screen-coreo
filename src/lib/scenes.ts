@@ -42,10 +42,6 @@ export function registerScenes() {
       .open();
   });
 
-  sceneManager.on('KEY_ARROWRIGHT', (e) => {
-    e.nextScene('scene1');
-  });
-
   sceneManager.registerScene('bg2', async () => {
     await new MyWindow('bg')
       .size(50, 100)
@@ -83,6 +79,23 @@ export function registerScenes() {
         e.nextScene('sceneAnimateRiver');
       })
       .open();
+  });
+  
+  
+  
+  
+  sceneManager.on('KEY_ARROWLEFT', (e) => {
+    const currentSceneName = sceneManager.getCurrentScene();
+    if (currentSceneName) {
+      sceneManager.previousScene(currentSceneName);
+    }
+  });
+
+  sceneManager.on('KEY_ARROWRIGHT', (e) => {
+    const currentSceneName = sceneManager.getCurrentScene();
+    if (currentSceneName) {
+      sceneManager.nextScene(currentSceneName);
+    }
   });
 
   // Register other scenes (sceneAnimateRiver, scene2, scene3, gridScene) similarly

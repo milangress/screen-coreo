@@ -36,11 +36,33 @@ class SceneManager {
     }
   }
 
+  previousScene(currentSceneName: string): void {
+    const sceneNames = Array.from(this.scenes.keys());
+    const currentIndex = sceneNames.indexOf(currentSceneName);
+    if (currentIndex > 0) {
+      this.runScene(sceneNames[currentIndex - 1]);
+    } else {
+      console.log('Already at the first scene');
+    }
+  }
+
   on(event: string, callback: (e: any) => void) {
     if (event.startsWith('KEY_')) {
       const key = event.replace('KEY_', '');
       this.keyEventManager.addKeyHandler(key, (keyEvent) => {
-        callback({ nextScene: this.runScene.bind(this) });
+        if (key === 'ARROWRIGHT') {
+          const currentSceneName = this.getCurrentScene();
+          if (currentSceneName) {
+            this.nextScene(currentSceneName);
+          }
+        } else if (key === 'ARROWLEFT') {
+          const currentSceneName = this.getCurrentScene();
+          if (currentSceneName) {
+            this.previousScene(currentSceneName);
+          }
+        } else {
+          callback({ nextScene: this.runScene.bind(this) });
+        }
       });
     }
     return this;

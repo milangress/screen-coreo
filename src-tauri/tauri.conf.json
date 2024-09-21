@@ -19,7 +19,8 @@
           "$APPCACHE/**",
           "$RESOURCE/**",
           "$APPDATA/assets/*",
-          "**/*"
+          "../static/*",
+          "**"
         ]
       },
       "shell": {
@@ -36,6 +37,12 @@
         "unmaximize": true,
         "unminimize": true,
         "startDragging": true
+      },
+      "fs": {
+        "all": true,
+        "scope": [
+          "$RESOURCE/*"
+        ]
       },
       "globalShortcut": {
         "all": true
@@ -61,6 +68,9 @@
       "active": true,
       "targets": "all",
       "identifier": "com.milan.screen-coreo.app",
+      "resources": [
+        "../static/*"
+      ],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

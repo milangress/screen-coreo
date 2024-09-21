@@ -13,8 +13,8 @@ const config = {
       mode: 'auto',
       directives: {
         'default-src': ['self', 'http://localhost:1420'],
-        'img-src': ['self', 'data:', 'blob:'],
-        'media-src': ['self', 'http://localhost:1420'],
+        'img-src': ['self', 'data:', 'blob:', 'asset:', 'https://asset.localhost'],
+        'media-src': ['self', 'http://localhost:1420', 'asset:', 'https://asset.localhost'],
         'script-src': ['self', 'unsafe-inline'],
         'style-src': ['self', 'unsafe-inline'],
       }

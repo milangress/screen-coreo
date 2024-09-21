@@ -6,6 +6,8 @@
   import { currentScene } from '$lib/stores';
   import { availableMonitors } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
+  import { resourceDir } from '@tauri-apps/api/path';
+
 
   let monitors: Monitor[] = [];
   let selectedMonitor: Monitor | null = null;
@@ -17,6 +19,9 @@
     if (monitors.length > 0) {
       selectedMonitor = monitors[0];
     }
+
+const resourceDirPath = await resourceDir();
+console.log(resourceDirPath)
   });
 
   function startPresentation() {

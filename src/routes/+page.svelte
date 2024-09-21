@@ -4,24 +4,45 @@
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes } from '$lib/scenes';
   import { currentScene } from '$lib/stores';
-  import { availableMonitors } from '@tauri-apps/api/window';
+  import { availableMonitors, appWindow, LogicalSize } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
   import { resourceDir } from '@tauri-apps/api/path';
 
+  let isFaded = false;
+  let fadeTimeout: number | null = null;
+  const FADE_DELAY = 5000; // 5 seconds
+
+  let scenes: any[] = [];
 
   let monitors: Monitor[] = [];
   let selectedMonitor: Monitor | null = null;
 
+  function startFadeTimer() {
+    if (fadeTimeout) clearTimeout(fadeTimeout);
+    fadeTimeout = setTimeout(() => {
+      isFaded = true;
+      invalidateWindowShadows();
+    }, FADE_DELAY);
+  }
+
+  function resetFade() {
+    isFaded = false;
+    startFadeTimer();
+  }
+
   onMount(async () => {
     registerScenes();
+    scenes = sceneManager.getAllScenes();
     currentScene.set(windowManager.getCurrentScene());
     monitors = await availableMonitors();
     if (monitors.length > 0) {
       selectedMonitor = monitors[0];
     }
 
-const resourceDirPath = await resourceDir();
-console.log(resourceDirPath)
+    startFadeTimer();
+    return () => {
+      if (fadeTimeout) clearTimeout(fadeTimeout);
+    };
   });
 
   function startPresentation() {
@@ -34,21 +55,63 @@ console.log(resourceDirPath)
     }
   }
 
+
+  function handleSceneChange(event: Event) {
+    const selectedScene = (event.target as HTMLSelectElement).value;
+    sceneManager.runScene(selectedScene);
+  }
+
+  function reloadScene() {
+    if ($currentScene) {
+      sceneManager.runScene($currentScene);
+    } else {
+      console.error('No current scene to reload');
+    }
+  }
+
   function handleMonitorChange(event: Event) {
     const index = parseInt((event.target as HTMLSelectElement).value, 10);
     selectedMonitor = monitors[index];
   }
+
+  export const invalidateWindowShadows = async () => {
+    const oldSize = await appWindow.outerSize();
+    const newSize = new LogicalSize(oldSize.width, oldSize.height + 1);
+    await appWindow.setSize(newSize);
+    await appWindow.setSize(oldSize);
+};
 </script>
 
-<main data-tauri-drag-region>
-  <h2>coreo</h2>  
-  <div class="controlls" data-tauri-drag-region>
+<main
+  data-tauri-drag-region
+  class:isFaded={isFaded}
+  on:mousemove={resetFade}
+  on:mouseenter={resetFade}
+>
+<div class="mini-info" class:faded={!isFaded}>
   <div class="scene-info">
     <h1> {$currentScene || 'Not started'}</h1>
 </div>
+</div>
+<div 
+class="fade-box"
+class:faded={isFaded}>
+  <!-- <h2>coreo</h2>   -->
+<div class="controlls" data-tauri-drag-region>
+  <div class="scene-info">
+    <h1>
+      <select value={$currentScene} on:change={handleSceneChange}>
+        <option value="">Select a scene</option>
+        {#each scenes as scene}
+          <option value={scene}>{scene}</option>
+        {/each}
+      </select>
+    </h1>
+</div>
   <button on:click={startPresentation}>Start</button>
-  <button on:click={nextScene}>Next</button>
+  <button on:click={reloadScene}>Reload This</button>
   <button on:click={windowManager.closeAllWindows}>Close All</button>
+  <button on:click={nextScene}>Next</button>
   </div>
   
   <div class="monitor-selector">
@@ -62,6 +125,7 @@ console.log(resourceDirPath)
     <p>Selected Monitor: {selectedMonitor.name} ({selectedMonitor.size.width}x{selectedMonitor.size.height})</p>
   {/if}
   </div>
+</div>
 </main>
 
 <style>
@@ -69,7 +133,7 @@ console.log(resourceDirPath)
     box-sizing: border-box;
   }
   :global(html) {
-    background-color: #fff;
+    background-color: transparent;
     border-radius: 1rem;
     height: 100vh;
     position: fixed;
@@ -84,6 +148,21 @@ console.log(resourceDirPath)
     padding: 1em;
     width: 100%;
     overflow-x: scroll;
+    transition: opacity 0.3s ease-in-out;
+    background-color: white;
+  }
+  main.isFaded {
+    background-color: transparent;
+  }
+
+  .faded {
+    opacity: 0.05;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .mini-info {
+    position: fixed;
+    pointer-events: none;
   }
 
   button {

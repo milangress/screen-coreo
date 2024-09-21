@@ -44,6 +44,10 @@ class SceneManager {
     }
     return this;
   }
+
+  getAllScenes(): string[] {
+    return Array.from(this.scenes.keys());
+  }
 }
 
 export const sceneManager = new SceneManager();

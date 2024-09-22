@@ -22,6 +22,8 @@
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
   const FADE_DELAY = 1000; // 5 seconds
   let originalSize: LogicalSize | null = null;
+  const minimizedWindowSize = new LogicalSize(80, 200);
+  const regularWindowSize = new LogicalSize(850, 350);
 
   let scenes: any[] = [];
 
@@ -64,7 +66,7 @@
       // Save the current size before fading
       originalSize = currentSize;
       await new Promise((resolve) => setTimeout(resolve, 500));
-      await appWindow.setSize(new LogicalSize(180, 70));
+      await appWindow.setSize(minimizedWindowSize);
       console.log("minimized", await appWindow.innerSize());
     } else if (!faded) {
       // Restore the original size when unfading
@@ -72,7 +74,7 @@
         await appWindow.setSize(originalSize);
         console.log("restored original size", await appWindow.innerSize());
       } else {
-        await appWindow.setSize(new LogicalSize(850, 350));
+        await appWindow.setSize(regularWindowSize);
         console.log("restored default size", await appWindow.innerSize());
       }
     }
@@ -241,7 +243,7 @@
 >
   <div class="mini-info" class:faded={!isFaded}>
     <div class="scene-info">
-      <h1>{$currentScene || "Start"}</h1>
+      <h1>{$currentScene || "🟉"}</h1>
       <div class="stack">
         <ul class="open-windows-list">
           {#each $currentWindows as window}
@@ -386,7 +388,9 @@
     pointer-events: auto;
     display: flex;
   }
-
+  .mini-info ul {
+    padding-inline-start: 0;
+  }
   .faded {
     opacity: 0.05;
     background-color: transparent;

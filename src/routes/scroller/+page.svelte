@@ -9,6 +9,7 @@
 
   let contentBlocks = [];
   let scrollSpeed = 0;
+  let scrollSpeedIncrement = 0.6;
   let scrollerElement: HTMLElement;
   let isPaused = false;
 
@@ -19,15 +20,16 @@
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'ArrowRight') {
-      scrollSpeed += 0.1;
+      scrollSpeed += scrollSpeedIncrement;
     } else if (event.key === 'ArrowLeft') {
-      scrollSpeed -= 0.1;
+      scrollSpeed -= scrollSpeedIncrement;
     }
     console.log('Current scroll speed:', scrollSpeed);
   }
 
   function autoScroll() {
     if (scrollerElement && !isPaused) {
+      console.log("Auto-scrolling...", scrollerElement.scrollTop, scrollSpeed);
       scrollerElement.scrollTop += scrollSpeed;
     }
     requestAnimationFrame(autoScroll);
@@ -40,14 +42,14 @@
 
   function handleScrollUp() {
     if (scrollerElement) {
-      scrollSpeed -= 0.1;
+      scrollSpeed -= scrollSpeedIncrement;
       console.log('Scrolled up');
     }
   }
 
   function handleScrollDown() {
     if (scrollerElement) {
-      scrollSpeed += 0.1;
+      scrollSpeed += scrollSpeedIncrement;
       console.log('Scrolled down');
     }
   }

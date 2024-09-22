@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { listen } from '@tauri-apps/api/event';
     import VideoBlock from './VideoBlock.svelte';
+    import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
     
     let componentName: string | null = null;
@@ -22,6 +23,8 @@
       switch (name) {
         case 'VideoBlock':
           return VideoBlock;
+        case 'ImageBlock':
+          return ImageBlock;
         case 'RiverBank':
           return RiverBank;
         default:
@@ -41,8 +44,8 @@
       const { emit } = await import('@tauri-apps/api/event');
       await emit('content-set');
     });
-  </script>
    
+</script>   
   <main data-tauri-drag-region>
     <div class="titlebar" data-tauri-drag-region></div>
     {#if component}

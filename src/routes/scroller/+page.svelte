@@ -199,16 +199,16 @@
       -1px 1px 0 #fff,
       1px 1px 0 #fff;
   }
-  :global(pre) {
+  /* :global(pre) {
     font-size: 1em;
     line-height: 0.5;
   }
   :global(code) {
     font-size: 0.8em;
     line-height: 1.2;
-  }
-  :global(.code-block) {
+  } */
+  /* :global(.code-block) {
     margin-top: 1rem;
     margin-bottom: 1rem;
-  }
+  } */
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { listen } from '@tauri-apps/api/event';
-    import BackgroundVideo from './BackgroundVideo.svelte';
+    import VideoBlock from './VideoBlock.svelte';
     import RiverBank from './RiverBank.svelte';
     
     let componentName: string | null = null;
@@ -20,8 +20,8 @@
   
     function getComponent(name: string | null) {
       switch (name) {
-        case 'BackgroundVideo':
-          return BackgroundVideo;
+        case 'VideoBlock':
+          return VideoBlock;
         case 'RiverBank':
           return RiverBank;
         default:

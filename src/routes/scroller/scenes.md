@@ -2,7 +2,7 @@
     import NewWindow from './NewWindow.svelte';
     import ChangeWindow from './ChangeWindow.svelte';
     import CloseWindow from './CloseWindow.svelte';
-    import BackgroundVideo from '$lib/components/BackgroundVideo.svelte';
+    import VideoBlock from '$lib/components/VideoBlock.svelte';
 </script>
 
 
@@ -17,7 +17,7 @@ so feel free to detach or even leave this space if it gets too much.
 await new MyWindow('start')
         .size(50, 50)
         .position(0, 50)
-        .content('BackgroundVideo', { src: 'test.MOV' })
+        .content('VideoBlock', { src: 'test.MOV' })
         .open();
 ```
 
@@ -56,7 +56,7 @@ But also wandering like when you are on a first date and it just a bit too awkwa
 await new MyWindow('background')
         .size(100, 100)
         .position(0, 50)
-        .content('BackgroundVideo', { src: 'BusBG.mp4' })
+        .content('VideoBlock', { src: 'BusBG.mp4' })
         .open();
 ```
 

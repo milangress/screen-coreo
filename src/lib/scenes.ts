@@ -11,7 +11,7 @@ export function registerScenes() {
     await new MyWindow('start')
         .size(50, 50)
         .position(0, 50)
-        .content('BackgroundVideo', { src: 'test.MOV' })
+        .content('VideoBlock', { src: 'test.MOV' })
         .on('KEY_SPACE', (e) => {
           e.nextScene('start2');
         })
@@ -39,7 +39,7 @@ export function registerScenes() {
     await new MyWindow('bg')
       .size(100, 100)
       .position(0, 0)
-      .content('BackgroundVideo', { src: 'BusBG.mp4' })
+      .content('VideoBlock', { src: 'BusBG.mp4' })
       .on('KEY_SPACE', (e) => {
         e.nextScene('bg2');
       })
@@ -57,13 +57,13 @@ export function registerScenes() {
     await new MyWindow('bg2')
       .size(50, 100)
       .position(50, 0)
-      .content('BackgroundVideo', { src: 'test.MOV' })
+      .content('VideoBlock', { src: 'test.MOV' })
       .open();
   });
 
   sceneManager.registerScene('bg3', async () => {
     await new MyWindow('bg')
-      .content('BackgroundVideo', { src: 'test2.MOV' })
+      .content('VideoBlock', { src: 'test2.MOV' })
       .on('KEY_SPACE', (e) => {
         e.close();
         e.nextScene('scene1');

@@ -7,7 +7,12 @@
   import scenesContent from './scenes.md?raw';
   import ExecutableCodeBlock from './ExecutableCodeBlock.svelte';
 
-  let contentBlocks = [];
+  interface ContentBlock {
+    type: string;
+    // Add other properties as needed
+  }
+
+  let contentBlocks: ContentBlock[] = [];
   let scrollSpeed = 0;
   let scrollSpeedIncrement = 0.6;
   let scrollerElement: HTMLElement;
@@ -98,7 +103,7 @@
       });
 
     } catch (error) {
-      console.error("Error in onMount:", error);
+      console.error('Error in onMount:', error);
     }
 
     return () => {

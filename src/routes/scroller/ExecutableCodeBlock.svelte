@@ -81,10 +81,9 @@
             setTimeout(async () => {
                 await appWindow.setFocus();
             }, 300);
-        } catch (error) {
-            console.error('Error executing code:', error);
+        } catch (error: unknown) {
             executed = false;
-            errorMessage = error.toString();  // Store the error message
+            errorMessage = error instanceof Error ? error.message : String(error);
         }
     }
 </script>

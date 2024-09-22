@@ -8,7 +8,7 @@ class MyAudio {
   private gainNode: GainNode;
 
   private constructor(private id: string) {
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     this.gainNode = this.audioContext.createGain();
     this.gainNode.connect(this.audioContext.destination);
   }

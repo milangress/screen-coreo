@@ -8,10 +8,22 @@
 
 # Hi so i am a artist
 
+🟒🟒
+
 I gonna touch on some heavy stuff: genocide, pathology
 so feel free to detach or even leave this space if it gets too much.
 
+```js
+await MyAudio('jets').load('test.m4a')
+await MyAudio('jets').play()
+```
+.
 
+.
+
+.
+
+.
 
 ```js
 await new MyWindow('start')
@@ -23,59 +35,71 @@ await new MyWindow('start')
 
 This presentation is a sort of elopement — a wandering
 
-Wandering like when you can't fall asleep and get out of bed at three.
+Wandering 🟔 like when you can't fall asleep and get out of bed at three.
 
-```js
-MyAudio('background').load('test.m4a')
-```
--
+Wandering 🟔 like when I was in second grade and I snuck out earlier to hide at the Jewish graveyard (because it was always empty there) so a very specific shitty 16-year-old guy wouldn't find me.
 
---
-
--
-
-```js
-MyAudio('background').play()
-```
-
--
-
---
-
--
-
-```js
-MyAudio('background').volume(0.5)
-```
-
-Wandering, like when I was in second grade and I snuck out earlier to hide at the Jewish graveyard (because it was always empty there) so a very specific shitty 16-year-old guy wouldn't find me.
-
-But also wandering like when you are on a first date and it just a bit too awkward or intense for a kiss, but it would also be sad to leave, so you keep walking side by side.
+But also 🟔 wandering like when you are on a first date and it just a bit too awkward or intense for a kiss, but it would also be sad to leave, so you keep walking side by side.
 
 ```js
 await new MyWindow('background')
         .size(100, 100)
-        .position(0, 50)
+        .position(0, 0)
         .content('VideoBlock', { src: 'BusBG.mp4' })
-        .open();
+        .open()
 ```
 
-This bus is on the way from Patra to Athina
+This bus is on the way from Patra to Athina - – —
 but in 10 minutes we will just make it to Arachovitika
 
-Incidentally, where I wrote this text
+```js
+new MyWindow('background').filter({ blur: '10px' }).open()
+new MyWindow('house').size(50, 50).position(30, 40)
+  .content('ImageBlock', { src: 'house.jpeg' }).open()
+```
 
-We have complicated relationship Arachovitika and i… lots of unresolved trauma and nevertheless so enchanting, but somehow I forget that every time… unprepared and froloking until I get overwhelmed by the stuff I'm walking away from.
+Incidentally, its here where I wrote this text
+
+We have complicated relationship 
+
+Arachovitika and i… lots of unresolved trauma 
+
+
+```js
+new MyWindow('arachovitika1').size(50, 50).position(0, 50)
+  .content('ImageBlock', { src: 'arachovitika1.jpeg' }).open()
+```
+
+and nevertheless so enchanting, 
+
+```js
+new MyWindow('arachovitika2').size(30, 30).position(70, 10)
+  .content('ImageBlock', { src: 'arachovitika2.jpeg' }).open()
+```
+
+but somehow I forget it every time… unprepared and frolicking until I get overwhelmed by the stuff I'm walking away from.
 
 Painfully aware, I'm not at home while also being at home.
 
-Not today, though! Today I'm sitting here thinking about:
+Not today, though! Today I'm sitting here
+
+```js
+new MyWindow('sofa').size(50, 50).position(30, 40)
+  .content('ImageBlock', { src: 'Sofa.jpeg' }).open()
+```
+
+thinking about:
 
 …
 
 Oh, daddy eugenics!
 
 Ohh daddy pathology!
+
+```js
+await MyAudio('jets', 'test.m4a').play()
+```
+
 
 The sky rips open.
 

@@ -1,6 +1,7 @@
 import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
 import { currentWindows } from '$lib/stores';
 import { get } from 'svelte/store';
+import { emit } from '@tauri-apps/api/event';
 
 interface WindowInfo {
   window: WebviewWindow;
@@ -31,7 +32,7 @@ class WindowManager {
   }
 
   private updateCurrentWindows = (): void => {
-    const windows = Array.from(this.windows.keys());
+    const windows = new Set(this.windows.keys());
     console.log('Updating current windows:', windows);
     currentWindows.set(windows);
   }
@@ -51,6 +52,7 @@ class WindowManager {
         createdAt: Date.now()
       });
       this.updateCurrentWindows();
+      emit('window-created', { label });
     });
     window.once('tauri://event::window-ready', () => {
       console.log(`Window 'window-ready' event received: ${label}`);
@@ -61,6 +63,7 @@ class WindowManager {
     window.onCloseRequested(() => {
       this.windows.delete(label);
       this.updateCurrentWindows();
+      emit('window-closed', { label });
     });
     return window;
   }
@@ -144,8 +147,9 @@ class WindowManager {
       window.close();
       this.windows.delete(label);
       this.updateCurrentWindows();
-    }else{
-      console.error(`Closing Window Error:Window ${label} not found`);
+      emit('window-closed', { label });
+    } else {
+      console.error(`Closing Window Error: Window ${label} not found`);
     }
   }
 

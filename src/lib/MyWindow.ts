@@ -151,7 +151,14 @@ export class MyWindow {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        await window.emit('set-content', { component: this.contentComponent, props: this.contentProps });
+        // Include the window label (which serves as the ID) in the props
+        const propsWithId = { ...this.contentProps, id: this.label };
+        
+        await window.emit('set-content', { 
+          component: this.contentComponent, 
+          props: propsWithId 
+        });
+        
         await new Promise<void>((resolve, reject) => {
           const timeout = setTimeout(() => {
             reject(new Error('Timeout waiting for content-set event'));

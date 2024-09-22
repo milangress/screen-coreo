@@ -8,6 +8,7 @@
     currentWindows,
     audioStreams,
     audioInstances,
+    videoInstances,
   } from "$lib/stores";
   import { availableMonitors, appWindow } from "@tauri-apps/api/window";
   import type { Monitor } from "@tauri-apps/api/window";
@@ -20,7 +21,7 @@
 
   let isFaded = false;
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
-  const FADE_DELAY = 1000; // 5 seconds
+  const FADE_DELAY = 4000;
   let originalSize: LogicalSize | null = null;
   const minimizedWindowSize = new LogicalSize(80, 200);
   const regularWindowSize = new LogicalSize(850, 350);
@@ -221,6 +222,20 @@
     emit("audio-volume-change", { id, volume, eventId });
   }
 
+  function toggleMute(id: string) {
+    const eventId = uuidv4();
+    const instance = $videoInstances[id];
+    if (instance) {
+      emit("video-mute-toggle", { id, muted: !instance.muted, eventId });
+    }
+  }
+
+  function updateVideoVolume(id: string, event: Event) {
+    const volume = parseFloat((event.target as HTMLInputElement).value);
+    const eventId = uuidv4();
+    emit("video-volume-change", { id, volume, eventId });
+  }
+
   function startFadeTimer() {
     if (fadeTimeout) clearTimeout(fadeTimeout);
     fadeTimeout = setTimeout(() => {
@@ -233,6 +248,12 @@
     isFaded = false;
     startFadeTimer();
   }
+  function setFade() {
+    setTimeout(() => {
+      isFaded = true;
+      invalidateWindowShadows();
+    }, 200);
+  }
 </script>
 
 <main
@@ -240,10 +261,11 @@
   class:isFaded
   on:mousemove={resetFade}
   on:mouseenter={resetFade}
+  on:mouseleave={setFade}
 >
   <div class="mini-info" class:faded={!isFaded}>
     <div class="scene-info">
-      <h1>{$currentScene || "🟉"}</h1>
+      <h1>{$currentScene || "✽"}</h1>
       <div class="stack">
         <ul class="open-windows-list">
           {#each $currentWindows as window}
@@ -320,10 +342,6 @@
       <h3>Audio Controls:</h3>
       {#each Object.entries($audioInstances) as [id, instance]}
         <div class="audio-instance">
-          <span>{id} ({instance.url})</span>
-          <button on:click={() => togglePlay(id)}>
-            {$audioStreams.playing.has(id) ? "Stop" : "Play"}
-          </button>
           <input
             type="range"
             min="0"
@@ -333,6 +351,31 @@
             on:input={(event) => updateVolume(id, event)}
           />
           <span>{(instance.volume * 100).toFixed(0)}%</span>
+          <button class="small-btn" on:click={() => togglePlay(id)}>
+            {$audioStreams.playing.has(id) ? "Stop" : "Play"}
+          </button>
+          <strong>{id} ({instance.url})</strong>
+        </div>
+      {/each}
+    </div>
+
+    <div class="video-controls">
+      <h3>Video Sound Controls:</h3>
+      {#each Object.entries($videoInstances) as [id, instance]}
+        <div class="video-instance">
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={instance.volume}
+            on:input={(event) => updateVideoVolume(id, event)}
+          />
+          <span>{(instance.volume * 100).toFixed(0)}%</span>
+          <button class="small-btn" on:click={() => toggleMute(id)}>
+            {instance.muted ? "Unmute" : "Mute"}
+          </button>
+          <strong>{id} ({instance.src})</strong>
         </div>
       {/each}
     </div>
@@ -351,6 +394,7 @@
     width: 100%;
     padding: 0;
     margin: 0;
+    accent-color: blue;
   }
   :global(body) {
     width: 100%;
@@ -387,6 +431,8 @@
     position: fixed;
     pointer-events: auto;
     display: flex;
+    white-space: nowrap;
+    overflow: hidden;
   }
   .mini-info ul {
     padding-inline-start: 0;
@@ -402,6 +448,9 @@
     font-size: 1em;
     padding: 0.5em 1em;
     margin: 0.5em;
+  }
+  .small-btn {
+    padding: 0.25em 0.5em;
   }
 
   .controlls {
@@ -455,5 +504,31 @@
 
   .audio-instance > * {
     margin-right: 0.5em;
+  }
+
+  .video-controls {
+    margin-top: 1em;
+  }
+
+  .video-instance {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+
+  .video-instance > * {
+    margin-right: 0.5em;
+  }
+  imput[type="range"] {
+    accent-color: black;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: blue;
+    height: 1rem;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    height: 1rem;
+    width: 1rem;
+    background: black;
   }
 </style>

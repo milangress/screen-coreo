@@ -1,5 +1,6 @@
 import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
 import { currentWindows } from '$lib/stores';
+import { get } from 'svelte/store';
 
 class WindowManager {
   private windows: Map<string, WebviewWindow> = new Map();
@@ -18,7 +19,9 @@ class WindowManager {
   }
 
   private updateCurrentWindows = (): void => {
-    currentWindows.set(Array.from(this.windows.keys()));
+    const windows = Array.from(this.windows.keys());
+    console.log('Updating current windows:', windows);
+    currentWindows.set(windows);
   }
 
   createWindow = async (label: string, options: any): Promise<WebviewWindow> => {

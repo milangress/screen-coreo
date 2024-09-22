@@ -11,6 +11,7 @@
   import { WebviewWindow } from '@tauri-apps/api/window';
   import { LogicalSize } from '@tauri-apps/api/window';
   import { emit } from '@tauri-apps/api/event';
+  import { v4 as uuidv4 } from 'uuid';
 
   let isFaded = false;
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -183,16 +184,18 @@
   }
 
   function togglePlay(id: string) {
+    const eventId = uuidv4();
     if ($audioStreams.playing.has(id)) {
-      emit('audio-stop', { id });
+      emit('audio-stop', { id, eventId });
     } else {
-      emit('audio-play', { id });
+      emit('audio-play', { id, eventId });
     }
   }
 
   function updateVolume(id: string, event: Event) {
     const volume = parseFloat((event.target as HTMLInputElement).value);
-    emit('audio-volume-change', { id, volume });
+    const eventId = uuidv4();
+    emit('audio-volume-change', { id, volume, eventId });
   }
 
   function startFadeTimer() {
@@ -272,18 +275,16 @@ class:faded={isFaded}>
   <button on:click={openScroller}>Open Scroller</button>
 
   <div class="audio-streams">
-    <h3>Loaded Audio Streams:</h3>
-    <ul>
+    <h3>Loaded Audio Streams: 
       {#each Array.from($audioStreams.loaded) as stream}
-        <li>{stream}</li>
+        <span>- {stream} -</span>
       {/each}
-    </ul>
-    <h3>Playing Audio Streams:</h3>
-    <ul>
+    </h3>
+    <h3>Playing Audio Streams: 
       {#each Array.from($audioStreams.playing) as stream}
-        <li>{stream}</li>
+        <span>- {stream} -</span>
       {/each}
-    </ul>
+    </h3>
   </div>
 
   <div class="audio-controls">

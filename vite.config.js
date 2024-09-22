@@ -8,6 +8,10 @@ export default defineConfig(async () => ({
     sveltekit(),
     {
       name: 'markdown-loader',
+      /**
+       * @param {string} code
+       * @param {string} id
+       */
       transform(code, id) {
         if (id.endsWith('.md')) {
           return `export default ${JSON.stringify(code)};`;

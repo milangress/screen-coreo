@@ -10,6 +10,7 @@
 
     let codeElement: HTMLElement;
     let executed = false;
+    let errorMessage: string | null = null;  // Add this line
 
     onMount(() => {
       const observer = new IntersectionObserver(
@@ -75,6 +76,7 @@
 
             console.log('Code executed successfully');
             executed = true;
+            errorMessage = null;  // Clear any previous error message
             
             setTimeout(async () => {
                 await appWindow.setFocus();
@@ -82,6 +84,7 @@
         } catch (error) {
             console.error('Error executing code:', error);
             executed = false;
+            errorMessage = error.toString();  // Store the error message
         }
     }
 </script>
@@ -97,6 +100,9 @@
     >{code}</div>
     {#if executed}
         <div class="execution-indicator">Executed</div>
+    {/if}
+    {#if errorMessage}
+        <div class="error-message">{errorMessage}</div>
     {/if}
 </div>
 
@@ -131,5 +137,15 @@
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
         font-size: 0.8rem;
+    }
+
+    .error-message {
+        font-family: 'Courier New', Courier, monospace;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        color: #c62828;
+        font-size: 0.35em;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
 </style>

@@ -1,21 +1,26 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { windowManager } from '$lib/WindowManager';
-  import { sceneManager } from '$lib/SceneManager';
-  import { registerScenes, runInitialScene } from '$lib/scenes';
-  import { currentScene, currentWindows, audioStreams, audioInstances } from '$lib/stores';
-  import { availableMonitors, appWindow } from '@tauri-apps/api/window';
-  import type { Monitor } from '@tauri-apps/api/window';
-  import { resourceDir } from '@tauri-apps/api/path';
-  import { listen } from '@tauri-apps/api/event';
-  import { WebviewWindow } from '@tauri-apps/api/window';
-  import { LogicalSize } from '@tauri-apps/api/window';
-  import { emit } from '@tauri-apps/api/event';
-  import { v4 as uuidv4 } from 'uuid';
+  import { onMount, onDestroy } from "svelte";
+  import { windowManager } from "$lib/WindowManager";
+  import { sceneManager } from "$lib/SceneManager";
+  import { registerScenes, runInitialScene } from "$lib/scenes";
+  import {
+    currentScene,
+    currentWindows,
+    audioStreams,
+    audioInstances,
+  } from "$lib/stores";
+  import { availableMonitors, appWindow } from "@tauri-apps/api/window";
+  import type { Monitor } from "@tauri-apps/api/window";
+  import { resourceDir } from "@tauri-apps/api/path";
+  import { listen } from "@tauri-apps/api/event";
+  import { WebviewWindow } from "@tauri-apps/api/window";
+  import { LogicalSize } from "@tauri-apps/api/window";
+  import { emit } from "@tauri-apps/api/event";
+  import { v4 as uuidv4 } from "uuid";
 
   let isFaded = false;
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
-  const FADE_DELAY = 5000; // 5 seconds
+  const FADE_DELAY = 1000; // 5 seconds
   let originalSize: LogicalSize | null = null;
 
   let scenes: any[] = [];
@@ -37,8 +42,8 @@
 
     startFadeTimer();
 
-    unlistenFunction = await listen('menu-event', (event) => {
-      console.log('Received menu event:', event);
+    unlistenFunction = await listen("menu-event", (event) => {
+      console.log("Received menu event:", event);
       const command = event.payload as string;
       handleMenuEvent(command);
     });
@@ -50,62 +55,75 @@
   }
 
   async function updateWindowSize(faded: boolean) {
+    console.log("updateWindowSize", faded);
     const currentSize = await appWindow.innerSize();
-    
-    if (faded && !isFaded) {
+    console.log("currentSize", currentSize);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    if (faded) {
       // Save the current size before fading
       originalSize = currentSize;
-      await appWindow.setSize(new LogicalSize(200, 50));
-    } else if (!faded && isFaded) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await appWindow.setSize(new LogicalSize(180, 70));
+      console.log("minimized", await appWindow.innerSize());
+    } else if (!faded) {
       // Restore the original size when unfading
       if (originalSize) {
         await appWindow.setSize(originalSize);
+        console.log("restored original size", await appWindow.innerSize());
       } else {
-        await appWindow.setSize(new LogicalSize(850, 400));
+        await appWindow.setSize(new LogicalSize(850, 350));
+        console.log("restored default size", await appWindow.innerSize());
       }
     }
 
     // Short delay to ensure the size change has taken effect
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const currentWindow = WebviewWindow.getByLabel('main');
-    if (currentWindow) {
-      await currentWindow.setFocus();
-    }
+    // const currentWindow = WebviewWindow.getByLabel("main");
+    // if (currentWindow) {
+    //   await currentWindow.setFocus();
+    // }
   }
 
   // Add this function to handle menu events
   function handleMenuEvent(command: string) {
     switch (command) {
-      case 'start':
+      case "start":
         startPresentation();
         break;
-      case 'reload':
+      case "reload":
         reloadScene();
         break;
-      case 'close_all':
+      case "close_all":
         windowManager.closeAllWindows();
         break;
-      case 'close_all_non_main':
+      case "close_all_non_main":
         windowManager.closeAllWindowsExceptMain();
         break;
-      case 'next':
+      case "next":
         nextScene();
         break;
-      case 'view_overview':
+      case "view_overview":
         openOverview();
         break;
-      case 'scroller_open':
+      case "scroller_open":
         openScroller();
         break;
-      case 'scroller_focus':
+      case "scroller_focus":
         focusScroller();
         break;
-      case 'scroller_close':
+      case "scroller_close":
         closeScroller();
         break;
+      case "scroller_hide":
+        hideScroller();
+        break;
+      case "scroller_show":
+        showScroller();
+        break;
       default:
-        console.log('Unhandled menu event:', command);
+        console.log("Unhandled menu event:", command);
     }
   }
 
@@ -135,7 +153,7 @@
     if ($currentScene) {
       sceneManager.runScene($currentScene);
     } else {
-      console.error('No current scene to reload');
+      console.error("No current scene to reload");
     }
   }
 
@@ -146,7 +164,10 @@
 
   export const invalidateWindowShadows = async () => {
     const oldSize = await appWindow.outerSize();
-    const newSize = new LogicalSize(oldSize.width, oldSize.height + (Math.random() > 0.5 ? 1 : -1));
+    const newSize = new LogicalSize(
+      oldSize.width,
+      oldSize.height + (Math.random() > 0.5 ? 1 : -1)
+    );
     await appWindow.setSize(newSize);
     await appWindow.setSize(oldSize);
   };
@@ -154,48 +175,48 @@
     registerScenes();
   }
   async function openOverview() {
-    await windowManager.createWindow('main-overview', {
-      title: 'Scene Overview',
+    await windowManager.createWindow("main-overview", {
+      title: "Scene Overview",
       width: 1200,
       height: 800,
-      url: 'overview'
+      url: "overview",
     });
   }
   async function openScroller() {
-    await windowManager.createWindow('main-scroller', {
-      title: 'Scroller',
+    await windowManager.createWindow("main-scroller", {
+      title: "Scroller",
       transparent: true,
       width: 1200,
       height: 800,
-      url: 'scroller'
+      url: "scroller",
     });
   }
   async function focusScroller() {
-    await windowManager.focusWindow('main-scroller');
+    await windowManager.focusWindow("main-scroller");
   }
   async function closeScroller() {
-    await windowManager.closeWindow('main-scroller');
+    await windowManager.closeWindow("main-scroller");
   }
   async function hideScroller() {
-    await windowManager.hideWindow('main-scroller');
+    await windowManager.hideWindow("main-scroller");
   }
   async function showScroller() {
-    await windowManager.showWindow('main-scroller');
+    await windowManager.showWindow("main-scroller");
   }
 
   function togglePlay(id: string) {
     const eventId = uuidv4();
     if ($audioStreams.playing.has(id)) {
-      emit('audio-stop', { id, eventId });
+      emit("audio-stop", { id, eventId });
     } else {
-      emit('audio-play', { id, eventId });
+      emit("audio-play", { id, eventId });
     }
   }
 
   function updateVolume(id: string, event: Event) {
     const volume = parseFloat((event.target as HTMLInputElement).value);
     const eventId = uuidv4();
-    emit('audio-volume-change', { id, volume, eventId });
+    emit("audio-volume-change", { id, volume, eventId });
   }
 
   function startFadeTimer() {
@@ -214,102 +235,112 @@
 
 <main
   data-tauri-drag-region
-  class:isFaded={isFaded}
+  class:isFaded
   on:mousemove={resetFade}
   on:mouseenter={resetFade}
 >
-<div class="mini-info" class:faded={!isFaded}>
-  <div class="scene-info">
-    <h1> {$currentScene || 'Not started'}</h1>
-    <div class="stack">
-    <ul class="open-windows-list">
-      {#each $currentWindows as window}
-        <li>{window}</li>
-      {/each}
-    </ul>
+  <div class="mini-info" class:faded={!isFaded}>
+    <div class="scene-info">
+      <h1>{$currentScene || "Start"}</h1>
+      <div class="stack">
+        <ul class="open-windows-list">
+          {#each $currentWindows as window}
+            <li>{window}</li>
+          {/each}
+        </ul>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-<div 
-class="fade-box"
-class:faded={isFaded}>
-  <!-- <h2>coreo</h2>   -->
-<div class="controlls" data-tauri-drag-region>
-  <div class="scene-info">
-    <h1>
-      <select value={$currentScene} on:change={handleSceneChange}>
-        <option value="">Select a scene</option>
-        {#each scenes as scene}
-          <option value={scene}>{scene}</option>
+  <div class="fade-box" class:faded={isFaded}>
+    <!-- <h2>coreo</h2>   -->
+    <div class="controlls" data-tauri-drag-region>
+      <div class="scene-info">
+        <h1>
+          <select value={$currentScene} on:change={handleSceneChange}>
+            <option value="">Select a scene</option>
+            {#each scenes as scene}
+              <option value={scene}>{scene}</option>
+            {/each}
+          </select>
+        </h1>
+      </div>
+      <button on:click={registerAllScenes}>Register Scenes</button>
+      <button on:click={startPresentation}>Start</button>
+      <button on:click={reloadScene}>Reload This</button>
+      <button on:click={windowManager.closeAllWindows}>Close All</button>
+      <button on:click={nextScene}>Next</button>
+    </div>
+
+    <div class="monitor-selector">
+      <label for="monitor-select">Select Monitor:</label>
+      <select id="monitor-select" on:change={handleMonitorChange}>
+        {#each monitors as monitor, i}
+          <option value={i}
+            >{monitor.name} ({monitor.size.width}x{monitor.size.height})</option
+          >
         {/each}
       </select>
-    </h1>
-</div>
-<button on:click={registerAllScenes}>Register Scenes</button>
-  <button on:click={startPresentation}>Start</button>
-  <button on:click={reloadScene}>Reload This</button>
-  <button on:click={windowManager.closeAllWindows}>Close All</button>
-  <button on:click={nextScene}>Next</button>
-  </div>
-  
-  <div class="monitor-selector">
-    <label for="monitor-select">Select Monitor:</label>
-    <select id="monitor-select" on:change={handleMonitorChange}>
-      {#each monitors as monitor, i}
-        <option value={i}>{monitor.name} ({monitor.size.width}x{monitor.size.height})</option>
-      {/each}
-    </select>
-  {#if selectedMonitor}
-    <p>Selected Monitor: {selectedMonitor.name} ({selectedMonitor.size.width}x{selectedMonitor.size.height})</p>
-  {/if}
-  </div>
-  <div class="open-windows">
-    <p>Open Windows:</p>
-    <ul class="open-windows-list">
-      {#each $currentWindows as window}
-        <li>{window}</li>
-      {/each}
-    </ul>
-  </div>
-  <button on:click={openOverview}>View Overview</button>
-  <button on:click={openScroller}>Open Scroller</button>
+      {#if selectedMonitor}
+        <p>
+          Selected Monitor: {selectedMonitor.name} ({selectedMonitor.size
+            .width}x{selectedMonitor.size.height})
+        </p>
+      {/if}
+    </div>
+    <div class="open-windows flex">
+      <p>Open Windows -> </p>
+      <ul class="open-windows-list flex-list">
+        {#each $currentWindows as window}
+          <li>{window}</li>
+        {/each}
+      </ul>
+    </div>
+    <div class="audio-streams flex">
+      <p>Loaded Audio Streams -></p>
+      <ul class="open-windows-list flex-list">
+        {#each Array.from($audioStreams.loaded) as stream}
+          <li>{stream}</li>
+        {/each}
+      </ul>
+    </div>
+    <div class="audio-streams flex">
+      <p>Playing Audio Streams -> </p>
+      <ul class="open-windows-list flex-list">
+        {#each Array.from($audioStreams.playing) as stream}
+          <li>{stream}</li>
+        {/each}
+      </ul>
+    </div>
+    <button on:click={openOverview}>View Overview</button>
+    <button on:click={openScroller}>Open Scroller</button>
 
-  <div class="audio-streams">
-    <h3>Loaded Audio Streams: 
-      {#each Array.from($audioStreams.loaded) as stream}
-        <span>- {stream} -</span>
+    <div class="audio-controls">
+      <h3>Audio Controls:</h3>
+      {#each Object.entries($audioInstances) as [id, instance]}
+        <div class="audio-instance">
+          <span>{id} ({instance.url})</span>
+          <button on:click={() => togglePlay(id)}>
+            {$audioStreams.playing.has(id) ? "Stop" : "Play"}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={instance.volume}
+            on:input={(event) => updateVolume(id, event)}
+          />
+          <span>{(instance.volume * 100).toFixed(0)}%</span>
+        </div>
       {/each}
-    </h3>
-    <h3>Playing Audio Streams: 
-      {#each Array.from($audioStreams.playing) as stream}
-        <span>- {stream} -</span>
-      {/each}
-    </h3>
+    </div>
   </div>
+</main>
 
-  <div class="audio-controls">
-    <h3>Audio Controls:</h3>
-    {#each Object.entries($audioInstances) as [id, instance]}
-      <div class="audio-instance">
-        <span>{id} ({instance.url})</span>
-        <button on:click={() => togglePlay(id)}>
-          {$audioStreams.playing.has(id) ? 'Stop' : 'Play'}
-        </button>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.1"
-          value={instance.volume}
-          on:input={(event) => updateVolume(id, event)}
-        />
-        <span>{(instance.volume * 100).toFixed(0)}%</span>
-      </div>
-    {/each}
-  </div>
-</div>
-</main><style>
-  *, *::before, *::after {
+<style>
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
   :global(html) {
@@ -331,17 +362,22 @@ class:faded={isFaded}>
     width: 100%;
     height: 100%;
     overflow: auto;
-    transition: opacity 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
+    transition:
+      opacity 0.3s ease-in-out,
+      width 0.3s ease-in-out,
+      height 0.3s ease-in-out;
     background-color: white;
     pointer-events: auto;
-    padding: 0;
+    padding: 0.5rem;
     margin: 0;
+    border: 3px solid black;
   }
   main.isFaded {
     background-color: transparent;
     pointer-events: none;
     width: 250px;
     height: 100px;
+    border: none;
   }
   .mini-info {
     margin-top: 0.3rem;
@@ -357,7 +393,6 @@ class:faded={isFaded}>
     box-shadow: none;
     pointer-events: none;
   }
-  
 
   button {
     font-size: 1em;
@@ -372,11 +407,20 @@ class:faded={isFaded}>
   .controlls > * {
     margin-right: 1em;
   }
-  .open-windows {
+  .flex {
     display: flex;
     align-items: baseline;
+    margin: 0;
   }
-  .open-windows-list {
+  .flex > p {
+    width: 250px;
+    text-align: right;
+  }
+
+  .flex > * {
+    margin: 0;
+  }
+  .flex-list {
     display: flex;
     align-items: baseline;
     list-style: circle;
@@ -386,25 +430,13 @@ class:faded={isFaded}>
     color: #1500ff;
     flex: 1;
   }
-  .scene-info h1, .scene-info ul {
+  .scene-info h1,
+  .scene-info ul {
     margin-block: 0;
   }
   .monitor-selector {
     display: flex;
     align-items: baseline;
-  }
-
-  .audio-streams {
-    margin-top: 1em;
-  }
-
-  .audio-streams h3 {
-    margin-bottom: 0.5em;
-  }
-
-  .audio-streams ul {
-    list-style-type: none;
-    padding-left: 1em;
   }
 
   .audio-controls {
@@ -421,4 +453,3 @@ class:faded={isFaded}>
     margin-right: 0.5em;
   }
 </style>
-

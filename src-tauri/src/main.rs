@@ -4,6 +4,7 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 use tauri::{CustomMenuItem, Menu, Submenu, MenuItem, Manager, Window};
+use serde_json::Value;
 
 // New Tauri command
 #[tauri::command]
@@ -152,6 +153,33 @@ fn main() {
             });
             app.listen_global("audio-volume-change", |event| {
                 println!("Audio volume change: {:?}", event.payload());
+            });
+            app.listen_global("set-content", |event| {
+                println!("Set content: {:?}", event.payload());
+            });
+            app.listen_global("apply-filters", |event| {
+                println!("Apply filters: {:?}", event.payload());
+            });
+            app.listen_global("window-ready", |event| {
+                println!("Window ready: {:?}", event.payload());
+            });
+            app.listen_global("code-executed", |event| {
+                println!("Scroller code executed: {:?}", event.payload());
+                if let Some(payload_str) = event.payload() {
+                    if let Ok(payload) = serde_json::from_str::<Value>(payload_str) {
+                        let success = payload.get("success")
+                            .and_then(|v| v.as_bool())
+                            .unwrap_or(true);
+                        if !success {
+                            let error = payload.get("error")
+                                .and_then(|v| v.as_str())
+                                .unwrap_or("Unknown error");
+                            println!("Scroller code evaluation error: {:?}", error);
+                        }
+                    } else {
+                        println!("Failed to parse payload as JSON");
+                    }
+                }
             });
             Ok(())
         })

@@ -4,6 +4,7 @@
     import { windowManager } from '$lib/WindowManager';
     import { sceneManager } from '$lib/SceneManager';
     import MyAudio from '$lib/MyAudio';
+    import { emit } from '@tauri-apps/api/event';
     import { appWindow } from '@tauri-apps/api/window';
 
     export let code: string;
@@ -75,6 +76,7 @@
             await func();
 
             console.log('Code executed successfully');
+            emit('code-executed', { success: true , code: code});
             executed = true;
             errorMessage = null;  // Clear any previous error message
             
@@ -84,6 +86,7 @@
         } catch (error: unknown) {
             executed = false;
             errorMessage = error instanceof Error ? error.message : String(error);
+            emit('code-executed', { success: false, error: errorMessage, code: code});
         }
     }
 </script>

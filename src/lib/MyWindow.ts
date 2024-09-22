@@ -12,6 +12,7 @@ export class MyWindow {
   private contentComponent: string | null = null;
   private contentProps: any = {};
   private keyEventManager: KeyEventManager;
+  private filters: Record<string, string> = {};
 
   constructor(label: string) {
     this.label = label;
@@ -77,6 +78,11 @@ export class MyWindow {
     }
   }
 
+  filter(filters: Record<string, string>): MyWindow {
+    this.filters = { ...this.filters, ...filters };
+    return this;
+  }
+
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);
     const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
@@ -111,7 +117,15 @@ export class MyWindow {
       await this.setWindowContent(window);
     }
 
+    if (Object.keys(this.filters).length > 0) {
+      await this.applyFilters(window);
+    }
+
     return window;
+  }
+
+  private async applyFilters(window: WebviewWindow): Promise<void> {
+    await window.emit('apply-filters', this.filters);
   }
 
   public static async getLogicalScreenSize() {

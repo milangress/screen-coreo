@@ -10,7 +10,8 @@
     let componentName: string | null = null;
     let componentProps: any = {};
     let key = 0; // Add this line to force re-renders
-  
+    let filters: Record<string, string> = {};
+
     $: component = getComponent(componentName);
 
     onMount(async () => {
@@ -28,6 +29,12 @@
       };
       
       window.addEventListener('keydown', handleKeyPress);
+
+      listen('apply-filters', (event: any) => {
+        console.log('Received apply-filters event', event);
+        filters = event.payload;
+        applyFilters();
+      });
 
       return () => {
         window.removeEventListener('keydown', handleKeyPress);
@@ -98,8 +105,15 @@
       await emit('window-string-generated', windowString);
     }
 
+    function applyFilters() {
+      const filterString = Object.entries(filters)
+        .map(([key, value]) => `${key}(${value})`)
+        .join(' ');
+      document.body.style.filter = filterString;
+    }
+
 </script>   
-  <main data-tauri-drag-region>
+  <main data-tauri-drag-region style={Object.keys(filters).length > 0 ? `filter: ${Object.entries(filters).map(([key, value]) => `${key}(${value})`).join(' ')};` : ''}>
     <div class="titlebar" data-tauri-drag-region></div>
     {#if component}
       <svelte:component this={component} {...componentProps} {key} />

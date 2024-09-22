@@ -1,24 +1,23 @@
 import { getAssetUrl } from '$lib/utils';
 
 class MyAudio {
-  private static instances: Map<string, MyAudio> = new Map();
+  private static instances: { [key: string]: MyAudio } = {};
   private audioContext: AudioContext;
   private audioBuffer: AudioBuffer | null = null;
-  private sourceNode: AudioBufferSourceNode | null = null;
+  private source: AudioBufferSourceNode | null = null;
   private gainNode: GainNode;
-  private isPlaying: boolean = false;
-  private looping: boolean = false;
 
   private constructor(private id: string) {
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.gainNode = this.audioContext.createGain();
     this.gainNode.connect(this.audioContext.destination);
   }
+
   static getInstance(id: string): MyAudio {
-    if (!MyAudio.instances.has(id)) {
-      MyAudio.instances.set(id, new MyAudio(id));
+    if (!MyAudio.instances[id]) {
+      MyAudio.instances[id] = new MyAudio(id);
     }
-    return MyAudio.instances.get(id)!;
+    return MyAudio.instances[id];
   }
 
   async load(url: string): Promise<MyAudio> {
@@ -30,53 +29,29 @@ class MyAudio {
 
   play(): MyAudio {
     if (this.audioBuffer) {
-      if (this.sourceNode) {
-        this.sourceNode.stop();
-      }
-      this.sourceNode = this.audioContext.createBufferSource();
-      this.sourceNode.buffer = this.audioBuffer;
-      this.sourceNode.loop = this.looping;
-      this.sourceNode.connect(this.gainNode);
-      this.sourceNode.start();
-      this.isPlaying = true;
-
-      this.sourceNode.onended = () => {
-        if (!this.looping) {
-          this.isPlaying = false;
-        }
-      };
+      this.stop();
+      this.source = this.audioContext.createBufferSource();
+      this.source.buffer = this.audioBuffer;
+      this.source.connect(this.gainNode);
+      this.source.start();
     }
     return this;
   }
 
-  pause(): MyAudio {
-    if (this.sourceNode && this.isPlaying) {
-      this.sourceNode.stop();
-      this.isPlaying = false;
-    }
-    return this;
-  }
-
-  loop(shouldLoop: boolean = true): MyAudio {
-    this.looping = shouldLoop;
-    if (this.sourceNode) {
-      this.sourceNode.loop = this.looping;
+  stop(): MyAudio {
+    if (this.source) {
+      this.source.stop();
+      this.source = null;
     }
     return this;
   }
 
   volume(level: number): MyAudio {
-    if (level >= 0 && level <= 1) {
-      this.gainNode.gain.setValueAtTime(level, this.audioContext.currentTime);
-    }
+    this.gainNode.gain.setValueAtTime(level, this.audioContext.currentTime);
     return this;
   }
 }
 
-export default async function(id: string, url?: string): Promise<MyAudio> {
-  const instance = MyAudio.getInstance(id);
-  if (url) {
-    await instance.load(url);
-  }
-  return instance;
+export default function(id: string): MyAudio {
+  return MyAudio.getInstance(id);
 }

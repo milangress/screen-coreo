@@ -3,13 +3,14 @@
   import { windowManager } from '$lib/WindowManager';
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes, runInitialScene } from '$lib/scenes';
-  import { currentScene, currentWindows } from '$lib/stores';
+  import { currentScene, currentWindows, audioStreams, audioInstances } from '$lib/stores';
   import { availableMonitors, appWindow } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
   import { resourceDir } from '@tauri-apps/api/path';
   import { listen } from '@tauri-apps/api/event';
   import { WebviewWindow } from '@tauri-apps/api/window';
   import { LogicalSize } from '@tauri-apps/api/window';
+  import { emit } from '@tauri-apps/api/event';
 
   let isFaded = false;
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -20,19 +21,6 @@
 
   let monitors: Monitor[] = [];
   let selectedMonitor: Monitor | null = null;
-
-  function startFadeTimer() {
-    if (fadeTimeout) clearTimeout(fadeTimeout);
-    fadeTimeout = setTimeout(() => {
-      isFaded = true;
-      invalidateWindowShadows();
-    }, FADE_DELAY);
-  }
-
-  function resetFade() {
-    isFaded = false;
-    startFadeTimer();
-  }
 
   let unlistenFunction: (() => void) | undefined;
 
@@ -193,6 +181,32 @@
   async function showScroller() {
     await windowManager.showWindow('main-scroller');
   }
+
+  function togglePlay(id: string) {
+    if ($audioStreams.playing.has(id)) {
+      emit('audio-stop', { id });
+    } else {
+      emit('audio-play', { id });
+    }
+  }
+
+  function updateVolume(id: string, event: Event) {
+    const volume = parseFloat((event.target as HTMLInputElement).value);
+    emit('audio-volume-change', { id, volume });
+  }
+
+  function startFadeTimer() {
+    if (fadeTimeout) clearTimeout(fadeTimeout);
+    fadeTimeout = setTimeout(() => {
+      isFaded = true;
+      invalidateWindowShadows();
+    }, FADE_DELAY);
+  }
+
+  function resetFade() {
+    isFaded = false;
+    startFadeTimer();
+  }
 </script>
 
 <main
@@ -256,6 +270,42 @@ class:faded={isFaded}>
   </div>
   <button on:click={openOverview}>View Overview</button>
   <button on:click={openScroller}>Open Scroller</button>
+
+  <div class="audio-streams">
+    <h3>Loaded Audio Streams:</h3>
+    <ul>
+      {#each Array.from($audioStreams.loaded) as stream}
+        <li>{stream}</li>
+      {/each}
+    </ul>
+    <h3>Playing Audio Streams:</h3>
+    <ul>
+      {#each Array.from($audioStreams.playing) as stream}
+        <li>{stream}</li>
+      {/each}
+    </ul>
+  </div>
+
+  <div class="audio-controls">
+    <h3>Audio Controls:</h3>
+    {#each Object.entries($audioInstances) as [id, instance]}
+      <div class="audio-instance">
+        <span>{id} ({instance.url})</span>
+        <button on:click={() => togglePlay(id)}>
+          {$audioStreams.playing.has(id) ? 'Stop' : 'Play'}
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          value={instance.volume}
+          on:input={(event) => updateVolume(id, event)}
+        />
+        <span>{(instance.volume * 100).toFixed(0)}%</span>
+      </div>
+    {/each}
+  </div>
 </div>
 </main><style>
   *, *::before, *::after {
@@ -341,6 +391,33 @@ class:faded={isFaded}>
   .monitor-selector {
     display: flex;
     align-items: baseline;
+  }
+
+  .audio-streams {
+    margin-top: 1em;
+  }
+
+  .audio-streams h3 {
+    margin-bottom: 0.5em;
+  }
+
+  .audio-streams ul {
+    list-style-type: none;
+    padding-left: 1em;
+  }
+
+  .audio-controls {
+    margin-top: 1em;
+  }
+
+  .audio-instance {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+
+  .audio-instance > * {
+    margin-right: 0.5em;
   }
 </style>
 

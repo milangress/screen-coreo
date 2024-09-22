@@ -137,6 +137,24 @@ fn main() {
             close_all_windows_force,
             close_all_windows_except_main_prefix
         ])
+        .setup(|app| {
+            app.listen_global("audio-instance-created", |event| {
+                println!("Audio instance created: {:?}", event.payload());
+            });
+            app.listen_global("audio-loaded", |event| {
+                println!("Audio loaded: {:?}", event.payload());
+            });
+            app.listen_global("audio-play", |event| {
+                println!("Audio play: {:?}", event.payload());
+            });
+            app.listen_global("audio-stop", |event| {
+                println!("Audio stop: {:?}", event.payload());
+            });
+            app.listen_global("audio-volume-change", |event| {
+                println!("Audio volume change: {:?}", event.payload());
+            });
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

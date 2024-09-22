@@ -50,6 +50,11 @@ class WindowManager {
   }
 
   getWindow = (label: string): WebviewWindow | null => {
+    const tauriWindow = WebviewWindow.getByLabel(label);
+    if (!tauriWindow) {
+      console.error(`Window ${label} not open`);
+      return null;
+    }
     return this.windows.get(label) || null;
   }
 
@@ -69,6 +74,17 @@ class WindowManager {
     console.log('Current windows:', this.windows);
     this.windows.forEach((window, label) => {
       if (label !== 'main') {
+        console.log(`Closing window: ${label}`);
+        this.closeWindow(label);
+      }
+    });
+  }
+
+  closeAllWindowsExceptMain = (): void => {
+    console.log('Closing all windows except main');
+    console.log('Current windows:', this.windows);
+    this.windows.forEach((window, label) => {
+      if (!label.startsWith('main')) {
         console.log(`Closing window: ${label}`);
         this.closeWindow(label);
       }

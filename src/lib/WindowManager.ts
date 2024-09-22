@@ -71,6 +71,33 @@ class WindowManager {
       }
     });
   }
+
+  focusWindow = (label: string): void => {
+    const window = this.getWindow(label);
+    if (window) {
+      window.setFocus();
+    } else {
+      console.error(`Focus Window Error: Window ${label} not found`);
+    }
+  }
+
+  hideWindow = (label: string): void => {
+    const window = this.getWindow(label);
+    if (window) {
+      window.hide();
+    } else {
+      console.error(`Hide Window Error: Window ${label} not found`);
+    }
+  }
+
+  showWindow = (label: string): void => {
+    const window = this.getWindow(label);
+    if (window) {
+      window.show();
+    } else {
+      console.error(`Show Window Error: Window ${label} not found`);
+    }
+  }
 }
 
 export const windowManager = new WindowManager();

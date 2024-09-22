@@ -1,10 +1,28 @@
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { mdsvex } from 'mdsvex';
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [sveltekit()],
-
+  plugins: [
+    sveltekit(),
+    {
+      name: 'markdown-loader',
+      transform(code, id) {
+        if (id.endsWith('.md')) {
+          return `export default ${JSON.stringify(code)};`;
+        }
+      },
+    },
+  ],
+  extensions: ['.svelte', '.md'],
+  preprocess: [
+    vitePreprocess(),
+    mdsvex({
+      extensions: ['.md'],
+    }),
+  ],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
@@ -18,4 +36,10 @@ export default defineConfig(async () => ({
       ignored: ["**/src-tauri/**"],
     },
   },
+  optimizeDeps: {
+    exclude: ['mdsvex']
+  },
+  ssr: {
+    noExternal: ['mdsvex']
+  }
 }));

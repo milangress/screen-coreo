@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'MalaTesta';
+    src: url('/fonts/malatNU.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'MalaTesta';
+    src: url('/fonts/malatCKU.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Tagettes';
+    src: url('/fonts/tagtts2U.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'TagettesPlus';
+    src: url('/fonts/tagttP2U.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }

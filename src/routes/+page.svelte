@@ -34,7 +34,7 @@
   let unlistenFunction: (() => void) | undefined;
 
   onMount(async () => {
-    registerScenes();
+    //registerScenes();
     // Don't run the initial scene here
     scenes = sceneManager.getAllScenes();
     currentScene.set(sceneManager.getCurrentScene());
@@ -69,6 +69,15 @@
         break;
       case 'view_overview':
         openOverview();
+        break;
+      case 'scroller_open':
+        openScroller();
+        break;
+      case 'scroller_focus':
+        focusScroller();
+        break;
+      case 'scroller_close':
+        closeScroller();
         break;
       default:
         console.log('Unhandled menu event:', command);
@@ -116,6 +125,9 @@
     await appWindow.setSize(newSize);
     await appWindow.setSize(oldSize);
   };
+  async function registerAllScenes() {
+    registerScenes();
+  }
   async function openOverview() {
     await windowManager.createWindow('main-overview', {
       title: 'Scene Overview',
@@ -123,6 +135,27 @@
       height: 800,
       url: 'overview'
     });
+  }
+  async function openScroller() {
+    await windowManager.createWindow('main-scroller', {
+      title: 'Scroller',
+      transparent: true,
+      width: 1200,
+      height: 800,
+      url: 'scroller'
+    });
+  }
+  async function focusScroller() {
+    await windowManager.focusWindow('main-scroller');
+  }
+  async function closeScroller() {
+    await windowManager.closeWindow('main-scroller');
+  }
+  async function hideScroller() {
+    await windowManager.hideWindow('main-scroller');
+  }
+  async function showScroller() {
+    await windowManager.showWindow('main-scroller');
   }
 </script>
 
@@ -157,6 +190,7 @@ class:faded={isFaded}>
       </select>
     </h1>
 </div>
+<button on:click={registerAllScenes}>Register Scenes</button>
   <button on:click={startPresentation}>Start</button>
   <button on:click={reloadScene}>Reload This</button>
   <button on:click={windowManager.closeAllWindows}>Close All</button>
@@ -183,6 +217,7 @@ class:faded={isFaded}>
     </ul>
   </div>
   <button on:click={openOverview}>View Overview</button>
+  <button on:click={openScroller}>Open Scroller</button>
 </div>
 </main><style>
   *, *::before, *::after {

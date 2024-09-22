@@ -41,6 +41,14 @@ fn main() {
     let next = CustomMenuItem::new("next".to_string(), "Next");
     let view_overview = CustomMenuItem::new("view_overview".to_string(), "View Overview");
   
+    let scroller_open = CustomMenuItem::new("scroller_open".to_string(), "Open");
+    let scroller_focus = CustomMenuItem::new("scroller_focus".to_string(), "Focus");
+    let scroller_close = CustomMenuItem::new("scroller_close".to_string(), "Close");
+    let scroller_hide = CustomMenuItem::new("scroller_hide".to_string(), "Hide");
+    let scroller_show = CustomMenuItem::new("scroller_show".to_string(), "Show");
+    let scroller_pause = CustomMenuItem::new("scroller_pause".to_string(), "Pause");
+    let scroller_scroll_up = CustomMenuItem::new("scroller_scroll_up".to_string(), "Scroll Up");
+    let scroller_scroll_down = CustomMenuItem::new("scroller_scroll_down".to_string(), "Scroll Down");
     // Commands submenu (custom)
     let commands = Submenu::new("Commands", Menu::new()
         .add_item(next)
@@ -54,6 +62,20 @@ fn main() {
         .add_native_item(MenuItem::Separator)
         .add_item(view_overview)
     );
+
+    let scroller_menu = Submenu::new("Scroller", Menu::new()
+        .add_item(scroller_open)
+        .add_item(scroller_focus)
+        .add_item(scroller_close)
+        .add_native_item(MenuItem::Separator)
+        .add_item(scroller_hide)
+        .add_item(scroller_show)
+        .add_native_item(MenuItem::Separator)
+        .add_item(scroller_pause)
+        .add_item(scroller_scroll_up)
+        .add_item(scroller_scroll_down)
+    );
+
   
     // Default menu items
     let file_menu = Submenu::new("File", Menu::new()
@@ -82,14 +104,15 @@ fn main() {
         .add_submenu(file_menu)
         .add_submenu(edit_menu)
         .add_submenu(view_menu)
-        .add_submenu(commands)
         .add_submenu(Submenu::new("Window", Menu::new()
             .add_native_item(MenuItem::Minimize)
             .add_native_item(MenuItem::CloseWindow)
         ))
         .add_submenu(Submenu::new("Help", Menu::new()
             .add_item(CustomMenuItem::new("about", "About"))
-        ));
+        ))
+        .add_submenu(commands)
+        .add_submenu(scroller_menu);
   
     tauri::Builder::default()
         .menu(menu)

@@ -97,6 +97,9 @@
       case 'close_all':
         windowManager.closeAllWindows();
         break;
+      case 'close_all_non_main':
+        windowManager.closeAllWindowsExceptMain();
+        break;
       case 'next':
         nextScene();
         break;

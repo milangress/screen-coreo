@@ -84,8 +84,7 @@ Painfully aware, I'm not at home while also being at home.
 Not today, though! Today I'm sitting here
 
 ```js
-new MyWindow('sofa').size(50, 50).position(30, 40)
-  .content('ImageBlock', { src: 'Sofa.jpeg' }).open()
+new MyWindow('sofa').size(66, 74).position(21, 22).content('ImageBlock', {"src":"Sofa.jpeg"}).open();
 ```
 
 thinking about:

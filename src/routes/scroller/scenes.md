@@ -91,13 +91,14 @@ thinking about:
 
 …
 
+```js
+await MyAudio('jets').load('jets-arachovitika.mp3')
+await MyAudio('jets').play()
+```
+
 Oh, daddy eugenics!
 
 Ohh daddy pathology!
-
-```js
-await MyAudio('jets', 'test.m4a').play()
-```
 
 
 The sky rips open.
@@ -107,20 +108,68 @@ Three F-35 Zeus Lightning 1 fighter jets carve up the sky above us. The superson
 Don't worry, my love! They are not here for us, we are still inside the Empire. We are the good guys, remember.
 
 My mind drifts away. Nature is inescapably present here.
-The sun, The saltwater, the waves, and the Wind. The Erosion is inescapably. I watch it every year. It fills me with a strange peace to know that everything I do here will one day be gone.
+The sun, The saltwater, the waves, and the Wind. 
 
-It hasn't rained since Easter. I have never seen it that dry. The Fig tree I planted two years ago has no leaves anymore. The Sun burns, the Salt eats. If I don't give the gate a protective coat every year, it rusts away… No, it still rusts.
+```js
+new MyWindow('wind').size(66, 74).position(21, 22).content('VideoBlock', {"src":"wind.MOV"}).open();
+```
+
+The Erosion is inescapably. I watch it every year. 
+
+```js
+new MyWindow('erosion').size(66, 74).position(21, 22).content('VideoBlock', {"src":"erosion.MOV"}).open();
+```
+
+It fills me with a strange peace to know that everything I do here will one day be gone.
+
+It hasn't rained since Easter. 
+
+```js
+new MyWindow('heat').size(66, 74).position(21, 22).content('VideoBlock', {"src":"heat2.MOV"}).open();
+```
+
+I have never seen it that dry. The Fig tree I planted two years ago has no leaves anymore. 
+
+```js
+new MyWindow('figtree').size(66, 74).position(21, 22).content('VideoBlock', {"src":"figtree.MOV"}).open();
+```
+
+The Sun burns, the Salt eats. If I don't give the gate a protective coat every year, it rusts away… No, it still rusts.
+
+```js
+new MyWindow('sunSign').size(66, 74).position(21, 22).content('VideoBlock', {"src":"sunSign.MOV"}).open();
+```
+
 Every year, another tree falls into the ocean. The wall my grandfather built is more concerned with holding itself together than protecting anything.
 
-I searched for old pictures because I wanted to see how the garden looked in the past.
 
-Yes, Yes, I know I had hair in the past… incredible.
+
+Look what I found and look how green the garden was… how alive
+
+```js
+new MyWindow('milan1').size(66, 74).position(21, 22).content('ImageBlock', {"src":"milan1.jpeg"}).open();
+```
+
+Also Yes, Yes, I know I had hair in the past… incredible.
+
+```js
+new MyWindow('milan2').size(80, 50).position(21, 22).content('ImageBlock', {"src":"milan2.jpeg"}).open();
+new MyWindow('milan3').size(50, 100).position(21, 22).content('ImageBlock', {"src":"milan3.jpeg"}).open();
+```
+
 At that age, I would get compliments on the bus… they called me a pretty girl. That was Nice. 
-It took me roughly a year to internalize the shame and understand that being called a girl should be understood as a gave insult.
 
-I found This Image: my grandfather was running as a politician.
+It took me a vew years to internalize the shame and understand that being called a girl should be understood as a gave insult.
+
+Also Look what I found: my grandfather was running as a politician.
+
+```js
+new MyWindow('papu').size(80, 50).position(21, 22).content('ImageBlock', {"src":"papu-pasok.png"}).open();
+```
+
 Just once
-he was a partisan during the revolution → against the military dictatorship of Papadopoulos. 
+
+he was a partisan during the "revolution" against the military dictatorship of Papadopoulos. 
 
 Mikis Theodorakis - Imaste Dio
 There are two, there are two of us,

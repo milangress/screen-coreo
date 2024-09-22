@@ -4,14 +4,17 @@
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes, runInitialScene } from '$lib/scenes';
   import { currentScene, currentWindows } from '$lib/stores';
-  import { availableMonitors, appWindow, LogicalSize } from '@tauri-apps/api/window';
+  import { availableMonitors, appWindow } from '@tauri-apps/api/window';
   import type { Monitor } from '@tauri-apps/api/window';
   import { resourceDir } from '@tauri-apps/api/path';
   import { listen } from '@tauri-apps/api/event';
+  import { WebviewWindow } from '@tauri-apps/api/window';
+  import { LogicalSize } from '@tauri-apps/api/window';
 
   let isFaded = false;
   let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
   const FADE_DELAY = 5000; // 5 seconds
+  let originalSize: LogicalSize | null = null;
 
   let scenes: any[] = [];
 
@@ -51,6 +54,36 @@
       handleMenuEvent(command);
     });
   });
+
+  // Add this reactive statement
+  $: if (isFaded !== undefined) {
+    updateWindowSize(isFaded);
+  }
+
+  async function updateWindowSize(faded: boolean) {
+    const currentSize = await appWindow.innerSize();
+    
+    if (faded && !isFaded) {
+      // Save the current size before fading
+      originalSize = currentSize;
+      await appWindow.setSize(new LogicalSize(200, 50));
+    } else if (!faded && isFaded) {
+      // Restore the original size when unfading
+      if (originalSize) {
+        await appWindow.setSize(originalSize);
+      } else {
+        await appWindow.setSize(new LogicalSize(850, 400));
+      }
+    }
+
+    // Short delay to ensure the size change has taken effect
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const currentWindow = WebviewWindow.getByLabel('main');
+    if (currentWindow) {
+      await currentWindow.setFocus();
+    }
+  }
 
   // Add this function to handle menu events
   function handleMenuEvent(command: string) {
@@ -121,7 +154,7 @@
 
   export const invalidateWindowShadows = async () => {
     const oldSize = await appWindow.outerSize();
-    const newSize = new LogicalSize(oldSize.width, oldSize.height + 1);
+    const newSize = new LogicalSize(oldSize.width, oldSize.height + (Math.random() > 0.5 ? 1 : -1));
     await appWindow.setSize(newSize);
     await appWindow.setSize(oldSize);
   };
@@ -168,11 +201,13 @@
 <div class="mini-info" class:faded={!isFaded}>
   <div class="scene-info">
     <h1> {$currentScene || 'Not started'}</h1>
+    <div class="stack">
     <ul class="open-windows-list">
       {#each $currentWindows as window}
         <li>{window}</li>
       {/each}
     </ul>
+  </div>
 </div>
 </div>
 <div 
@@ -225,33 +260,41 @@ class:faded={isFaded}>
   }
   :global(html) {
     background-color: transparent;
-    border-radius: 1rem;
-    height: 100vh;
-    position: fixed;
+    height: 100%;
     width: 100%;
-    pointer-events: none;
+    padding: 0;
+    margin: 0;
   }
   :global(body) {
-    position: relative;
     width: 100%;
-    pointer-events: none;
+    height: 100%;
+    padding: 0;
+    margin: 0;
   }
 
   main {
     padding: 1em;
     width: 100%;
-    overflow-x: scroll;
-    transition: opacity 0.3s ease-in-out;
+    height: 100%;
+    overflow: auto;
+    transition: opacity 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
     background-color: white;
     pointer-events: auto;
+    padding: 0;
+    margin: 0;
   }
   main.isFaded {
     background-color: transparent;
     pointer-events: none;
+    width: 250px;
+    height: 100px;
   }
   .mini-info {
+    margin-top: 0.3rem;
+    margin-left: 0.3rem;
     position: fixed;
     pointer-events: auto;
+    display: flex;
   }
 
   .faded {
@@ -288,6 +331,9 @@ class:faded={isFaded}>
   .scene-info {
     color: #1500ff;
     flex: 1;
+  }
+  .scene-info h1, .scene-info ul {
+    margin-block: 0;
   }
   .monitor-selector {
     display: flex;

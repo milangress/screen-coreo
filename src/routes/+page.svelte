@@ -351,7 +351,11 @@
             on:input={(event) => updateVolume(id, event)}
           />
           <span>{(instance.volume * 100).toFixed(0)}%</span>
-          <button class="small-btn" on:click={() => togglePlay(id)}>
+          <button 
+          class="small-btn" 
+          on:click={() => togglePlay(id)}
+          style={$audioStreams.playing.has(id) ? 'background-color: green;' : ''}
+          >
             {$audioStreams.playing.has(id) ? "Stop" : "Play"}
           </button>
           <strong>{id} ({instance.url})</strong>
@@ -372,7 +376,11 @@
             on:input={(event) => updateVideoVolume(id, event)}
           />
           <span>{(instance.volume * 100).toFixed(0)}%</span>
-          <button class="small-btn" on:click={() => toggleMute(id)}>
+          <button 
+            class="small-btn" 
+            on:click={() => toggleMute(id)}
+            style={instance.muted ? 'background-color: red;' : ''}
+          >
             {instance.muted ? "Unmute" : "Mute"}
           </button>
           <strong>{id} ({instance.src})</strong>
@@ -519,8 +527,9 @@
   .video-instance > * {
     margin-right: 0.5em;
   }
-  imput[type="range"] {
+  input[type="range"] {
     accent-color: black;
+    height: 1rem;
   }
   input[type="range"]::-webkit-slider-runnable-track {
     background: blue;

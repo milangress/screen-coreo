@@ -8,8 +8,8 @@
     export let id: string; // Generate a default ID if not provided
     let assetSrc: string;
     let video: HTMLVideoElement;
-    let volume = 1;
-    let muted = false;
+    export let volume = 1;
+    export let muted = false;
 
     let fileId: string;
     if (src) {

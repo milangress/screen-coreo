@@ -142,6 +142,14 @@
         }
       });
 
+      const justTheText = contentBlocks.map((block) => {
+        if (block.type === "html") {
+          return block.content;
+        }
+      }).join("");
+
+      console.log("justTheText:", justTheText);
+
       console.log("Compilation result:", contentBlocks);
     } catch (error) {
       console.error("Error compiling content:", error);

@@ -1,48 +1,44 @@
-# Hi so i am a artist
+# ℳ
+soo... im Milan
+
+# Hi, I am an artist
 
 🟒🟒
 
-I gonna touch on some heavy stuff: genocide, pathology
-so feel free to detach or even leave this space if it gets too much.
+I gonna touch on some heavy stuff: genocide, pathology and at times it might also get loud. Feel free to take a break if you need to.
 
 ```js
-await MyAudio('intro').load('test.m4a')
-await MyAudio('intro').play()
+await MyAudio('intro').load('panpan1.mp3')
+await MyAudio('intro').play().setVolume(0.5)
 ```
-.
 
-.
-
-.
-
-.
+This presentation is a sort of elopement — a 🟀 wandering 🟀
 
 ```js
-await new MyWindow('start')
-        .size(50, 50)
-        .position(0, 50)
-        .content('VideoBlock', { src: 'test.MOV' })
-        .open();
+await new MyWindow('start').size(50, 50).position(0, 50)
+        .content('VideoBlock', { src: 'test.MOV', volume: 0.2 }).open();
 ```
-
-This presentation is a sort of elopement — a wandering
 
 Wandering 🟔 like when you can't fall asleep and get out of bed at three.
-
-Wandering 🟔 like when I was in second grade and I snuck out earlier to hide at the Jewish graveyard (because it was always empty there) so a very specific shitty 16-year-old guy wouldn't find me.
-
-But also 🟔 wandering like when you are on a first date and it just a bit too awkward or intense for a kiss, but it would also be sad to leave, so you keep walking side by side.
 
 ```js
 await new MyWindow('background')
         .size(100, 100)
         .position(0, 0)
-        .content('VideoBlock', { src: 'BusBG.mp4' })
+        .content('VideoBlock', { src: 'BusBG.mp4', volume: 0.4 })
         .open()
 ```
 
-This bus is on The way from Patra to Athina - – —
-But in 10 minutes we will just make it to Arachovitika.
+Wandering 🟔 like when I was in second grade and I snuck out earlier to hide at the Jewish graveyard just so a very specific shitty 10th grader couldn't find me.
+
+But also 🟔 wandering … like when you are on a first date and it just a bit too awkward or intense for a kiss, but it would also be sad to leave, so you keep walking side by side.
+
+
+This bus is on The road from Patra to Athina - – —
+
+But in 10 minutes we will only make it to Arachovitika.
+
+🟔
 
 ```js
 new MyWindow('background').filter({ blur: '10px' }).open()
@@ -50,11 +46,11 @@ new MyWindow('house').size(50, 50).position(30, 40)
   .content('ImageBlock', { src: 'house.jpeg' }).open()
 ```
 
-Incidentally, it's here where I wrote this text
+Incidentally, it's here where I wrote this text.
 
-We have a complicated relationship. 
+We have a complicated relationship — 
 
-Arachovitika and i… lots of unresolved trauma 
+Arachovitika and I — lots of unresolved trauma… 
 
 
 ```js
@@ -69,7 +65,7 @@ new MyWindow('arachovitika2').size(30, 30).position(70, 10)
   .content('ImageBlock', { src: 'arachovitika2.jpeg' }).open()
 ```
 
-But somehow I forget it every time… unprepared and frolicking until I get overwhelmed by the stuff I'm walking away from.
+But somehow I forget it every time… until I get overwhelmed by the stuff I'm walking away from.
 
 Painfully aware, I'm not at home while also being at home.
 
@@ -79,19 +75,32 @@ Not today, though! Today I'm sitting here.
 new MyWindow('sofa').size(66, 74).position(21, 22).content('ImageBlock', {"src":"Sofa.jpeg"}).open();
 ```
 
-Thinking about: how the enlightenment reconfigured the body as mechanics… as a matter of functioning. You know, if you ever go to a German design school, and they tell you your design is functioning, that's high praise. So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health. 
+Thinking about: how the enlightenment reconfigured the body as mechanics…\
+as a matter of functioning.\
+Like if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
 
-Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it leads me to Francis Galton, a cousin of Darwin (tbh explains a lot) known for being the founder of many science innovations eugenics and modern psychology.
+So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health. 
+
+Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it lead me to Francis Galton, a cousin of Darwin (explains a lot) known for being the founder of many science innovations, eugenics and modern psychology.
 
 ```js
+await MyAudio('intro').setVolume(0.2)
 await MyAudio('jets').load('jets.mp3')
 await MyAudio('jets').play()
+new MyWindow('arachovitika2').close()
+new MyWindow('arachovitika1').close()
+new MyWindow('sofa').close()
+new MyWindow('house').close()
+
 ```
 
 Oh, daddy eugenics!
 
 Ohh daddy pathology!
 
+```js
+new MyWindow('background').filter({ blur: '0' }).open()
+```
 
 The sky rips open.
 
@@ -109,13 +118,13 @@ and the Wind.\
 
 
 ```js
-new MyWindow('wind').size(66, 74).position(21, 22).content('VideoBlock', {"src":"wind.MOV"}).open();
+new MyWindow('wind').size(38, 69).position(55, 16).content('VideoBlock', {"src":"wind.MOV", volume: 0.2}).open();
 ```
 
 The Erosion is inescapably. I watch it every year. 
 
 ```js
-new MyWindow('erosion').size(66, 74).position(21, 22).content('VideoBlock', {"src":"erosion.MOV"}).open();
+new MyWindow('erosion').size(38, 68).position(6, 15).content('VideoBlock', {"src":"erosion.MOV", volume: 0.2}).open();
 ```
 
 But somehow it fills me with a strange peace to know that everything I do here will one day be gone.
@@ -123,36 +132,37 @@ But somehow it fills me with a strange peace to know that everything I do here w
 It hasn't rained since Easter. 
 
 ```js
+MyAudio('intro').stop()
 new MyWindow('heat').size(66, 74).position(21, 22).content('VideoBlock', {"src":"heat2.MOV"}).open();
 ```
-
 I have never seen it that dry. The Fig tree I planted two years ago has no leaves any more. 
 
 ```js
 new MyWindow('figtree').size(66, 74).position(21, 22).content('VideoBlock', {"src":"figtree.MOV"}).open();
 ```
-
 The Sun burns, the Salt eats. If I don't give the gate a protective coat every year, it rusts away… No, it still rusts.
 
 ```js
-new MyWindow('sunSign').size(66, 74).position(21, 22).content('VideoBlock', {"src":"sunSign.MOV"}).open();
+new MyWindow('sunSign').size(30, 79).position(0, 20).content('VideoBlock', {"src":"sunSign.MOV"}).open();
 ```
-
-Every year, another tree erodes and falls into the ocean. The wall my grandfather built is more concerned with holding itself together than protecting anything.
+And every year, another tree erodes and falls into the ocean.
 
 \
 
 But look what I found and look how green the garden was… how alive
 
 ```js
-new MyWindow('milan1').size(66, 74).position(21, 22).content('ImageBlock', {"src":"milan1.jpeg"}).open();
+new MyWindow('heat').close()
+new MyWindow('figtree').close()
+new MyWindow('milan1').size(49, 88).position(51, 4).content('ImageBlock', {"src":"milan1.jpeg"}).open();
 ```
 
 Also, yes, yes, I know I had hair in the past… incredible.
 
 ```js
-new MyWindow('milan2').size(80, 50).position(21, 22).content('ImageBlock', {"src":"milan2.jpeg"}).open();
-new MyWindow('milan3').size(50, 100).position(21, 22).content('ImageBlock', {"src":"milan3.jpeg"}).open();
+new MyWindow('sunSign').close()
+new MyWindow('milan2').size(54, 88).position(44, 12).content('ImageBlock', {"src":"milan2.jpeg"}).open();
+new MyWindow('milan3').size(46, 79).position(0, 21).content('ImageBlock', {"src":"milan3.jpeg"}).open();
 ```
 
 At that age, I would get compliments on the bus… they called me a pretty girl. That was Nice. 
@@ -168,7 +178,7 @@ MyAudio('ImasteDio').play().setVolume(0.5)
 Also, look what I found: my grandfather was running as a politician.
 
 ```js
-new MyWindow('papu').size(80, 50).position(21, 22).content('ImageBlock', {"src":"papu-pasok.png"}).open();
+new MyWindow('papu').size(30, 84).position(6, 12).content('ImageBlock', {"src":"papu-pasok.png"}).open();
 ```
 
 Just once
@@ -176,7 +186,10 @@ Just once
 He was a partisan during the “revolution” against the military dictatorship of Papadopoulos. 
 
 ```js
-MyAudio('ImasteDio').setVolume(1)
+new MyWindow('milan2').close()
+new MyWindow('milan3').close()
+new MyWindow('milan1').close()
+new MyAudio('ImasteDio').setVolume(1)
 ```
 
 Imaste Dio
@@ -195,8 +208,9 @@ Dhimos…\
 It was too loud for him…\
 And too many people…\
 
-I'm not sure if you can relate how strange that is in Greek society. Even here, skipping the party you went to prison for would be strange, but in Greece……
-
+```js
+new MyWindow('papu').close()
+```
 ```js
 MyAudio('ImasteDio').setVolume(0.4)
 ```
@@ -209,19 +223,17 @@ If you want to join… we are working on the revolution right now.
 new MyWindow('quak').size(38, 84).position(59, 6).content('ImageBlock', {"src":"quak.jpeg","id":"quak"}).open();
 ```
 
-
 quak
 
-We met last year as a neuroqueer group through the radical Sunday school at Joe's Garage here in Amsterdam. And while I was away, we grew from 5 to 25 people. Menko joined btw through a whole chain of people I didn't know, so we will continue in building ramps and holding space.
+We met last year as a neuroqueer group through the radical Sunday school at Joe's Garage here in Amsterdam. And while I was away, we grew from 5 to 25 people.
 
 Also, don't get scared by the revolution: 
 our revolution has to be accessible.
 
 Building community… 
-
 Sharing our pain — and our joy with each other — IS the revolution.
 
-In the same note, the Sandberg queer group ran out of funding (at least for now) so we are seeking people who can give a bit of time and energy so we can continue. Either way, you are also VERY welcome here. Even if you only come for the fun part. :)
+In the same note, the Sandberg queer group ran out of funding. But we are still continuing. join.
 
 OK, now I need to show you something:
 
@@ -236,14 +248,36 @@ I just added some music to make it less scary.
 ```js
 new MyWindow('i_am_autism').size(66, 74).position(21, 22).content('VideoBlock', {"src":"i_am_autism.mp4"}).open();
 ```
--
+--- 
 
+I am autism.
+I’m visible in your children, but if I can help it, I am invisible to you until it’s too late.
+I know where you live.
+And guess what? I live there too.
+I hover around all of you.
+I know no color barrier, no religion, no morality, no currency.
+I speak your language fluently.
+And with every voice I take away, I acquire yet another language.
+I work very quickly.
+I work faster than pediatric aids, cancer, and diabetes combined
+And if you’re happily married, I will make sure that your marriage fails.
+Your money will fall into my hands, and I will bankrupt you for my own self-gain.
+I don’t sleep, so I make sure you don’t either.
+I will make it virtually impossible for your family to easily attend a temple, birthday party, or public park without a struggle, without embarrassment, without pain.
+You have no cure for me.
+Your scientists don’t have the resources, and I relish their desperation. Your neighbors are happier to pretend that I don’t exist—of course, until it’s their child.
+I am autism. I have no interest in right or wrong. I derive great pleasure out of your loneliness.
+I will fight to take away your hope. I will plot to rob you of your children and your dreams. I will make sure that every day you wake up you will cry, wondering who will take care of my child after I die?
+And the truth is, I am still winning, and you are scared. And you should be.
+I am autism. You ignored me. That was a mistake.
+
+---
 
 We stop here because now they start talking about the eradication of autism. And I Don't like that part.
 
-Oh, yeah, btw. all of what I'm talking about is autism and neurodivergence. Don't get tricked by my winding metaphors and stories, I'm just wrapping the trauma dumping in more narration.
+Oh, yeah, btw. 1st years all of what I'm talking about is autism and neurodivergence. Don't get tricked by my winding metaphors and stories, I'm just wrapping the trauma dumping in more narration.
 
-If you hear eradication of autism, and your alarm bells don't go off, → let's Imagen if black lives matter fought for the eradication of black people. Fucked Up. No
+If you hear eradication of autism, and your alarm bells don't go off, → let's imagen if black lives matter fought for the eradication of black people. Fucked Up. No
 
 Oh, daddy Pathology
 
@@ -265,7 +299,7 @@ new MyWindow('kalavrita1').size(80, 80).position(20, 20).content('VideoBlock', {
 During the Kawritan holocaust, all men over 13 were rounded up and shot, while the women and children were imprisoned into the school which was burned down together with the whole village. 
 
 ```js
-new MyWindow('kalavrita2').size(80, 80).position(20, 20).content('ImageBlock', {"src":"kalavrita.jpeg"}).open();
+new MyWindow('kalavrita2').size(26, 59).position(3, 8).content('ImageBlock', {"src":"kalavrita.jpeg"}).open();
 ```
 
 Oh, daddy genocide
@@ -276,12 +310,27 @@ You know, the German military treats it to this day as a normal fight against co
 
 I know… I know… it's a family thing now. And men rather die in a revolution than go to therapy. In a way, it's even worse when your emotionally distant dad has a reason and a good excuse, you know?
 
+
+
 Ahhh
 Herr Doktor, Herr Doktor, bitte!
+
+```js
+new MyWindow('sofa').size(80, 80).position(10, 10).content('ImageBlock', {"src":"Sofa.jpeg"}).open();
+```
+
 I'm not sure any more? On with side of the Empire am I standing? I think they called my grandfather a terrorist.
 
 The Empire is expanding.\
 And you may not simply walk away from Omelas.
+
+```js
+new MyWindow('kalavrita1').close()
+new MyWindow('kalavrita2').close()
+new MyWindow('sofa').close()
+new MyAudio('bells').load('bells.m4a')
+new MyAudio('bells').play().setVolume(0.2)
+```
 
 Yes, We are all part of the Empire.\
 I am to!\
@@ -297,12 +346,18 @@ just so, it excludes the even more other.\
 
 Oh, daddy, I think I want to become a shame terrorist when I grow up.
 
+```js
+new MyAudio('bells').stop()
+await new MyAudio('trashcollector').load('trashcollector1.m4a')
+new MyAudio('trashcollector').play().setVolume(0.2)
+```
+
 So I'm becoming autistic.
 
 That's from my current Thesis working title:
 
 ```js
-new MyWindow('thesisTitel').size(66, 74).position(21, 22).content('ImageBlock', {"src":"thesisTitel.jpeg"}).open();
+new MyWindow('thesisTitel').size(43, 41).position(54, 5).content('ImageBlock', {"src":"thesisTitel.jpeg"}).open();
 ```
 
 becoming autistic
@@ -311,30 +366,55 @@ not homecoming
 
 not overcoming
 
-I know there is tension. Even today, I was almost sketching a genealogy (in the literal sense) of my autism. And yes, I don't have autism.
+I know there is tension. Even today, I was almost sketching a genealogy (in the literal sense) of (my) autism. And yes, I don't have autism.
 
-.
 
 (now that would have been a funny twist, no?)
 
 
-I don't have autism. I am autistic! It's not a Balenciaga bag I can leave at home because I'm scared your dirty fingers mean I can't sell it on Grailed afterwards. 
-Your fingers gonna touch my autism and I guess we both have to fine with that.
+I don't have autism. I am autistic! It's not a Balenciaga bag I can leave at home because I'm scared your grabby dirty fingers mean I can't sell it on Grailed afterwards. 
+Your fingers gonna touch my autism and I guess we both have to live with that.
 
-But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they support you it just hurts you. Believe me, I tried.
+```js
+new MyWindow('thesisTitel').close()
+new MyWindow('strongWaves').size(100, 100).position(0, 0).content('VideoBlock', {"src":"strongWaves1.MOV", volume: 0.3}).open();
+```
+
+But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
 
 So no you are not born this way.
 
 My love, you have to understand: this was always just a fantasy of yours.
 
-Watch me
+Watch me\
 I will Turn your kids autistic and queer.
 
-Watch the Sun 
+Watch the Sun\
 as it burns down on everything you own
 
-Watch the See
+```js
+new MyWindow('strongWaves').content('VideoBlock', {"src":"strongWaves3.MOV", volume: 0.3}).open();
+```
+
+Watch the See\
 One day, It will destroy all the walls your grandparents built.
 
-Watch the Salt
+Watch the Salt\
 As it slowly eats away and dismantles the master's house.
+
+\
+
+
+Milan <3
+
+PS: What comes after Brat summer? Brat Autism!
+
+
+
+\
+
+\
+
+```js
+new MyWindow('cats').size(100, 100).position(0, 0).content('VideoBlock', {"src":"cats.MOV"}).open();
+```

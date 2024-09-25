@@ -24,7 +24,7 @@
   const FADE_DELAY = 4000;
   let originalSize: LogicalSize | null = null;
   const minimizedWindowSize = new LogicalSize(80, 200);
-  const regularWindowSize = new LogicalSize(850, 350);
+  const regularWindowSize = new LogicalSize(850, 650);
 
   let scenes: any[] = [];
 
@@ -71,22 +71,15 @@
       console.log("minimized", await appWindow.innerSize());
     } else if (!faded) {
       // Restore the original size when unfading
-      if (originalSize) {
-        await appWindow.setSize(originalSize);
-        console.log("restored original size", await appWindow.innerSize());
-      } else {
+      // if (originalSize) {
+      //   await appWindow.setSize(originalSize);
+      //   console.log("restored original size", await appWindow.innerSize());
+      // } else {
         await appWindow.setSize(regularWindowSize);
         console.log("restored default size", await appWindow.innerSize());
       }
-    }
-
     // Short delay to ensure the size change has taken effect
     await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // const currentWindow = WebviewWindow.getByLabel("main");
-    // if (currentWindow) {
-    //   await currentWindow.setFocus();
-    // }
   }
 
   // Add this function to handle menu events

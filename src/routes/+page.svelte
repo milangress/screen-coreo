@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { windowManager } from "$lib/WindowManager";
-  import { sceneManager } from "$lib/SceneManager";
+  import { windowManager } from "$lib/managers/WindowManager";
+  import { sceneManager } from "$lib/managers/SceneManager";
   import { registerScenes, runInitialScene } from "$lib/scenes";
   import {
     currentScene,

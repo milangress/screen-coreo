@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SerializedWindow } from '$lib/types';
+  import type { SerializedWindow } from '$lib/utils/types';
   import { onMount } from 'svelte';
 
   export let window: SerializedWindow;

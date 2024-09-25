@@ -1,6 +1,6 @@
-import { windowManager } from './WindowManager';
-import { sceneManager } from './SceneManager';
-import { MyWindow } from './MyWindow';
+import { windowManager } from './managers/WindowManager';
+import { sceneManager } from './managers/SceneManager';
+import { MyWindow } from './media/MyWindow';
 
 let scenesRegistered = false;
 

@@ -1,4 +1,4 @@
-import { getAssetUrl } from '$lib/utils';
+import { getAssetUrl } from '$lib/utils/utils';
 import { emit, listen } from '@tauri-apps/api/event';
 import { v4 as uuidv4 } from 'uuid';
 

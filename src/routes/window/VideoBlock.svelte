@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getAssetUrl } from '$lib/utils';
+    import { getAssetUrl } from '$lib/utils/utils';
     import { onMount, onDestroy } from 'svelte';
     import { emit, listen } from '@tauri-apps/api/event';
     import { v4 as uuidv4 } from 'uuid';

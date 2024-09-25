@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { MyWindow } from '$lib/MyWindow';
-    import { windowManager } from '$lib/WindowManager';
-    import { sceneManager } from '$lib/SceneManager';
-    import MyAudio from '$lib/MyAudio';
+    import { MyWindow } from '$lib/media/MyWindow';
+    import { windowManager } from '$lib/managers/WindowManager';
+    import { sceneManager } from '$lib/managers/SceneManager';
+    import MyAudio from '$lib/meda/MyAudio';
     import { emit } from '@tauri-apps/api/event';
     import { appWindow } from '@tauri-apps/api/window';
 

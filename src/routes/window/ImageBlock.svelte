@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getAssetUrl } from '$lib/utils';
+    import { getAssetUrl } from '$lib/utils/utils';
 
     export let src: string;
     let assetSrc: string;

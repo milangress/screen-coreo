@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { sceneManager } from '$lib/SceneManager';
+  import { sceneManager } from '$lib/managers/SceneManager';
   import { registerScenes } from '$lib/scenes';
-  import { MyWindow } from '$lib/MyWindow';
+  import { MyWindow } from '$lib/media/MyWindow';
   import AbstractWindow from './AbstractWindow.svelte';
-  import type { SerializedScene } from '$lib/types';
+  import type { SerializedScene } from '$lib/utils/types';
   import { createHighlighter } from 'shiki';
   
   let scenes: SerializedScene[] = [];

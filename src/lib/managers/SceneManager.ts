@@ -1,7 +1,7 @@
 import { windowManager } from './WindowManager';
 import { KeyEventManager } from './KeyEventManager';
-import { currentScene } from './stores';
-import type { SerializedScene, SerializedWindow } from './types';
+import { currentScene } from '../stores';
+import type { SerializedScene, SerializedWindow } from '../utils/types';
 
 type SceneFunction = () => void;
 

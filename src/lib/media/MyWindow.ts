@@ -1,242 +1,109 @@
-import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/window';
-import { windowManager } from '../managers/WindowManager';
-import { sceneManager } from '../managers/SceneManager';
-import { currentMonitor } from '@tauri-apps/api/window';
-import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/window';
-import { KeyEventManager } from '../managers/KeyEventManager';
+import { WebviewWindow } from '@tauri-apps/api/window';
+import type { WindowManager } from '../managers/WindowManager';
+import type { SceneManager } from '../managers/SceneManager';
+import type { KeyEventManager } from '../managers/KeyEventManager';
 
 export class MyWindow {
-  private label: string;
   private options: any = {};
-  private customOptions: any = {};
-  private contentComponent: string | null = null;
-  private contentProps: any = {};
-  private keyEventManager: KeyEventManager;
-  private filters: Record<string, string> = {};
+  private contentOptions: any = null;
+  private window: WebviewWindow | null = null;
 
-  constructor(label: string) {
-    this.label = label;
-    console.log('MyWindow constructor', label);
-    this.keyEventManager = KeyEventManager.getInstance();
-  }
+  constructor(
+    private label: string,
+    private windowManager: WindowManager,
+    private sceneManager: SceneManager,
+    private keyEventManager: KeyEventManager
+  ) {}
 
-  size(widthPercent: number, heightPercent: number): MyWindow {
-    this.options.widthPercent = widthPercent;
-    this.options.heightPercent = heightPercent;
+  size(width: number, height: number): MyWindow {
+    this.options.width = width;
+    this.options.height = height;
     return this;
   }
 
-  position(xPercent: number, yPercent: number): MyWindow {
-    this.options.xPercent = xPercent;
-    this.options.yPercent = yPercent;
+  position(x: number, y: number): MyWindow {
+    this.options.x = x;
+    this.options.y = y;
     return this;
   }
 
-  content(component: string, props: any = {}): MyWindow {
-    this.contentComponent = component;
-    this.contentProps = props;
-    return this;
-  }
-
-  async listen(event: string, callback: () => void): Promise<MyWindow> {
-    // let window = windowManager.getWindow(this.label);
-    // if (window) {
-    //   await window.listen(event, callback);
-    // } else {
-    //   console.error(`Window "${this.label}" not found`);
-    // }
-    await this.getOrCreateWindow();
+  content(component: string, props: Record<string, any> = {}): MyWindow {
+    this.contentOptions = { component, props };
     return this;
   }
 
   async open(): Promise<MyWindow> {
-    await this.getOrCreateWindow();
+    this.window = await this.windowManager.createWindow(this.label, this.options);
+    if (this.contentOptions) {
+      await this.window.emit('set-content', this.contentOptions);
+    }
     return this;
   }
 
-  on(event: string, callback: (e: any) => void): MyWindow {
+  async animate(options: {
+    from?: { size?: [number, number]; position?: [number, number] };
+    to?: { size?: [number, number]; position?: [number, number] };
+    duration: number;
+    steps: number;
+  }): Promise<MyWindow> {
+    const window = this.windowManager.getWindow(this.label);
+    if (window) {
+      const { from, to, duration, steps } = options;
+      const stepDuration = duration / steps;
+
+      for (let i = 0; i <= steps; i++) {
+        const progress = i / steps;
+
+        if (from && to) {
+          if (from.size && to.size) {
+            const width = Math.round(from.size[0] + (to.size[0] - from.size[0]) * progress);
+            const height = Math.round(from.size[1] + (to.size[1] - from.size[1]) * progress);
+            await this.windowManager.setWindowSize(this.label, { width, height });
+          }
+
+          if (from.position && to.position) {
+            const x = Math.round(from.position[0] + (to.position[0] - from.position[0]) * progress);
+            const y = Math.round(from.position[1] + (to.position[1] - from.position[1]) * progress);
+            await this.windowManager.setWindowPosition(this.label, { x, y });
+          }
+        }
+
+        await new Promise(resolve => setTimeout(resolve, stepDuration));
+      }
+    }
+    return this;
+  }
+
+  on(event: string, callback: (e: { nextScene: (sceneName: string) => Promise<void>; close: () => Promise<void> }) => void): MyWindow {
     if (event.startsWith('KEY_')) {
       const key = event.replace('KEY_', '');
-      this.keyEventManager.addKeyHandler(key, (keyEvent) => {
+      this.keyEventManager.addKeyListener(key, (keyEvent: KeyboardEvent) => {
         callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) });
       });
     } else {
-      // Handle other events (e.g., 'CLICK') as before
+      // Handle other events (e.g., 'CLICK')
       this.listen(event, () => callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) }));
     }
     return this;
   }
 
-  private async nextScene(sceneName: string) {
-    await sceneManager.runScene(sceneName);
+  private async nextScene(sceneName: string): Promise<void> {
+    await this.sceneManager.activateScene(sceneName);
   }
 
-  private async close() {
-    const window = windowManager.getWindow(this.label);
+  private async close(): Promise<void> {
+    const window = this.windowManager.getWindow(this.label);
     if (window) {
       await window.close();
     }
   }
 
-  filter(filters: Record<string, string>): MyWindow {
-    this.filters = { ...this.filters, ...filters };
-    return this;
-  }
-
-  private async getOrCreateWindow(): Promise<WebviewWindow> {
-    let window = windowManager.getWindow(this.label);
-    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
-
-    if (!window) {
-      const options = {
-        ...this.customOptions,
-        title: this.label,
-        //hiddenTitle: true,
-        titleBarStyle: 'Overlay',
-        width: this.calculatePixels(this.options.widthPercent, screenWidth),
-        height: this.calculatePixels(this.options.heightPercent, screenHeight),
-        x: this.calculatePixels(this.options.xPercent, screenWidth),
-        y: this.calculatePixels(this.options.yPercent, screenHeight),
-      };
-      window = await windowManager.createWindow(this.label, options);
-    } else {
-      // Update existing window properties
-      if (this.options.widthPercent && this.options.heightPercent) {
-        const width = this.calculatePixels(this.options.widthPercent, screenWidth);
-        const height = this.calculatePixels(this.options.heightPercent, screenHeight);
-        await window.setSize(new LogicalSize(width, height));
-      }
-      if (this.options.xPercent !== undefined && this.options.yPercent !== undefined) {
-        const x = this.calculatePixels(this.options.xPercent, screenWidth);
-        const y = this.calculatePixels(this.options.yPercent, screenHeight);
-        await window.setPosition(new LogicalPosition(x, y));
-      }
+  private async listen(event: string, callback: () => void): Promise<MyWindow> {
+    const window = await this.windowManager.getOrCreateWindow(this.label, this.options);
+    if (window) {
+      await window.listen(event, callback);
     }
-
-    if (this.contentComponent) {
-      await this.setWindowContent(window);
-    }
-
-    if (Object.keys(this.filters).length > 0) {
-      await this.applyFilters(window);
-    }
-
-    return window;
-  }
-
-  private async applyFilters(window: WebviewWindow): Promise<void> {
-    await window.emit('apply-filters', this.filters);
-  }
-
-  public static async getLogicalScreenSize() {
-    const monitor = await currentMonitor();
-    if (monitor) {
-      const { width, height } = monitor.size;
-      const scaleFactor = monitor.scaleFactor;
-      const logicalSize = new PhysicalSize(width, height).toLogical(scaleFactor);
-      console.log(`Logical screen size: ${logicalSize.width}x${logicalSize.height}`);
-      return logicalSize;
-    } else {
-      console.error('Unable to get current monitor information');
-      return { width: 500, height: 500 };
-    }
-  }
-
-  private calculatePixels(percent: number, total: number): number {
-    return Math.round((percent / 100) * total);
-  }
-
-  private async setWindowContent(window: WebviewWindow, maxRetries = 3): Promise<void> {
-    if (!this.contentComponent) return;
-
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        // Include the window label (which serves as the ID) in the props
-        const propsWithId = { ...this.contentProps, id: this.label };
-        
-        await window.emit('set-content', { 
-          component: this.contentComponent, 
-          props: propsWithId 
-        });
-        
-        await new Promise<void>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            reject(new Error('Timeout waiting for content-set event'));
-          }, 500);
-
-          window.once('content-set', () => {
-            clearTimeout(timeout);
-            resolve();
-          });
-        });
-
-        console.log(`Content set successfully for window: ${this.label}`);
-        return;
-      } catch (error) {
-        console.error(`Attempt ${attempt} failed to set content for window: ${this.label}`, error);
-        if (attempt === maxRetries) {
-          throw new Error(`Failed to set content after ${maxRetries} attempts for window: ${this.label}`);
-        }
-      }
-    }
-  }
-
-  async animate(options: {
-    from?: {
-      position?: [number, number];
-      size?: [number, number];
-    };
-    to?: {
-      position?: [number, number];
-      size?: [number, number];
-    };
-    duration: number;
-    steps: number;
-  }): Promise<MyWindow> {
-    const window = await this.getOrCreateWindow();
-    const { from, to, duration, steps } = options;
-
-    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
-
-    const currentSize = await window.innerSize();
-    const currentPosition = await window.outerPosition();
-
-    const fromPosition = from?.position ? [
-      this.calculatePixels(from.position[0], screenWidth),
-      this.calculatePixels(from.position[1], screenHeight)
-    ] : [currentPosition.x, currentPosition.y];
-
-    const fromSize = from?.size ? [
-      this.calculatePixels(from.size[0], screenWidth),
-      this.calculatePixels(from.size[1], screenHeight)
-    ] : [currentSize.width, currentSize.height];
-
-    const toPosition = to?.position ? [
-      this.calculatePixels(to.position[0], screenWidth),
-      this.calculatePixels(to.position[1], screenHeight)
-    ] : fromPosition;
-
-    const toSize = to?.size ? [
-      this.calculatePixels(to.size[0], screenWidth),
-      this.calculatePixels(to.size[1], screenHeight)
-    ] : fromSize;
-
-    const stepDuration = duration / steps;
-
-    for (let i = 0; i <= steps; i++) {
-      const progress = i / steps;
-
-      const width = Math.round(fromSize[0] + (toSize[0] - fromSize[0]) * progress);
-      const height = Math.round(fromSize[1] + (toSize[1] - fromSize[1]) * progress);
-      await window.setSize(new LogicalSize(width, height));
-
-      const x = Math.round(fromPosition[0] + (toPosition[0] - fromPosition[0]) * progress);
-      const y = Math.round(fromPosition[1] + (toPosition[1] - fromPosition[1]) * progress);
-      await window.setPosition(new LogicalPosition(x, y));
-
-      await new Promise(resolve => setTimeout(resolve, stepDuration));
-    }
-
     return this;
   }
 }
+

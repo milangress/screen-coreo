@@ -1,130 +1,70 @@
-import { windowManager } from './WindowManager';
-import { KeyEventManager } from './KeyEventManager';
-import { currentScene } from '../stores';
-import type { SerializedScene, SerializedWindow } from '../utils/types';
+import type { WindowManager } from './WindowManager';
+import type { ContentManager } from './ContentManager';
+import type { AnimationManager } from './AnimationManager';
+import type { KeyEventManager } from './KeyEventManager';
+import type { WebviewWindow } from '@tauri-apps/api/window';
 
-type SceneFunction = () => void;
-
-class SceneManager {
-  private static instance: SceneManager;
-  private scenes: Map<string, SceneFunction> = new Map();
-  private keyEventManager: KeyEventManager;
-  private serializedScenes: Map<string, SerializedScene> = new Map();
-
-  private constructor() {
-    this.keyEventManager = KeyEventManager.getInstance();
-  }
-
-  public static getInstance(): SceneManager {
-    if (!SceneManager.instance) {
-      SceneManager.instance = new SceneManager();
-    }
-    return SceneManager.instance;
-  }
-
-  registerScene(name: string, sceneFunc: SceneFunction): void {
-    this.scenes.set(name, sceneFunc);
-    
-    // Serialize the scene
-    const serializedWindows: SerializedWindow[] = [];
-    const originalCreateWindow = windowManager.createWindow;
-    
-    windowManager.createWindow = async (label: string, options: any) => {
-      serializedWindows.push({
-        label,
-        size: { width: options.width, height: options.height },
-        position: { x: options.x, y: options.y },
-        content: {
-          component: options.content?.component || '',
-          props: options.content?.props || {}
-        }
-      });
-      return originalCreateWindow(label, options);
-    };
-
-    sceneFunc();
-    
-    windowManager.createWindow = originalCreateWindow;
-
-    this.serializedScenes.set(name, {
-      name,
-      windows: serializedWindows,
-      code: sceneFunc.toString()
-    });
-  }
-
-  runScene(name: string): void {
-    const scene = this.scenes.get(name);
-    if (scene) {
-      this.setCurrentScene(name);
-      scene();
-    } else {
-      console.error(`Scene "${name}" not found`);
-    }
-  }
-
-  nextScene(currentSceneName: string): void {
-    const sceneNames = Array.from(this.scenes.keys());
-    const currentIndex = sceneNames.indexOf(currentSceneName);
-    if (currentIndex !== -1 && currentIndex < sceneNames.length - 1) {
-      this.runScene(sceneNames[currentIndex + 1]);
-    } else {
-      console.log('Presentation ended');
-    }
-  }
-
-  previousScene(currentSceneName: string): void {
-    const sceneNames = Array.from(this.scenes.keys());
-    const currentIndex = sceneNames.indexOf(currentSceneName);
-    if (currentIndex > 0) {
-      this.runScene(sceneNames[currentIndex - 1]);
-    } else {
-      console.log('Already at the first scene');
-    }
-  }
-
-  on(event: string, callback: (e: any) => void) {
-    if (event.startsWith('KEY_')) {
-      const key = event.replace('KEY_', '');
-      this.keyEventManager.addKeyHandler(key, (keyEvent) => {
-        if (key === 'ARROWRIGHT') {
-          const currentSceneName = this.getCurrentScene();
-          if (currentSceneName) {
-            this.nextScene(currentSceneName);
-          }
-        } else if (key === 'ARROWLEFT') {
-          const currentSceneName = this.getCurrentScene();
-          if (currentSceneName) {
-            this.previousScene(currentSceneName);
-          }
-        } else {
-          callback({ nextScene: this.runScene.bind(this) });
-        }
-      });
-    }
-    return this;
-  }
-
-  getAllScenes(): string[] {
-    return Array.from(this.scenes.keys());
-  }
-
-  getSerializedScenes(): SerializedScene[] {
-    return Array.from(this.serializedScenes.values());
-  }
-
-  // New methods for handling current scene
-  setCurrentScene(scene: string): void {
-    currentScene.set(scene);
-  }
-
-  getCurrentScene(): string | null {
-    let scene: string | null = null;
-    currentScene.subscribe(value => {
-      scene = value;
-    })();
-    return scene;
-  }
+interface SceneConfig {
+  id: string;
+  setup: () => Promise<void>;
 }
 
-export const sceneManager = SceneManager.getInstance();
+export class SceneManager {
+  private activeScene: string | null = null;
+  private scenes: Map<string, SceneConfig> = new Map();
+  private sceneOrder: string[] = [];
+
+  constructor(
+    private windowManager: WindowManager,
+    private contentManager: ContentManager,
+    private animationManager: AnimationManager,
+    private keyEventManager: KeyEventManager
+  ) {}
+
+  registerScene(id: string, setup: () => Promise<void>): void {
+    if (this.scenes.has(id)) {
+      throw new Error(`Scene with id ${id} already exists`);
+    }
+    this.scenes.set(id, { id, setup });
+    this.sceneOrder.push(id);
+  }
+
+  async activateScene(id: string): Promise<void> {
+    const scene = this.scenes.get(id);
+    if (!scene) {
+      throw new Error(`Scene with id ${id} not found`);
+    }
+
+    // Cleanup previous scene windows if they exist
+    if (this.activeScene) {
+      const windows = await this.windowManager.getAllWindows();
+      for (const window of windows) {
+        await window.hide();
+      }
+    }
+
+    // Setup and activate new scene
+    await scene.setup();
+    this.activeScene = id;
+  }
+
+  getActiveScene(): string | null {
+    return this.activeScene;
+  }
+
+  async nextScene(currentScene: string): Promise<void> {
+    const currentIndex = this.sceneOrder.indexOf(currentScene);
+    if (currentIndex === -1) return;
+    
+    const nextIndex = (currentIndex + 1) % this.sceneOrder.length;
+    await this.activateScene(this.sceneOrder[nextIndex]);
+  }
+
+  async previousScene(currentScene: string): Promise<void> {
+    const currentIndex = this.sceneOrder.indexOf(currentScene);
+    if (currentIndex === -1) return;
+    
+    const previousIndex = (currentIndex - 1 + this.sceneOrder.length) % this.sceneOrder.length;
+    await this.activateScene(this.sceneOrder[previousIndex]);
+  }
+}

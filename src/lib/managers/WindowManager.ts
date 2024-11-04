@@ -1,7 +1,6 @@
-import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
-import { currentWindows } from '$lib/stores';
-import { get } from 'svelte/store';
+import { WebviewWindow, LogicalSize, LogicalPosition, getCurrent, getAll } from '@tauri-apps/api/window';
 import { emit } from '@tauri-apps/api/event';
+import { currentWindows } from '$lib/stores';
 
 interface WindowInfo {
   window: WebviewWindow;
@@ -9,7 +8,7 @@ interface WindowInfo {
   createdAt: number;
 }
 
-class WindowManager {
+export class WindowManager {
   private windows: Map<string, WindowInfo> = new Map();
   private defaultZIndex = 10;
 
@@ -37,7 +36,7 @@ class WindowManager {
     currentWindows.set(windows);
   }
 
-  createWindow = async (label: string, options: any): Promise<WebviewWindow> => {
+  async createWindow(label: string, options: any): Promise<WebviewWindow> {
     console.log(`Creating window: ${label}`);
     const window = new WebviewWindow(label, {
       ...options,
@@ -53,9 +52,6 @@ class WindowManager {
       });
       this.updateCurrentWindows();
       emit('window-created', { label });
-    });
-    window.once('tauri://event::window-ready', () => {
-      console.log(`Window 'window-ready' event received: ${label}`);
     });
     window.once('tauri://error', (e) => {
       console.error(`Error creating window: ${label}`, e);
@@ -80,6 +76,24 @@ class WindowManager {
     }
     const windowInfo = this.windows.get(label);
     return windowInfo ? windowInfo.window : null;
+  }
+
+  async setWindowSize(label: string, size: { width: number, height: number }): Promise<void> {
+    const window = this.getWindow(label);
+    if (window) {
+      await window.setSize(new LogicalSize(size.width, size.height));
+    } else {
+      throw new Error(`Window ${label} not found`);
+    }
+  }
+
+  async setWindowPosition(label: string, position: { x: number, y: number }): Promise<void> {
+    const window = this.getWindow(label);
+    if (window) {
+      await window.setPosition(new LogicalPosition(position.x, position.y));
+    } else {
+      throw new Error(`Window ${label} not found`);
+    }
   }
 
   setZIndex = (label: string, zIndex: number): void => {
@@ -141,16 +155,28 @@ class WindowManager {
     }
   }
 
-  closeWindow = (label: string): void => {
+  async closeWindow(label: string): Promise<void> {
     const window = this.getWindow(label);
     if (window) {
-      window.close();
+      await window.close();
       this.windows.delete(label);
       this.updateCurrentWindows();
       emit('window-closed', { label });
     } else {
       console.error(`Closing Window Error: Window ${label} not found`);
     }
+  }
+
+  getAllWindows(): WebviewWindow[] {
+    return Array.from(this.windows.values()).map(info => info.window);
+  }
+
+  async getOrCreateWindow(label: string, options: any): Promise<WebviewWindow> {
+    let window = this.getWindow(label);
+    if (!window) {
+      window = await this.createWindow(label, options);
+    }
+    return window;
   }
 
   closeAllWindows = (): void => {
@@ -177,3 +203,5 @@ class WindowManager {
 }
 
 export const windowManager = new WindowManager();
+
+export type IWindowManager = InstanceType<typeof WindowManager>;

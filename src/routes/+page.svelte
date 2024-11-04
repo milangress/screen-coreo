@@ -178,13 +178,13 @@
       url: "overview",
     });
   }
-  async function openScroller() {
+  async function openScroller(url: string = "scroller") {
     await windowManager.createWindow("main-scroller", {
       title: "Scroller",
       transparent: true,
       width: 1200,
       height: 800,
-      url: "scroller",
+      url: url,
     });
   }
   async function focusScroller() {
@@ -329,7 +329,9 @@
       </ul>
     </div>
     <button on:click={openOverview}>View Overview</button>
-    <button on:click={openScroller}>Open Scroller</button>
+    <button on:click={() => openScroller('scroller')}>Open Scroller</button>
+    <button on:click={() => openScroller('scroller/arachovitika-year2')}>Open Arachovitika Year 2</button>
+    <button on:click={() => openScroller('scroller/arachovitika-salim')}>Open Arachovitika Salim</button>
 
     <div class="audio-controls">
       <h3>Audio Controls:</h3>

@@ -9,7 +9,7 @@
 
   onMount(async () => {
     if (window.content.component) {
-      componentModule = await import(`../routes/window/${window.content.component}.svelte`);
+      componentModule = await import(`$routes/window/${window.content.component}.svelte`);
     }
   });
 </script>

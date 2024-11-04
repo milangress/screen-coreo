@@ -1,6 +1,6 @@
 import { windowManager } from './WindowManager';
 import { sceneManager } from './SceneManager';
-import { MyWindow } from './MyWindow';
+import { MyWindow } from '$lib/Actor/MyWindow';
 
 let scenesRegistered = false;
 

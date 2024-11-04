@@ -9,6 +9,14 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter(),
+    alias: {
+      $: 'src',
+      $routes: 'src/routes',
+      $utils: 'src/utilities',
+      $lib: 'src/lib',
+      $actor: 'src/lib/Actor',
+      $manager: 'src/lib/Manager',
+},
     csp: {
       mode: 'auto',
       directives: {

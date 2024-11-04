@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { sceneManager } from '$lib/SceneManager';
   import { registerScenes } from '$lib/scenes';
-  import { MyWindow } from '$lib/MyWindow';
+  import { MyWindow } from '$lib/Actor/MyWindow';
   import AbstractWindow from './AbstractWindow.svelte';
   import type { SerializedScene } from '$lib/types';
   import { createHighlighter } from 'shiki';

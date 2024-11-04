@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { MyWindow } from '$lib/MyWindow';
+    import { MyWindow } from '$lib/Actor/MyWindow';
     import { windowManager } from '$lib/WindowManager';
     import { sceneManager } from '$lib/SceneManager';
-    import MyAudio from '$lib/MyAudio';
+    import MyAudio from '$lib/Actor/MyAudio';
     import { emit } from '@tauri-apps/api/event';
     import { appWindow } from '@tauri-apps/api/window';
 
@@ -55,8 +55,8 @@
             // Create a function that wraps the code and provides necessary context
             const wrappedCode = `
                 return (async () => {
-                    const MyWindow = this.MyWindow;
-                    const MyAudio = this.MyAudio;
+                    const Flux = this.Flux;
+                    const Wave = this.Wave;
                     const windowManager = this.windowManager;
                     const sceneManager = this.sceneManager;
                     ${code}
@@ -65,8 +65,8 @@
 
             // Create a context object with the necessary imports
             const context = {
-                MyWindow,
-                MyAudio,
+                Flux: MyWindow,
+                Wave: MyAudio,
                 windowManager,
                 sceneManager
             };

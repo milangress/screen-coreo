@@ -1,9 +1,9 @@
 import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/window';
-import { windowManager } from './WindowManager';
-import { sceneManager } from './SceneManager';
+import { windowManager } from '$lib/WindowManager';
+import { sceneManager } from '$lib/SceneManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/window';
-import { KeyEventManager } from './KeyEventManager';
+import { KeyEventManager } from '$lib/KeyEventManager';
 
 export class MyWindow {
   private label: string;
@@ -82,6 +82,7 @@ export class MyWindow {
     this.filters = { ...this.filters, ...filters };
     return this;
   }
+  
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);

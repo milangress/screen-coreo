@@ -6,7 +6,7 @@
     import VideoBlock from './VideoBlock.svelte';
     import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
-    import { MyWindow } from '../../lib/MyWindow';
+    import { MyWindow } from '../../lib/Actor/MyWindow';
     let componentName: string | null = null;
     let componentProps: any = {};
     let key = 0; // Add this line to force re-renders

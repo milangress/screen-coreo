@@ -6,6 +6,7 @@
     import VideoBlock from './VideoBlock.svelte';
     import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
+    import ScenesMdBlock from './ScenesMdBlock.svelte';
     import { MyWindow } from '../../lib/Actor/MyWindow';
     let componentName: string | null = null;
     let componentProps: any = {};
@@ -50,6 +51,8 @@
           return ImageBlock;
         case 'RiverBank':
           return RiverBank;
+        case 'ScenesMdBlock':
+          return ScenesMdBlock;
         default:
           console.error(`Unknown component: ${name}`);
           return null;

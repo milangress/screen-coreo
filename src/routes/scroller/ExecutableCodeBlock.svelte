@@ -3,6 +3,7 @@
     import { MyWindow } from '$lib/Actor/MyWindow';
     import { windowManager } from '$lib/WindowManager';
     import { sceneManager } from '$lib/SceneManager';
+    import Shell from '$lib/Actor/Shell';
     import MyAudio from '$lib/Actor/MyAudio';
     import { emit } from '@tauri-apps/api/event';
     import { appWindow } from '@tauri-apps/api/window';
@@ -57,6 +58,7 @@
                 return (async () => {
                     const Flux = this.Flux;
                     const Wave = this.Wave;
+                    const Shell = this.Shell;
                     const windowManager = this.windowManager;
                     const sceneManager = this.sceneManager;
                     ${code}
@@ -67,6 +69,7 @@
             const context = {
                 Flux: MyWindow,
                 Wave: MyAudio,
+                Shell: Shell,
                 windowManager,
                 sceneManager
             };

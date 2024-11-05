@@ -29,8 +29,9 @@ And because we like these repetions and echos and echolalias in my corner of rea
 
 The tech im working with here is also a repetition but also quite different. 
 
-
-
+```js
+await new Flux('ScenesMdBlock').size(80, 80).position(20, 10).content('ScenesMdBlock').open();
+```
 
 At its core is this scrip im reading from. Interwoven with pieces of code that are executed when they appear on screen. Not readable but its still there.
 

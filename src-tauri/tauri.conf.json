@@ -25,7 +25,34 @@
       },
       "shell": {
         "all": true,
-        "open": true
+        "execute": true,
+        "scope": [
+          {
+            "name": "ls-command",
+            "cmd": "ls",
+            "args": true
+          },
+          {
+            "name": "dir-command",
+            "cmd": "dir",
+            "args": true
+          },
+          {
+            "name": "open-command",
+            "cmd": "open",
+            "args": true
+          },
+          {
+            "name": "start-command",
+            "cmd": "start",
+            "args": true
+          },
+          {
+            "name": "xdg-command",
+            "cmd": "xdg-open",
+            "args": true
+          }
+        ]
       },
       "window": {
         "all": true,

@@ -47,7 +47,9 @@
 
   function autoScroll() {
     if (scrollerElement && !isPaused) {
-      console.log("Auto-scrolling...", scrollerElement.scrollTop, scrollSpeed);
+      if (scrollSpeed !== 0) {
+         console.log("Auto-scrolling...", scrollerElement.scrollTop, scrollSpeed);
+      }
       scrollerElement.scrollTop += scrollSpeed;
     }
     requestAnimationFrame(autoScroll);

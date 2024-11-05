@@ -3,6 +3,8 @@ soo... im Milan
 
 # Hi, I am an artist
 
+(The joke lies in in what I say vs what you hear)
+
 🟒🟒
 
 This work in many ways evolved from from the work I performed at Salim's class last year.
@@ -12,10 +14,10 @@ await new Flux('salim1').size(50, 50).position(0, 50)
         .video('wrong-side-seg1.mp4').volume(0.2).open();
 ```
 
-Using a series of browser popups to talk about what im up to.
+Using a series of browser popups to talk about what was up to.
 It was right after Christmas and full of sad girl vibes. This one maybe not.
 
-I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectivly passing time.
+I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectively passing time. And also a cultural practice that demarks borders.
 
 
 ```js
@@ -23,9 +25,14 @@ await new Flux('salim1').size(70, 70).position(20, 10)
         .video('wrong-side-seg2.mp4').volume(0.2).open();
 ```
 
-And because we like these repetions and echos and echolalias I'll like to share this with you again.
+And because we like these repetions and echos and echolalias in my corner of reality. I'll like to share this with you again.
 
-The tech im working with here is also a repetition but also quite different. At its core is this scrip im reading from. Interwoven with pieces of code that are executed when they appear on screen. Not readable but its still there.
+The tech im working with here is also a repetition but also quite different. 
+
+
+
+
+At its core is this scrip im reading from. Interwoven with pieces of code that are executed when they appear on screen. Not readable but its still there.
 
 ```js
 await Wave('intro').load('/panpan1.mp3')
@@ -94,7 +101,7 @@ Painfully aware, I'm not at home while also being at home.
 new Flux('sofa').size(66, 74).position(21, 22).image('Sofa.jpeg').open();
 ```
 
-But not today. Today I'm thinking about: how the enlightenment reconfigured the body as mechanics as a machine…\
+But not today. Today I'm thinking about: how the enlightenment reconfigured the body as mechanics… as a machine…\
 as a matter of functioning.\
 Even today, if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
 

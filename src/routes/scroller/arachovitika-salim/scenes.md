@@ -5,7 +5,27 @@ soo... im Milan
 
 🟒🟒
 
-I gonna touch on some heavy stuff: genocide, pathology and at times it might also get loud. Feel free to take a break if you need to.
+This work in many ways evolved from from the work I performed at Salim's class last year.
+
+```js
+await new Flux('salim1').size(50, 50).position(0, 50)
+        .video('wrong-side-seg1.mp4').volume(0.2).open();
+```
+
+Using a series of browser popups to talk about what im up to.
+It was right after Christmas and full of sad girl vibes. This one maybe not.
+
+I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectivly passing time.
+
+
+```js
+await new Flux('salim1').size(70, 70).position(20, 10)
+        .video('wrong-side-seg2.mp4').volume(0.2).open();
+```
+
+And because we like these repetions and echos and echolalias I'll like to share this with you again.
+
+The tech im working with here is also a repetition but also quite different. At its core is this scrip im reading from. Interwoven with pieces of code that are executed when they appear on screen. Not readable but its still there.
 
 ```js
 await Wave('intro').load('/panpan1.mp3')
@@ -16,7 +36,7 @@ This presentation is a sort of elopement — a 🟀 wandering 🟀
 
 ```js
 await new Flux('start').size(50, 50).position(0, 50)
-        .content('VideoBlock', { src: 'test.MOV', volume: 0.2 }).open();
+        .video('test.MOV').volume(0.2).open();
 ```
 
 Wandering 🟔 like when you can't fall asleep and get out of bed at three.
@@ -70,19 +90,17 @@ But somehow I forget it every time… until I get overwhelmed by the stuff I'm w
 
 Painfully aware, I'm not at home while also being at home.
 
-Not today, though! Today I'm sitting here.
-
 ```js
 new Flux('sofa').size(66, 74).position(21, 22).image('Sofa.jpeg').open();
 ```
 
-Thinking about: how the enlightenment reconfigured the body as mechanics…\
+But not today. Today I'm thinking about: how the enlightenment reconfigured the body as mechanics as a machine…\
 as a matter of functioning.\
-Like if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
+Even today, if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
 
 So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health. 
 
-Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it lead me to Francis Galton, a cousin of Darwin (explains a lot) known for being the founder of many science innovations, eugenics and modern psychology.
+Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it lead me to Francis Galton, a cousin of Darwin (somehow not a surprise) known for being the founder of many science innovations, modern psychology and eugenics.
 
 ```js
 await Wave('intro').setVolume(0.2)
@@ -122,7 +140,7 @@ and the Wind.\
 new Flux('wind').size(38, 69).position(55, 16).video('wind.MOV').volume(0.2).open();
 ```
 
-The Erosion is inescapably. I watch it every year. 
+The Erosion here is inescapably. I watch its curse every year. 
 
 ```js
 new Flux('erosion').size(38, 68).position(6, 15).video('erosion.MOV').volume(0.2).open();
@@ -130,7 +148,7 @@ new Flux('erosion').size(38, 68).position(6, 15).video('erosion.MOV').volume(0.2
 
 But somehow it fills me with a strange peace to know that everything I do here will one day be gone.
 
-It hasn't rained since Easter. 
+You know, it hasn't rained since Easter. 
 
 ```js
 Wave('intro').stop()
@@ -141,7 +159,7 @@ I have never seen it that dry. The Fig tree I planted two years ago has no leave
 ```js
 new Flux('figtree').size(66, 74).position(21, 22).video('figtree.MOV').open();
 ```
-The Sun burns, the Salt eats. If I don't give the gate a protective coat every year, it rusts away… No, it still rusts.
+The Sun burns, the Salt eats. 
 
 ```js
 new Flux('sunSign').size(30, 79).position(0, 20).video('sunSign.MOV').open();
@@ -166,7 +184,9 @@ new Flux('milan2').size(54, 88).position(44, 12).image('milan2.jpeg').open();
 new Flux('milan3').size(46, 79).position(0, 21).image('milan3.jpeg').open();
 ```
 
-At that age, I would get compliments on the bus… they called me a pretty girl. That was Nice. 
+At that age, I would get compliments on the bus… they called me a pretty girl. 
+
+That was Nice. 
 
 It took me a few years to internalize the shame and understand that being called a girl should be understood as a gave insult.
 
@@ -199,15 +219,18 @@ there are two of us,\
 there are two, \
 there are three of us,\
 there are a thousand and thirteen of us.\
-Or as Shrine would say: In Amsterdam you don't have to give notice if your protest is three people or fewer.
+Or as Shrine would say: In Amsterdam you don't have to give notice if your protest is three people or less.
 
 
-Anyway, I learned a new story this summer.
-You know, after the revolution there was a massive party at Panachaikos Gymnastikos a stadium in Patra. Everybody was so excited.\
+Anyway, my family shared a new story this summer.
+You know, after the revolution there was this massive party. Everybody was so excited.\
 But my grandfather.\
 Dhimos…\
 It was too loud for him…\
 And too many people…\
+So he left…
+
+I'm not sure if you can comprehend how alien and strange that was in Greek society.
 
 ```js
 new Flux('papu').close()
@@ -216,27 +239,21 @@ new Flux('papu').close()
 Wave('ImasteDio').setVolume(0.4)
 ```
 
-But It left me wondering how our revolution will look… our after party … who joins and who goes home. Who can access and who is excluded. 
+And It left me wondering how our revolution will look… our after party … who joins and who goes home. Who can access and who is excluded. 
 
-If you want to join… we are working on the revolution right now. 
+Jet again working on the revolution liked right now. 
 
 ```js
 new Flux('quak').size(38, 84).position(59, 6).image('quak.jpeg').open();
 ```
 
-quak
+My Love, don't get scared by the term revolution: 
+We dream of a different one. A accessible one. You know the people we fight with and for… they have to survive.
 
-We met last year as a neuroqueer group through the radical Sunday school at Joe's Garage here in Amsterdam. And while I was away, we grew from 5 to 25 people.
-
-Also, don't get scared by the revolution: 
-our revolution has to be accessible.
-
-Building community… 
+You know… Building community… 
 Sharing our pain — and our joy with each other — IS the revolution.
 
-In the same note, the Sandberg queer group ran out of funding. But we are still continuing. join.
-
-OK, now I need to show you something:
+Oh, before I forget: I wanted to show you something:
 
 It's an older add from Autism Speaks. The biggest autism advocacy group in the world.
 
@@ -251,32 +268,15 @@ new Flux('i_am_autism').size(66, 74).position(21, 22).video('i_am_autism.mp4').o
 ```
 --- 
 
-I am autism.
-I’m visible in your children, but if I can help it, I am invisible to you until it’s too late.
-I know where you live.
-And guess what? I live there too.
-I hover around all of you.
-I know no color barrier, no religion, no morality, no currency.
-I speak your language fluently.
-And with every voice I take away, I acquire yet another language.
-I work very quickly.
-I work faster than pediatric aids, cancer, and diabetes combined
-And if you’re happily married, I will make sure that your marriage fails.
-Your money will fall into my hands, and I will bankrupt you for my own self-gain.
-I don’t sleep, so I make sure you don’t either.
-I will make it virtually impossible for your family to easily attend a temple, birthday party, or public park without a struggle, without embarrassment, without pain.
-You have no cure for me.
-Your scientists don’t have the resources, and I relish their desperation. Your neighbors are happier to pretend that I don’t exist—of course, until it’s their child.
-I am autism. I have no interest in right or wrong. I derive great pleasure out of your loneliness.
-I will fight to take away your hope. I will plot to rob you of your children and your dreams. I will make sure that every day you wake up you will cry, wondering who will take care of my child after I die?
-And the truth is, I am still winning, and you are scared. And you should be.
-I am autism. You ignored me. That was a mistake.
 
----
 
-We stop here because now they start talking about the eradication of autism. And I Don't like that part.
+-
 
-Oh, yeah, btw. 1st years all of what I'm talking about is autism and neurodivergence. Don't get tricked by my winding metaphors and stories, I'm just wrapping the trauma dumping in more narration.
+-
+
+-
+
+I stop here because now they start talking about the eradication of autism. And I Don't like that part.
 
 If you hear eradication of autism, and your alarm bells don't go off, → let's imagen if black lives matter fought for the eradication of black people. Fucked Up. No
 
@@ -307,7 +307,7 @@ Oh, daddy genocide
 
 Oh, daddy pathology
 
-You know, the German military treats it to this day as a normal fight against communist partisans and the burning school was just an accident… My great grandpa was, in fact, a communist partisan, but he was hiding in another village at the time.
+You know, the German military treats it to this day as a normal fight against communist partisans.
 
 I know… I know… it's a family thing now. And men rather die in a revolution than go to therapy. In a way, it's even worse when your emotionally distant dad has a reason and a good excuse, you know?
 
@@ -320,7 +320,9 @@ Herr Doktor, Herr Doktor, bitte!
 new Flux('sofa').size(80, 80).position(10, 10).image('Sofa.jpeg').open();
 ```
 
-I'm not sure any more? On with side of the Empire am I standing? I think they called my grandfather a terrorist.
+I'm not sure any more? On witch side of the Empire am I standing? I think they called my grandfather a terrorist.
+
+—
 
 The Empire is expanding.\
 And you may not simply walk away from Omelas.
@@ -353,7 +355,7 @@ await new Wave('trashcollector').load('/trashcollector1.m4a')
 new Wave('trashcollector').play().setVolume(0.2)
 ```
 
-So I'm becoming autistic.
+So currently I'm becoming autistic.
 
 That's from my current Thesis working title:
 
@@ -367,7 +369,7 @@ not homecoming
 
 not overcoming
 
-I know there is tension. Even today, I was almost sketching a genealogy (in the literal sense) of (my) autism. And yes, I don't have autism.
+I know there is tension. Even today, I was almost sketching a genealogy (also in the literal sense) of autism of my autism. But jet, I don't have autism.
 
 
 (now that would have been a funny twist, no?)
@@ -405,7 +407,7 @@ As it slowly eats away and dismantles the master's house.
 
 \
 
-
+love
 Milan <3
 
 PS: What comes after Brat summer? Brat Autism!

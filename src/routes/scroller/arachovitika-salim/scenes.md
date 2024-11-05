@@ -1,23 +1,22 @@
 # ℳ
-soo... im Milan
 
 # Hi, I am an artist
 
-(The joke lies in in what I say vs what you hear)
+(The joke lies in what I say vs what you see)
 
 🟒🟒
 
-This work in many ways evolved from from the work I performed at Salim's class last year.
+This work in many ways evolved from the work I performed at Salim's class last year.
 
 ```js
 await new Flux('salim1').size(50, 50).position(0, 50)
         .video('wrong-side-seg1.mp4').volume(0.2).open();
 ```
 
-Using a series of browser popups to talk about what was up to.
-It was right after Christmas and full of sad girl vibes. This one maybe not.
+Using a series of browser popups to talk about what I was up to.
+It was right after Christmas and full of melancholic sad girl vibes. This one, maybe not.
 
-I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectively passing time. And also a cultural practice that demarks borders.
+I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectively passing time. And also a cultural practice that demarcate borders.
 
 
 ```js
@@ -25,15 +24,15 @@ await new Flux('salim1').size(70, 70).position(20, 10)
         .video('wrong-side-seg2.mp4').volume(0.2).open();
 ```
 
-And because we like these repetions and echos and echolalias in my corner of reality. I'll like to share this with you again.
+And because we like these repetitions and echoes and echolalias in my corner of reality. I'll like to share this with you again.
 
-The tech im working with here is also a repetition but also quite different. 
+The tech I’m working with here is also a repetition but also quite different. 
 
 ```js
 await new Flux('ScenesMdBlock').size(80, 80).position(20, 10).content('ScenesMdBlock').open();
 ```
 
-At its core is this scrip im reading from. Interwoven with pieces of code that are executed when they appear on screen. Not readable but its still there.
+At its core is this scrip I'm reading from. Interwoven with pieces of code that are executed when they appear on the screen. Not fully readable but It's still there.
 
 ```js
 await Wave('intro').load('/panpan1.mp3')
@@ -58,12 +57,11 @@ await new Flux('background')
         .open()
 ```
 
-Wandering 🟔 like when I was in second grade and I snuck out earlier to hide at the Jewish graveyard just so a very specific shitty 10th grader couldn't find me.
-
 But also 🟔 wandering … like when you are on a first date and it just a bit too awkward or intense for a kiss, but it would also be sad to leave, so you keep walking side by side.
 
+🟔
 
-This bus is on The road from Patra to Athina - – —
+This bus is on the road from Patra to Athina - – —
 
 But in 10 minutes we will only make it to Arachovitika.
 
@@ -102,13 +100,14 @@ Painfully aware, I'm not at home while also being at home.
 new Flux('sofa').size(66, 74).position(21, 22).image('Sofa.jpeg').open();
 ```
 
-But not today. Today I'm thinking about: how the enlightenment reconfigured the body as mechanics… as a machine…\
-as a matter of functioning.\
+Although not today. Today, I'm lying here… thinking:\
+how the enlightenment reconfigured the body as mechanics… as a machine…\
+As a matter of functioning.\
 Even today, if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
 
 So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health. 
 
-Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it lead me to Francis Galton, a cousin of Darwin (somehow not a surprise) known for being the founder of many science innovations, modern psychology and eugenics.
+Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it leads me to Francis Galton, a cousin of Darwin (somehow not a surprise) known for being the founder of many science innovations, modern psychology and eugenics.
 
 ```js
 await Wave('intro').setVolume(0.2)
@@ -212,7 +211,7 @@ new Flux('papu').size(30, 84).position(6, 12).image('papu-pasok.png').open();
 
 Just once
 
-He was a partisan during the “revolution” against the military dictatorship of Papadopoulos. 
+He was a partisan during the revolution against the military dictatorship of Papadopoulos. 
 
 ```js
 new Flux('milan2').close()
@@ -227,11 +226,11 @@ there are two of us,\
 there are two, \
 there are three of us,\
 there are a thousand and thirteen of us.\
-Or as Shrine would say: In Amsterdam you don't have to give notice if your protest is three people or less.
+Or as Shrine would say: In Amsterdam you don't have to give notice if your protest is three people or fewer.
 
 
 Anyway, my family shared a new story this summer.
-You know, after the revolution there was this massive party. Everybody was so excited.\
+You know, after the revolution, there was this massive party. Everybody was so excited.\
 But my grandfather.\
 Dhimos…\
 It was too loud for him…\
@@ -256,7 +255,7 @@ new Flux('quak').size(38, 84).position(59, 6).image('quak.jpeg').open();
 ```
 
 My Love, don't get scared by the term revolution: 
-We dream of a different one. A accessible one. You know the people we fight with and for… they have to survive.
+We dream of a different one. An accessible one. You know, the people we fight with and for… they have to survive.
 
 You know… Building community… 
 Sharing our pain — and our joy with each other — IS the revolution.
@@ -273,6 +272,7 @@ I just added some music to make it less scary.
 
 ```js
 new Flux('i_am_autism').size(66, 74).position(21, 22).video('i_am_autism.mp4').open();
+Flux('quak').close()
 ```
 --- 
 
@@ -285,8 +285,7 @@ new Flux('i_am_autism').size(66, 74).position(21, 22).video('i_am_autism.mp4').o
 -
 
 I stop here because now they start talking about the eradication of autism. And I Don't like that part.
-
-If you hear eradication of autism, and your alarm bells don't go off, → let's imagen if black lives matter fought for the eradication of black people. Fucked Up. No
+Eradication of autism… just imagine if black lives matter fought for the eradication of black people. Fucked Up. No
 
 Oh, daddy Pathology
 
@@ -315,9 +314,9 @@ Oh, daddy genocide
 
 Oh, daddy pathology
 
-You know, the German military treats it to this day as a normal fight against communist partisans.
+You know, the German military treats it to this day as a normal fight against communist partisans. And understandably, they have to be fought.
 
-I know… I know… it's a family thing now. And men rather die in a revolution than go to therapy. In a way, it's even worse when your emotionally distant dad has a reason and a good excuse, you know?
+I know… I know… it's also a family thing now. And men rather die in a revolution than go to therapy. In a way, it's even worse when your emotionally distant dad has a reason and a good excuse, you know?
 
 
 
@@ -328,7 +327,7 @@ Herr Doktor, Herr Doktor, bitte!
 new Flux('sofa').size(80, 80).position(10, 10).image('Sofa.jpeg').open();
 ```
 
-I'm not sure any more? On witch side of the Empire am I standing? I think they called my grandfather a terrorist.
+I'm not sure any more? On which side of the Empire am I standing? I think they called my grandfather a terrorist.
 
 —
 
@@ -363,7 +362,7 @@ await new Wave('trashcollector').load('/trashcollector1.m4a')
 new Wave('trashcollector').play().setVolume(0.2)
 ```
 
-So currently I'm becoming autistic.
+So currently I'm trying to become autistic.
 
 That's from my current Thesis working title:
 
@@ -377,28 +376,28 @@ not homecoming
 
 not overcoming
 
-I know there is tension. Even today, I was almost sketching a genealogy (also in the literal sense) of autism of my autism. But jet, I don't have autism.
+I know there is tension. Even **today,** I was almost sketching a genealogy (also in the literal sense) of autism of my autism. But jet, I don't have autism.
 
 
 (now that would have been a funny twist, no?)
 
 
-I don't have autism. I am autistic! It's not a Balenciaga bag I can leave at home because I'm scared your grabby dirty fingers mean I can't sell it on Grailed afterwards. 
-Your fingers gonna touch my autism and I guess we both have to live with that.
+I don't have autism. I am autistic! It's not a Balenciaga bag I can leave at home because I'm scared of your grubby dirty fingers, and that I can't sell it on Grailed afterwards. (the bag)
+Your fingers going to touch my autism and I guess we both have to live with that.
 
 ```js
 new Flux('thesisTitel').close()
 new Flux('strongWaves').size(100, 100).position(0, 0).video('strongWaves1.MOV').volume(0.3).open();
 ```
 
-But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
+I am! But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
 
-So no you are not born this way.
+So no, you are not born this way.
 
-My love, you have to understand: this was always just a fantasy of yours.
+My love, you have to understand: this was always just a fantasy of yours. I know It makes reality easier to live in. But you are continuously and ever becoming.
 
 Watch me\
-I will Turn your kids autistic and queer.
+I will turn your kids autistic and queer.
 
 Watch the Sun\
 as it burns down on everything you own

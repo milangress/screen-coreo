@@ -25,7 +25,8 @@ Wandering 🟔 like when you can't fall asleep and get out of bed at three.
 await new Flux('background')
         .size(100, 100)
         .position(0, 0)
-        .content('VideoBlock', { src: 'BusBG.mp4', volume: 0.4 })
+        .video('BusBG.mp4')
+        .volume(0.4)
         .open()
 ```
 
@@ -43,7 +44,7 @@ But in 10 minutes we will only make it to Arachovitika.
 ```js
 new Flux('background').filter({ blur: '10px' }).open()
 new Flux('house').size(50, 50).position(30, 40)
-  .content('ImageBlock', { src: 'house.jpeg' }).open()
+  .image('house.jpeg').open()
 ```
 
 Incidentally, it's here where I wrote this text.
@@ -55,14 +56,14 @@ Arachovitika and I — lots of unresolved trauma…
 
 ```js
 new Flux('arachovitika1').size(50, 50).position(0, 50)
-  .content('ImageBlock', { src: 'arachovitika1.jpeg' }).open()
+  .image('arachovitika1.jpeg').open()
 ```
 
 and nevertheless so enchanting, 
 
 ```js
 new Flux('arachovitika2').size(30, 30).position(70, 10)
-  .content('ImageBlock', { src: 'arachovitika2.jpeg' }).open()
+  .image('arachovitika2.jpeg').open()
 ```
 
 But somehow I forget it every time… until I get overwhelmed by the stuff I'm walking away from.
@@ -72,7 +73,7 @@ Painfully aware, I'm not at home while also being at home.
 Not today, though! Today I'm sitting here.
 
 ```js
-new Flux('sofa').size(66, 74).position(21, 22).content('ImageBlock', {"src":"Sofa.jpeg"}).open();
+new Flux('sofa').size(66, 74).position(21, 22).image('Sofa.jpeg').open();
 ```
 
 Thinking about: how the enlightenment reconfigured the body as mechanics…\
@@ -118,13 +119,13 @@ and the Wind.\
 
 
 ```js
-new Flux('wind').size(38, 69).position(55, 16).content('VideoBlock', {"src":"wind.MOV", volume: 0.2}).open();
+new Flux('wind').size(38, 69).position(55, 16).video('wind.MOV').volume(0.2).open();
 ```
 
 The Erosion is inescapably. I watch it every year. 
 
 ```js
-new Flux('erosion').size(38, 68).position(6, 15).content('VideoBlock', {"src":"erosion.MOV", volume: 0.2}).open();
+new Flux('erosion').size(38, 68).position(6, 15).video('erosion.MOV').volume(0.2).open();
 ```
 
 But somehow it fills me with a strange peace to know that everything I do here will one day be gone.
@@ -133,17 +134,17 @@ It hasn't rained since Easter.
 
 ```js
 Wave('intro').stop()
-new Flux('heat').size(66, 74).position(21, 22).content('VideoBlock', {"src":"heat2.MOV"}).open();
+new Flux('heat').size(66, 74).position(21, 22).video('heat2.MOV').open();
 ```
 I have never seen it that dry. The Fig tree I planted two years ago has no leaves any more. 
 
 ```js
-new Flux('figtree').size(66, 74).position(21, 22).content('VideoBlock', {"src":"figtree.MOV"}).open();
+new Flux('figtree').size(66, 74).position(21, 22).video('figtree.MOV').open();
 ```
 The Sun burns, the Salt eats. If I don't give the gate a protective coat every year, it rusts away… No, it still rusts.
 
 ```js
-new Flux('sunSign').size(30, 79).position(0, 20).content('VideoBlock', {"src":"sunSign.MOV"}).open();
+new Flux('sunSign').size(30, 79).position(0, 20).video('sunSign.MOV').open();
 ```
 And every year, another tree erodes and falls into the ocean.
 
@@ -154,15 +155,15 @@ But look what I found and look how green the garden was… how alive
 ```js
 new Flux('heat').close()
 new Flux('figtree').close()
-new Flux('milan1').size(49, 88).position(51, 4).content('ImageBlock', {"src":"milan1.jpeg"}).open();
+new Flux('milan1').size(49, 88).position(51, 4).image('milan1.jpeg').open();
 ```
 
 Also, yes, yes, I know I had hair in the past… incredible.
 
 ```js
 new Flux('sunSign').close()
-new Flux('milan2').size(54, 88).position(44, 12).content('ImageBlock', {"src":"milan2.jpeg"}).open();
-new Flux('milan3').size(46, 79).position(0, 21).content('ImageBlock', {"src":"milan3.jpeg"}).open();
+new Flux('milan2').size(54, 88).position(44, 12).image('milan2.jpeg').open();
+new Flux('milan3').size(46, 79).position(0, 21).image('milan3.jpeg').open();
 ```
 
 At that age, I would get compliments on the bus… they called me a pretty girl. That was Nice. 
@@ -178,7 +179,7 @@ Wave('ImasteDio').play().setVolume(0.5)
 Also, look what I found: my grandfather was running as a politician.
 
 ```js
-new Flux('papu').size(30, 84).position(6, 12).content('ImageBlock', {"src":"papu-pasok.png"}).open();
+new Flux('papu').size(30, 84).position(6, 12).image('papu-pasok.png').open();
 ```
 
 Just once
@@ -220,7 +221,7 @@ But It left me wondering how our revolution will look… our after party … who
 If you want to join… we are working on the revolution right now. 
 
 ```js
-new Flux('quak').size(38, 84).position(59, 6).content('ImageBlock', {"src":"quak.jpeg","id":"quak"}).open();
+new Flux('quak').size(38, 84).position(59, 6).image('quak.jpeg').open();
 ```
 
 quak
@@ -246,7 +247,7 @@ I just added some music to make it less scary.
 —
 
 ```js
-new Flux('i_am_autism').size(66, 74).position(21, 22).content('VideoBlock', {"src":"i_am_autism.mp4"}).open();
+new Flux('i_am_autism').size(66, 74).position(21, 22).video('i_am_autism.mp4').open();
 ```
 --- 
 
@@ -293,13 +294,13 @@ auslöschung…
 I was back in Kalanos and Kalawrita in the mountains. Where my grandfather grew up.
 
 ```js
-new Flux('kalavrita1').size(80, 80).position(20, 20).content('VideoBlock', {"src":"kalavrita1.MOV"}).open();
+new Flux('kalavrita1').size(80, 80).position(20, 20).video('kalavrita1.MOV').open();
 ```
 
 During the Kawritan holocaust, all men over 13 were rounded up and shot, while the women and children were imprisoned into the school which was burned down together with the whole village. 
 
 ```js
-new Flux('kalavrita2').size(26, 59).position(3, 8).content('ImageBlock', {"src":"kalavrita.jpeg"}).open();
+new Flux('kalavrita2').size(26, 59).position(3, 8).image('kalavrita.jpeg').open();
 ```
 
 Oh, daddy genocide
@@ -316,7 +317,7 @@ Ahhh
 Herr Doktor, Herr Doktor, bitte!
 
 ```js
-new Flux('sofa').size(80, 80).position(10, 10).content('ImageBlock', {"src":"Sofa.jpeg"}).open();
+new Flux('sofa').size(80, 80).position(10, 10).image('Sofa.jpeg').open();
 ```
 
 I'm not sure any more? On with side of the Empire am I standing? I think they called my grandfather a terrorist.
@@ -357,7 +358,7 @@ So I'm becoming autistic.
 That's from my current Thesis working title:
 
 ```js
-new Flux('thesisTitel').size(43, 41).position(54, 5).content('ImageBlock', {"src":"thesisTitel.jpeg"}).open();
+new Flux('thesisTitel').size(43, 41).position(54, 5).image('thesisTitel.jpeg').open();
 ```
 
 becoming autistic
@@ -377,7 +378,7 @@ Your fingers gonna touch my autism and I guess we both have to live with that.
 
 ```js
 new Flux('thesisTitel').close()
-new Flux('strongWaves').size(100, 100).position(0, 0).content('VideoBlock', {"src":"strongWaves1.MOV", volume: 0.3}).open();
+new Flux('strongWaves').size(100, 100).position(0, 0).video('strongWaves1.MOV').volume(0.3).open();
 ```
 
 But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
@@ -393,7 +394,7 @@ Watch the Sun\
 as it burns down on everything you own
 
 ```js
-new Flux('strongWaves').content('VideoBlock', {"src":"strongWaves3.MOV", volume: 0.3}).open();
+new Flux('strongWaves').video('strongWaves3.MOV').volume(0.3).open();
 ```
 
 Watch the See\
@@ -416,5 +417,5 @@ PS: What comes after Brat summer? Brat Autism!
 \
 
 ```js
-new Flux('cats').size(100, 100).position(0, 0).content('VideoBlock', {"src":"cats.MOV"}).open();
+new Flux('cats').size(100, 100).position(0, 0).video('cats.MOV').open();
 ```

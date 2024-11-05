@@ -38,6 +38,23 @@ export class MyWindow {
     return this;
   }
 
+  video(src: string): MyWindow {
+    this.contentComponent = 'VideoBlock';
+    this.contentProps.src = src;
+    return this;
+  }
+
+  image(src: string): MyWindow {
+    this.contentComponent = 'ImageBlock';
+    this.contentProps.src = src;
+    return this;
+  }
+
+  volume(volume: number): MyWindow {
+    this.contentProps.volume = volume;
+    return this;
+  }
+
   async listen(event: string, callback: () => void): Promise<MyWindow> {
     // let window = windowManager.getWindow(this.label);
     // if (window) {
@@ -82,7 +99,7 @@ export class MyWindow {
     this.filters = { ...this.filters, ...filters };
     return this;
   }
-  
+
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);

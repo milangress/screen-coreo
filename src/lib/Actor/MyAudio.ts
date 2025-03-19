@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 export class MyAudio {
   private static instances: { [key: string]: MyAudio } = {};
   private audioContext: AudioContext;
-  private audioBuffer: AudioBuffer | null = null;
-  private source: AudioBufferSourceNode | null = null;
+  private audioElement: HTMLAudioElement | null = null;
+  private source: MediaElementAudioSourceNode | null = null;
   private gainNode: GainNode;
   private url: string | null = null;
   public volume: number = 1;
@@ -53,18 +53,42 @@ export class MyAudio {
   }
 
   async load(url: string): Promise<MyAudio> {
-    // Early escape if already loaded
+    // Early escape if already loaded with same URL
     if (this.isLoaded && this.url === url) {
       console.log(`Audio ${this.id} already loaded`);
       return this;
     }
 
+    // Clean up previous audio element if it exists
+    if (this.source) {
+      this.source.disconnect();
+    }
+    if (this.audioElement) {
+      this.audioElement.remove();
+    }
+
     this.url = url;
     const assetUrl = await getAssetUrl(url);
-    const response = await fetch(assetUrl);
-    const arrayBuffer = await response.arrayBuffer();
-    this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-    this.isLoaded = true;
+
+    // Create new audio element
+    this.audioElement = new Audio();
+    this.audioElement.src = assetUrl;
+
+    // Create new source node and connect it
+    this.source = this.audioContext.createMediaElementSource(this.audioElement);
+    this.source.connect(this.gainNode);
+
+    // Wait for audio to be loaded
+    await new Promise((resolve, reject) => {
+      if (!this.audioElement) return reject('No audio element');
+      
+      this.audioElement.oncanplaythrough = () => {
+        this.isLoaded = true;
+        resolve(true);
+      };
+      this.audioElement.onerror = (e) => reject(e);
+    });
+
     emit('audio-loaded', { id: this.id, url });
     return this;
   }
@@ -76,23 +100,19 @@ export class MyAudio {
     }
     this.lastActionTime = now;
 
-    // Early escape if already playing
     if (this.isPlaying) {
       console.log(`Audio ${this.id} is already playing`);
       return this;
     }
 
-    if (this.audioBuffer) {
-      this.stop();
-      this.source = this.audioContext.createBufferSource();
-      this.source.buffer = this.audioBuffer;
-      this.source.connect(this.gainNode);
-      this.source.start();
+    if (this.audioElement && this.isLoaded) {
+      this.audioElement.play();
       this.isPlaying = true;
       const newEventId = eventId || uuidv4();
       this.lastEmittedEventId = newEventId;
       emit('audio-play', { id: this.id, eventId: newEventId });
-      this.source.onended = () => {
+
+      this.audioElement.onended = () => {
         this.isPlaying = false;
         const stopEventId = uuidv4();
         this.lastEmittedEventId = stopEventId;
@@ -111,9 +131,9 @@ export class MyAudio {
     }
     this.lastActionTime = now;
 
-    if (this.source && this.isPlaying) {
-      this.source.stop();
-      this.source = null;
+    if (this.audioElement && this.isPlaying) {
+      this.audioElement.pause();
+      this.audioElement.currentTime = 0;
       this.isPlaying = false;
       const newEventId = eventId || uuidv4();
       this.lastEmittedEventId = newEventId;

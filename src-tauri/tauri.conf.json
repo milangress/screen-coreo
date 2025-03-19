@@ -15,13 +15,7 @@
       "all": true,
       "protocol": {
         "asset": true,
-        "assetScope": [
-          "$APPCACHE/**",
-          "$RESOURCE/**",
-          "$APPDATA/assets/*",
-          "../static/*",
-          "**"
-        ]
+        "assetScope": ["**"]
       },
       "shell": {
         "all": true,

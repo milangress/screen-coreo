@@ -1,7 +1,7 @@
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run svelte:dev",
+    "beforeBuildCommand": "npm run svelte:build",
     "devPath": "http://localhost:1420",
     "distDir": "../build"
   },

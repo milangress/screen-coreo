@@ -2,19 +2,23 @@
 
 # Hi, I am an artist
 
-(The joke lies in what I say vs what you see)
+(As always, the joke lies in what I say vs what you think)
 
 🟒🟒
 
 This work in many ways evolved from the work I performed at Salim's class last year.
 
 ```js
-await new Flux('salim1').size(50, 50).position(0, 50)
-        .video('wrong-side-seg1.mp4').volume(0.2).open();
+await new Flux('salim1')
+  .size(70, 70)
+  .position(0, 30)
+  .video('wrong-side-seg1.mp4')
+  .volume(0.2)
+  .open();
 ```
 
 Using a series of browser popups to talk about what I was up to.
-It was right after Christmas and full of melancholic sad girl vibes. This one, maybe not.
+It was right after Christmas and full of melancholic sad girl vibes.
 
 I also introduced you to "pasatempos" the Greek word for sunflower seeds. As a practice of stimming… of collectively passing time. And also a cultural practice that demarcate borders.
 
@@ -26,20 +30,27 @@ await new Flux('salim1').size(70, 70).position(20, 10)
 
 And because we like these repetitions and echoes and echolalias in my corner of reality. I'll like to share this with you again.
 
-The tech I’m working with here is also a repetition but also quite different. 
+The tech I’m working with here is also a repetition but also quite different.
 
 ```js
-await new Flux('ScenesMdBlock').size(80, 80).position(20, 10).content('ScenesMdBlock').open();
+await new Flux('ScenesMdBlock')
+  .size(80, 80)
+  .position(20, 10)
+  .content('ScenesMdBlock')
+  .open();
 ```
 
-At its core is this scrip I'm reading from. Interwoven with pieces of code that are executed when they appear on the screen. Not fully readable but It's still there.
+At its core is this script I'm reading from. Interwoven with pieces of code that are executed when they appear on the screen. Not fully readable but It's still there.
+
+🟀
+
 
 ```js
 await Wave('intro').load('/panpan1.mp3')
 await Wave('intro').play().setVolume(0.5)
 ```
 
-This presentation is a sort of elopement — a 🟀 wandering 🟀
+This performance is a sort of elopement — a 🟀 wandering 🟀
 
 ```js
 await new Flux('start').size(50, 50).position(0, 50)
@@ -70,26 +81,26 @@ But in 10 minutes we will only make it to Arachovitika.
 ```js
 new Flux('background').filter({ blur: '10px' }).open()
 new Flux('house').size(50, 50).position(30, 40)
-  .image('house.jpeg').open()
+        .image('house.jpeg').open()
 ```
 
 Incidentally, it's here where I wrote this text.
 
-We have a complicated relationship — 
+We have a complicated relationship —
 
-Arachovitika and I — lots of unresolved trauma… 
+Arachovitika and I — lots of unresolved trauma…
 
 
 ```js
 new Flux('arachovitika1').size(50, 50).position(0, 50)
-  .image('arachovitika1.jpeg').open()
+        .image('arachovitika1.jpeg').open()
 ```
 
-and nevertheless so enchanting, 
+and nevertheless so enchanting,
 
 ```js
 new Flux('arachovitika2').size(30, 30).position(70, 10)
-  .image('arachovitika2.jpeg').open()
+        .image('arachovitika2.jpeg').open()
 ```
 
 But somehow I forget it every time… until I get overwhelmed by the stuff I'm walking away from.
@@ -103,9 +114,9 @@ new Flux('sofa').size(66, 74).position(21, 22).image('Sofa.jpeg').open();
 Although not today. Today, I'm lying here… thinking:\
 how the enlightenment reconfigured the body as mechanics… as a machine…\
 As a matter of functioning.\
-Even today, if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise. 
+Even today, if you ever go to a German design school, and they tell you your design is functioning, that's their highest praise.
 
-So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health. 
+So I looked for traces, pulled string and followed breadcrumbs through the dark Forrest of the pathology paradigm. The concept of “normality” and how it has fundamentally shaped our ideas about ability and health.
 
 Still, I have a hard time imaging a time and thought before it went full hegemonic. And like others, it leads me to Francis Galton, a cousin of Darwin (somehow not a surprise) known for being the founder of many science innovations, modern psychology and eugenics.
 
@@ -144,32 +155,37 @@ and the Wind.\
 
 
 ```js
-new Flux('wind').size(38, 69).position(55, 16).video('wind.MOV').volume(0.2).open();
+new Flux('wind').size(38, 69).position(55, 16)
+       .video('wind.MOV').volume(0.2).open();
 ```
 
-The Erosion here is inescapably. I watch its curse every year. 
+The Erosion here is inescapably. I watch its curse every year.
 
 ```js
-new Flux('erosion').size(38, 68).position(6, 15).video('erosion.MOV').volume(0.2).open();
+new Flux('erosion').size(38, 68).position(6, 15)
+       .video('erosion.MOV').volume(0.2).open();
 ```
 
 But somehow it fills me with a strange peace to know that everything I do here will one day be gone.
 
-You know, it hasn't rained since Easter. 
+You know, it hasn't rained since Easter.
 
 ```js
 Wave('intro').stop()
-new Flux('heat').size(66, 74).position(21, 22).video('heat2.MOV').open();
+new Flux('heat').size(66, 74).position(21, 22)
+       .video('heat2.MOV').open();
 ```
-I have never seen it that dry. The Fig tree I planted two years ago has no leaves any more. 
+I have never seen it that dry. The Fig tree I planted two years ago has no leaves any more.
 
 ```js
-new Flux('figtree').size(66, 74).position(21, 22).video('figtree.MOV').open();
+new Flux('figtree').size(66, 74).position(21, 22)
+       .video('figtree.MOV').open();
 ```
-The Sun burns, the Salt eats. 
+The Sun burns, the Salt eats.
 
 ```js
-new Flux('sunSign').size(30, 79).position(0, 20).video('sunSign.MOV').open();
+new Flux('sunSign').size(30, 79).position(0, 20)
+       .video('sunSign.MOV').open();
 ```
 And every year, another tree erodes and falls into the ocean.
 
@@ -180,20 +196,23 @@ But look what I found and look how green the garden was… how alive
 ```js
 new Flux('heat').close()
 new Flux('figtree').close()
-new Flux('milan1').size(49, 88).position(51, 4).image('milan1.jpeg').open();
+new Flux('milan1').size(49, 88).position(51, 4)
+       .image('milan1.jpeg').open();
 ```
 
 Also, yes, yes, I know I had hair in the past… incredible.
 
 ```js
 new Flux('sunSign').close()
-new Flux('milan2').size(54, 88).position(44, 12).image('milan2.jpeg').open();
-new Flux('milan3').size(46, 79).position(0, 21).image('milan3.jpeg').open();
+new Flux('milan2').size(54, 88).position(44, 12)
+       .image('milan2.jpeg').open();
+new Flux('milan3').size(46, 79).position(0, 21)
+       .image('milan3.jpeg').open();
 ```
 
-At that age, I would get compliments on the bus… they called me a pretty girl. 
+At that age, I would get compliments on the bus… they called me a pretty girl.
 
-That was Nice. 
+That was Nice.
 
 It took me a few years to internalize the shame and understand that being called a girl should be understood as a gave insult.
 
@@ -206,12 +225,13 @@ Wave('ImasteDio').play().setVolume(0.5)
 Also, look what I found: my grandfather was running as a politician.
 
 ```js
-new Flux('papu').size(30, 84).position(6, 12).image('papu-pasok.png').open();
+new Flux('papu').size(30, 84).position(6, 12)
+        .image('papu-pasok.png').open();
 ```
 
 Just once
 
-He was a partisan during the revolution against the military dictatorship of Papadopoulos. 
+He was a partisan during the revolution against the military dictatorship of Papadopoulos.
 
 ```js
 new Flux('milan2').close()
@@ -242,22 +262,23 @@ I'm not sure if you can comprehend how alien and strange that was in Greek socie
 ```js
 new Flux('papu').close()
 ```
+
 ```js
 Wave('ImasteDio').setVolume(0.4)
 ```
 
-And It left me wondering how our revolution will look… our after party … who joins and who goes home. Who can access and who is excluded. 
+And It left me wondering how our revolution will look… our after party … who joins and who goes home. Who can access and who is excluded.
 
-Jet again working on the revolution liked right now. 
+Jet again working on the revolution liked right now.
 
 ```js
 new Flux('quak').size(38, 84).position(59, 6).image('quak.jpeg').open();
 ```
 
-My Love, don't get scared by the term revolution: 
+My Love, don't get scared by the term revolution:
 We dream of a different one. An accessible one. You know, the people we fight with and for… they have to survive.
 
-You know… Building community… 
+You know… Building community…
 Sharing our pain — and our joy with each other — IS the revolution.
 
 Oh, before I forget: I wanted to show you something:
@@ -271,10 +292,11 @@ I just added some music to make it less scary.
 —
 
 ```js
-new Flux('i_am_autism').size(66, 74).position(21, 22).video('i_am_autism.mp4').open();
-Flux('quak').close()
+new Flux('i_am_autism').size(66, 74).position(21, 22)
+      .video('i_am_autism.mp4').open();
+new Flux('quak').close()
 ```
---- 
+---
 
 
 
@@ -301,13 +323,15 @@ auslöschung…
 I was back in Kalanos and Kalawrita in the mountains. Where my grandfather grew up.
 
 ```js
-new Flux('kalavrita1').size(80, 80).position(20, 20).video('kalavrita1.MOV').open();
+new Flux('kalavrita1').size(80, 80).position(20, 20)
+      .video('kalavrita1.MOV').open();
 ```
 
-During the Kawritan holocaust, all men over 13 were rounded up and shot, while the women and children were imprisoned into the school which was burned down together with the whole village. 
+During the Kawritan holocaust, all men over 13 were rounded up and shot, while the women and children were imprisoned into the school which was burned down together with the whole village.
 
 ```js
-new Flux('kalavrita2').size(26, 59).position(3, 8).image('kalavrita.jpeg').open();
+new Flux('kalavrita2').size(26, 59).position(3, 8)
+      .image('kalavrita.jpeg').open();
 ```
 
 Oh, daddy genocide
@@ -367,7 +391,8 @@ So currently I'm trying to become autistic.
 That's from my current Thesis working title:
 
 ```js
-new Flux('thesisTitel').size(43, 41).position(54, 5).image('thesisTitel.jpeg').open();
+new Flux('thesisTitel').size(43, 41).position(54, 5)
+      .image('thesisTitel.jpeg').open();
 ```
 
 becoming autistic
@@ -376,7 +401,7 @@ not homecoming
 
 not overcoming
 
-I know there is tension. Even **today,** I was almost sketching a genealogy (also in the literal sense) of autism of my autism. But jet, I don't have autism.
+I know there is tension. Even today, I was almost sketching a genealogy (also in the literal sense) of autism… of my autism. But jet, I don't have autism.
 
 
 (now that would have been a funny twist, no?)
@@ -387,10 +412,11 @@ Your fingers going to touch my autism and I guess we both have to live with that
 
 ```js
 new Flux('thesisTitel').close()
-new Flux('strongWaves').size(100, 100).position(0, 0).video('strongWaves1.MOV').volume(0.3).open();
+new Flux('strongWaves').size(100, 100).position(0, 0)
+      .video('strongWaves1.MOV').volume(0.3).open();
 ```
 
-I am! But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
+"I am!" But it's very much not an essentialist “born this way” argument. This only ever serves in supporting cic- het- neuronormativety and stabilizing the status quo. And no, being compliant does not mean they will support you. Believe me, I tried.
 
 So no, you are not born this way.
 

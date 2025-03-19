@@ -1,5 +1,5 @@
 <script lang="ts">
-import scenesContent from '../../routes/scroller/arachovitika-salim/scenes.md?raw';
+import scenesContent from '../../../projects/arachovitika/salim.md?raw';
 import { createHighlighter } from 'shiki';
 import { onMount } from 'svelte';
 

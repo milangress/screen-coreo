@@ -11,7 +11,7 @@
     }
 </script>
 
-<img {src} alt="" />
+<img src={assetSrc} alt="" />
 
 <style>
     img {

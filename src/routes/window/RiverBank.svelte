@@ -1,11 +1,19 @@
 <script lang="ts">
+    import { getAssetUrl } from '$lib/utils';
+
     export let title: string;
     export let imageSrc: string;
+    let assetSrc: string;
+
+    $: if (imageSrc) {
+        (async () => {
+            assetSrc = await getAssetUrl(imageSrc);
+        })();
+    }
   </script>
-  
   <div class="container">
     <h2>{title}</h2>
-    <img src={imageSrc} alt="River Bank">
+    <img src={assetSrc} alt="River Bank">
   </div>
   
   <style>

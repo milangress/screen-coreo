@@ -100,8 +100,8 @@
         bind:this={codeElement}
         contenteditable="true"
         on:keydown={handleKeyDown}
-        on:input={handleInput}
         class="code-content"
+        bind:textContent={code}
     >{code}</div>
     {#if executed}
         <div class="execution-indicator">Executed</div>
@@ -131,6 +131,8 @@
     }
     .code-content:focus {
        font-family: 'Courier New', Courier, monospace;
+       background-color: rgba(255, 255, 255, 0.8);
+       padding: 1rem;
     }
 
     .execution-indicator {

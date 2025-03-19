@@ -67,9 +67,7 @@
       },
       "fs": {
         "all": true,
-        "scope": [
-          "$RESOURCE/*"
-        ]
+        "scope": ["**"]
       },
       "globalShortcut": {
         "all": true

@@ -32,6 +32,7 @@ fn close_all_windows_except_main_prefix(window: Window) {
     }
 }
 
+
 fn main() {
     // Custom menu items
     let start = CustomMenuItem::new("start".to_string(), "Start");

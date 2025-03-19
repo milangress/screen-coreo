@@ -1,0 +1,12 @@
+{
+  "name": "arachovitika",
+  "version": "1.0.0",
+  "description": "data for the arachovitika scroller",
+  "license": "ISC",
+  "author": "milan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

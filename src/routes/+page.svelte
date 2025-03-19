@@ -18,6 +18,7 @@
     import { LogicalSize } from "@tauri-apps/api/window";
     import { emit } from "@tauri-apps/api/event";
     import { v4 as uuidv4 } from "uuid";
+    import ProjectPicker from '$lib/components/ProjectPicker.svelte';
 
     let isFaded = false;
     let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -247,6 +248,16 @@
             invalidateWindowShadows();
         }, 200);
     }
+
+    async function handleProjectSelect(projectPath: string, markdownFile: string) {
+        await windowManager.createWindow("main-scroller", {
+            title: "Scroller",
+            transparent: true,
+            width: 1200,
+            height: 800,
+            url: `scroller/default?project=${encodeURIComponent(projectPath)}&file=${encodeURIComponent(markdownFile)}`,
+        });
+    }
 </script>
 
 <main
@@ -391,6 +402,11 @@
                     <strong>{id} ({instance.src})</strong>
                 </div>
             {/each}
+        </div>
+
+        <div class="scroller-section">
+            <h3>Project Scroller</h3>
+            <ProjectPicker onProjectSelect={handleProjectSelect} />
         </div>
     </div>
 </main>
@@ -544,5 +560,11 @@
         height: 1rem;
         width: 1rem;
         background: black;
+    }
+
+    .scroller-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        border-top: 1px solid #ccc;
     }
 </style>

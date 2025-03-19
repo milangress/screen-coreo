@@ -60,7 +60,8 @@ export class MyAudio {
     }
 
     this.url = url;
-    const response = await fetch(url);
+    const assetUrl = await getAssetUrl(url);
+    const response = await fetch(assetUrl);
     const arrayBuffer = await response.arrayBuffer();
     this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
     this.isLoaded = true;

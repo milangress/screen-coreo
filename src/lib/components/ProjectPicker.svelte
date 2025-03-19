@@ -1,18 +1,8 @@
 <script lang="ts">
     import { open } from '@tauri-apps/api/dialog';
-    import { readDir } from '@tauri-apps/api/fs';
-    import { writable } from 'svelte/store';
+    import { projects, addProject, removeProject, refreshProject } from '$lib/stores/projects';
 
     export let onProjectSelect: (projectPath: string, markdownFile: string) => void;
-
-    type ProjectFile = {
-        name: string;
-        path: string;
-        isMarkdown: boolean;
-    };
-
-    const projectFiles = writable<ProjectFile[]>([]);
-    let selectedProject: string | null = null;
 
     async function pickProject() {
         try {
@@ -23,55 +13,69 @@
             });
 
             if (selected && typeof selected === 'string') {
-                selectedProject = selected;
-                const entries = await readDir(selected);
-                const files = entries
-                    .filter(entry => entry.children === undefined) // Only files, not directories
-                    .map(entry => ({
-                        name: entry.name || '',
-                        path: entry.path,
-                        isMarkdown: entry.name?.endsWith('.md') || false
-                    }));
-                projectFiles.set(files);
-                console.log('Found files:', files); // Debug log
+                await addProject(selected);
             }
         } catch (err) {
             console.error('Error picking project:', err);
         }
     }
 
-    function handleFileSelect(file: ProjectFile) {
-        if (selectedProject && file.isMarkdown) {
-            console.log('Selected project:', selectedProject); // Debug log
-            console.log('Selected file:', file); // Debug log
-            onProjectSelect(selectedProject, file.name);
-        }
+    function handleFileSelect(projectPath: string, fileName: string) {
+        onProjectSelect(projectPath, fileName);
+    }
+
+    async function handleRefresh(path: string) {
+        await refreshProject(path);
+    }
+
+    async function handleRemove(path: string) {
+        await removeProject(path);
     }
 </script>
 
 <div class="project-picker">
-    <button on:click={pickProject}>Open Project</button>
+    <button on:click={pickProject}>Add Project</button>
     
-    {#if $projectFiles.length > 0}
-        <div class="files-list">
-            <h3>Available Files:</h3>
-            <ul>
-                {#each $projectFiles as file}
-                    {#if file.isMarkdown}
-                        <li>
+    {#if $projects.length > 0}
+        <div class="projects-list">
+            {#each $projects as project}
+                <div class="project">
+                    <div class="project-header">
+                        <h3>{project.name}</h3>
+                        <div class="project-actions">
                             <button 
-                                on:click={() => handleFileSelect(file)}
-                                class="file-button"
+                                class="icon-button" 
+                                on:click={() => handleRefresh(project.path)}
+                                title="Refresh files"
                             >
-                                {file.name}
+                                🔄
                             </button>
-                        </li>
-                    {/if}
-                {/each}
-            </ul>
+                            <button 
+                                class="icon-button" 
+                                on:click={() => handleRemove(project.path)}
+                                title="Remove project"
+                            >
+                                ❌
+                            </button>
+                        </div>
+                    </div>
+                    <ul class="files-list">
+                        {#each project.files.filter(f => f.isMarkdown) as file}
+                            <li>
+                                <button 
+                                    class="file-button"
+                                    on:click={() => handleFileSelect(project.path, file.name)}
+                                >
+                                    {file.name}
+                                </button>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
+            {/each}
         </div>
     {:else}
-        <p>No markdown files found in selected directory.</p>
+        <p>No projects added yet. Click "Add Project" to get started.</p>
     {/if}
 </div>
 
@@ -80,13 +84,49 @@
         padding: 1rem;
     }
 
-    .files-list {
+    .projects-list {
         margin-top: 1rem;
     }
 
-    .files-list ul {
+    .project {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .project-header h3 {
+        margin: 0;
+    }
+
+    .project-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .icon-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        font-size: 1rem;
+    }
+
+    .icon-button:hover {
+        opacity: 0.7;
+    }
+
+    .files-list {
         list-style: none;
         padding: 0;
+        margin: 0;
     }
 
     .file-button {

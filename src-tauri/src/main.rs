@@ -32,7 +32,6 @@ fn close_all_windows_except_main_prefix(window: Window) {
     }
 }
 
-
 fn main() {
     // Custom menu items
     let start = CustomMenuItem::new("start".to_string(), "Start");
@@ -115,9 +114,14 @@ fn main() {
         ))
         .add_submenu(commands)
         .add_submenu(scroller_menu);
-  
+
     tauri::Builder::default()
         .menu(menu)
+        .plugin(tauri_plugin_persisted_scope::init())
+        .invoke_handler(tauri::generate_handler![
+            close_all_windows_force,
+            close_all_windows_except_main_prefix
+        ])
         .on_menu_event(|event| {
             match event.menu_item_id() {
                 "close_all_force" => {
@@ -135,10 +139,6 @@ fn main() {
                 }
             }
         })
-        .invoke_handler(tauri::generate_handler![
-            close_all_windows_force,
-            close_all_windows_except_main_prefix
-        ])
         .setup(|app| {
             app.listen_global("audio-instance-created", |event| {
                 println!("Audio instance created: {:?}", event.payload());
@@ -182,6 +182,11 @@ fn main() {
                     }
                 }
             });
+            #[cfg(debug_assertions)]
+            {
+                let window = app.get_window("main").unwrap();
+                window.open_devtools();
+            }
             Ok(())
         })
         .run(tauri::generate_context!())

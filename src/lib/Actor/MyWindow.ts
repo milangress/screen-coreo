@@ -13,11 +13,15 @@ export class MyWindow {
   private contentProps: any = {};
   private keyEventManager: KeyEventManager;
   private filters: Record<string, string> = {};
+  private projectPath: string | null = null;
 
   constructor(label: string) {
     this.label = label;
     console.log('MyWindow constructor', label);
     this.keyEventManager = KeyEventManager.getInstance();
+    // Get project path from URL if available
+    const params = new URLSearchParams(window.location.search);
+    this.projectPath = params.get('project');
   }
 
   size(widthPercent: number, heightPercent: number): MyWindow {
@@ -106,15 +110,21 @@ export class MyWindow {
     const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
 
     if (!window) {
+      // Construct URL with project path if available
+      let windowUrl = 'window';
+      if (this.projectPath) {
+        windowUrl += `?project=${encodeURIComponent(this.projectPath)}`;
+      }
+
       const options = {
         ...this.customOptions,
         title: this.label,
-        //hiddenTitle: true,
         titleBarStyle: 'Overlay',
         width: this.calculatePixels(this.options.widthPercent, screenWidth),
         height: this.calculatePixels(this.options.heightPercent, screenHeight),
         x: this.calculatePixels(this.options.xPercent, screenWidth),
         y: this.calculatePixels(this.options.yPercent, screenHeight),
+        url: windowUrl
       };
       window = await windowManager.createWindow(this.label, options);
     } else {

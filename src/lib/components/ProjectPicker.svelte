@@ -1,6 +1,6 @@
 <script lang="ts">
     import { open } from '@tauri-apps/api/dialog';
-    import { projects, addProject, removeProject, refreshProject } from '$lib/stores/projects';
+    import { projects } from '$lib/stores/projects';
 
     export let onProjectSelect: (projectPath: string, markdownFile: string) => void;
 
@@ -13,7 +13,7 @@
             });
 
             if (selected && typeof selected === 'string') {
-                await addProject(selected);
+                await projects.addProject(selected);
             }
         } catch (err) {
             console.error('Error picking project:', err);
@@ -25,11 +25,11 @@
     }
 
     async function handleRefresh(path: string) {
-        await refreshProject(path);
+        await projects.refreshProject(path);
     }
 
-    async function handleRemove(path: string) {
-        await removeProject(path);
+    function handleRemove(path: string) {
+        projects.removeProject(path);
     }
 </script>
 

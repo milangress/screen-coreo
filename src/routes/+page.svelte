@@ -250,6 +250,7 @@
     }
 
     async function handleProjectSelect(projectPath: string, markdownFile: string) {
+        console.log('Opening project:', { projectPath, markdownFile }); // Debug log
         await windowManager.createWindow("main-scroller", {
             title: "Scroller",
             transparent: true,

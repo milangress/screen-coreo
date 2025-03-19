@@ -33,6 +33,7 @@
                         isMarkdown: entry.name?.endsWith('.md') || false
                     }));
                 projectFiles.set(files);
+                console.log('Found files:', files); // Debug log
             }
         } catch (err) {
             console.error('Error picking project:', err);
@@ -41,6 +42,8 @@
 
     function handleFileSelect(file: ProjectFile) {
         if (selectedProject && file.isMarkdown) {
+            console.log('Selected project:', selectedProject); // Debug log
+            console.log('Selected file:', file); // Debug log
             onProjectSelect(selectedProject, file.name);
         }
     }
@@ -67,6 +70,8 @@
                 {/each}
             </ul>
         </div>
+    {:else}
+        <p>No markdown files found in selected directory.</p>
     {/if}
 </div>
 

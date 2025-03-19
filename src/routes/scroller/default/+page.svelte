@@ -3,9 +3,8 @@
     import { marked } from 'marked';
     import { parse as parseYaml } from 'yaml';
     import ExecutableCodeBlock from '../ExecutableCodeBlock.svelte';
-    import { error } from '@sveltejs/kit';
-
-    export let data: { projectPath: string; markdownFile: string };
+    import { readTextFile } from '@tauri-apps/api/fs';
+    import { join } from '@tauri-apps/api/path';
 
     type ContentBlock = {
         type: 'component';
@@ -30,8 +29,18 @@
 
     onMount(async () => {
         try {
-            const response = await fetch(`/api/projects/${data.projectPath}/${data.markdownFile}`);
-            const content = await response.text();
+            // Get URL parameters
+            const params = new URLSearchParams(window.location.search);
+            const projectPath = params.get('project');
+            const markdownFile = params.get('file');
+
+            if (!projectPath || !markdownFile) {
+                throw new Error('Missing project path or markdown file');
+            }
+
+            // Read the markdown file using Tauri's fs API
+            const filePath = await join(projectPath, markdownFile);
+            const content = await readTextFile(filePath);
             
             // Parse frontmatter
             const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -43,7 +52,7 @@
             }
 
             if (frontmatter.template && frontmatter.template !== 'default') {
-                throw error(400, `Invalid template: ${frontmatter.template}`);
+                throw new Error(`Invalid template: ${frontmatter.template}`);
             }
 
             // Start auto-scroll

@@ -1,7 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { sceneManager } from '$lib/SceneManager';
-  import { registerScenes } from '$lib/scenes';
   import { MyWindow } from '$lib/Actor/MyWindow';
   import AbstractWindow from './AbstractWindow.svelte';
   import type { SerializedScene } from '$lib/types';
@@ -128,8 +126,8 @@
 
   onMount(async () => {
     try {
-      registerScenes();
-      scenes = sceneManager.getSerializedScenes();
+      // registerScenes();
+      // scenes = sceneManager.getSerializedScenes();
       screenDimensions = await getScreenDimensions();
       console.log('Scenes in overview:', scenes);
       if (scenes.length === 0) {

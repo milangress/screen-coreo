@@ -1,6 +1,5 @@
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { windowManager } from '$lib/WindowManager';
-import { sceneManager } from '$lib/SceneManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { LogicalSize, LogicalPosition, PhysicalSize, PhysicalPosition } from '@tauri-apps/api/dpi';
 import { emitTo, listen } from '@tauri-apps/api/event';
@@ -81,17 +80,13 @@ export class MyWindow {
     if (event.startsWith('KEY_')) {
       const key = event.replace('KEY_', '');
       this.keyEventManager.addKeyHandler(key, (keyEvent) => {
-        callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) });
+        callback({ close: this.close.bind(this) });
       });
     } else {
       // Handle other events (e.g., 'CLICK') as before
-      this.listen(event, () => callback({ nextScene: this.nextScene.bind(this), close: this.close.bind(this) }));
+      this.listen(event, () => callback({ close: this.close.bind(this) }));
     }
     return this;
-  }
-
-  private async nextScene(sceneName: string) {
-    await sceneManager.runScene(sceneName);
   }
 
   private async close() {

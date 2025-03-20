@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { listen, type UnlistenFn } from '@tauri-apps/api/event';
+    import { emit, type UnlistenFn } from '@tauri-apps/api/event';
     import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
     // import { writeText } from '@tauri-apps/plugin-clipboard-manager';
     import VideoBlock from './VideoBlock.svelte';
@@ -8,7 +8,6 @@
     import RiverBank from './RiverBank.svelte';
     import ScenesMdBlock from './ScenesMdBlock.svelte';
     import { MyWindow } from '../../lib/Actor/MyWindow';
-    import { emit } from '@tauri-apps/api/event';
 
     const appWindow = getCurrentWebviewWindow()
     let componentName: string | null = null;

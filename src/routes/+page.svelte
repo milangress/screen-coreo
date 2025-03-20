@@ -1,8 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { windowManager } from "$lib/WindowManager";
-    import { sceneManager } from "$lib/SceneManager";
-    import { registerScenes, runInitialScene } from "$lib/scenes";
     import {
         currentScene,
         currentWindows,
@@ -26,7 +24,6 @@ const appWindow = getCurrentWebviewWindow()
     const minimizedWindowSize = new LogicalSize(80, 200);
     const regularWindowSize = new LogicalSize(850, 650);
 
-    let scenes: any[] = [];
 
     let monitors: Monitor[] = [];
     let selectedMonitor: Monitor | null = null;
@@ -36,8 +33,6 @@ const appWindow = getCurrentWebviewWindow()
     onMount(async () => {
         //registerScenes();
         // Don't run the initial scene here
-        scenes = sceneManager.getAllScenes();
-        currentScene.set(sceneManager.getCurrentScene());
         monitors = await availableMonitors();
         if (monitors.length > 0) {
             selectedMonitor = monitors[0];
@@ -87,20 +82,11 @@ const appWindow = getCurrentWebviewWindow()
     // Add this function to handle menu events
     function handleMenuEvent(command: string) {
         switch (command) {
-            case "start":
-                startPresentation();
-                break;
-            case "reload":
-                reloadScene();
-                break;
             case "close_all":
                 windowManager.closeAllWindows();
                 break;
             case "close_all_non_main":
                 windowManager.closeAllWindowsExceptMain();
-                break;
-            case "next":
-                nextScene();
                 break;
             case "view_overview":
                 openOverview();
@@ -130,30 +116,7 @@ const appWindow = getCurrentWebviewWindow()
         if (unlistenFunction) unlistenFunction();
     });
 
-    function startPresentation() {
-        // Modify this function to run the initial scene
-        runInitialScene();
-    }
 
-    function nextScene() {
-        const current = sceneManager.getCurrentScene();
-        if (current) {
-            sceneManager.nextScene(current);
-        }
-    }
-
-    function handleSceneChange(event: Event) {
-        const selectedScene = (event.target as HTMLSelectElement).value;
-        sceneManager.runScene(selectedScene);
-    }
-
-    function reloadScene() {
-        if ($currentScene) {
-            sceneManager.runScene($currentScene);
-        } else {
-            console.error("No current scene to reload");
-        }
-    }
 
     function handleMonitorChange(event: Event) {
         const index = parseInt((event.target as HTMLSelectElement).value, 10);
@@ -169,9 +132,6 @@ const appWindow = getCurrentWebviewWindow()
         await appWindow.setSize(newSize);
         await appWindow.setSize(oldSize);
     };
-    async function registerAllScenes() {
-        registerScenes();
-    }
     async function openOverview() {
         await windowManager.createWindow("main-overview", {
             title: "Scene Overview",

@@ -10,11 +10,11 @@ export class Shell {
   async openFile(path: string): Promise<void> {
     try {
       const platform = await type();
-      const commandName = platform === 'Windows_NT' ? 'start-command' : 
-                         platform === 'Darwin' ? 'open-command' : 
+      const commandName = platform === 'windows' ? 'start-command' : 
+                         platform === 'macos' ? 'open-command' : 
                          'xdg-command';
 
-      const cmd = new Command(commandName, ['-ga', path]);
+      const cmd = Command.create(commandName, ['-ga', path]);
       await cmd.execute();
     } catch (error) {
       console.error('Failed to open file:', error);
@@ -30,10 +30,10 @@ export class Shell {
   async ls(path: string = '.'): Promise<string> {
     try {
       const platform = await type();
-      const commandName = platform === 'Windows_NT' ? 'dir-command' : 'ls-command';
-      const args = platform === 'Windows_NT' ? ['/B', path] : ['-la', path];
+      const commandName = platform === 'windows' ? 'dir-command' : 'ls-command';
+      const args = platform === 'windows' ? ['/B', path] : ['-la', path];
       
-      const cmd = new Command(commandName, args);
+      const cmd = Command.create(commandName, args);
       const output = await cmd.execute();
       return output.stdout;
     } catch (error) {

@@ -199,8 +199,8 @@
     <div class="content">
       {#each contentBlocks as block, i (i)}
         {#if block.type === 'code' && highlighter}
+          <div class="code-block-container"></div>
           <CodeBlockExecutor
-            className="code-block-container"
             code={block.content}
             highlighter={highlighter}
             containerWidth={400}
@@ -219,6 +219,7 @@
             {@html block.content}
           </div>
         {/if}
+        <div class="code-block-container"></div>
       {/each}
     </div>
   {/if}
@@ -235,22 +236,6 @@
   @media print {
     .controls {
       display: none; /* Hide buttons when printing */
-    }
-    
-    main {
-      padding: 0; /* Remove padding for print */
-    }
-
-    .content {
-      break-inside: avoid; /* Prevent content from breaking across pages */
-    }
-
-    /* Ensure code blocks print well */
-    pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      background: #f5f5f5 !important;
-      border: 1px solid #ddd;
     }
   }
 
@@ -291,4 +276,21 @@
     color: red;
     font-weight: bold;
   }
+
+  .content {
+      break-inside: avoid; /* Prevent content from breaking across pages */
+    }
+
+    .code-block-container {
+      break-inside: avoid; /* Prevent scenes from breaking across pages */
+      border: none; /* Remove borders for cleaner print */
+    }
+
+    .code-block-container :global(pre) {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #f5f5f5 !important;
+      border: 1px solid #ddd;
+      break-inside: avoid; /* Prevent code blocks from breaking across pages */
+    }
 </style>

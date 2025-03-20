@@ -14,7 +14,6 @@
     export let index: number;
     export let executionCount = 0;
     export let highlighter: Highlighter;
-    export let className: string;
 
     const dispatch = createEventDispatcher();
 
@@ -115,7 +114,7 @@
     }
 </script>
 
-<div class={`code-block ${className}`} data-index={index}>
+<div class="code-block" data-index={index}>
     <div class="code-preview">
         {@html highlightedCode}
         <div class="code-status">
@@ -154,13 +153,19 @@
 <style>
     .code-block {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 400px;
+        grid-template-columns: 1fr min-content;
         gap: 20px;
         margin: 20px 0;
         padding: 20px;
         background: #f5f5f5;
         border-radius: 8px;
         break-inside: avoid;
+    }
+
+    .code-preview :global(code) {
+        font-family: 'Fira Code', monospace;
+        font-size: 14px;
+        line-height: 1.5;
     }
 
     .code-preview {

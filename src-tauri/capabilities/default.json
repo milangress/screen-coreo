@@ -6,6 +6,7 @@
   ],
   "permissions": [
     "core:default",
+    "core:webview:allow-create-webview-window",
     "global-shortcut:default",
     "fs:allow-read-file",
     "fs:allow-write-file",
@@ -16,6 +17,8 @@
     "fs:allow-remove",
     "fs:allow-rename",
     "fs:allow-exists",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
     {
       "identifier": "fs:scope",
       "allow": [
@@ -34,6 +37,7 @@
     "core:window:allow-unmaximize",
     "core:window:allow-minimize",
     "core:window:allow-unminimize",
+    "core:window:allow-destroy",
     "core:window:allow-show",
     "core:window:allow-hide",
     "core:window:allow-close",

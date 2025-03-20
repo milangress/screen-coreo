@@ -11,6 +11,7 @@ use tauri::{
     menu::{MenuBuilder, SubmenuBuilder, PredefinedMenuItem},
     Manager, WebviewWindow, Listener, Emitter,
 };
+use std::process::Command;
 
 // New Tauri command
 #[tauri::command]
@@ -38,6 +39,34 @@ fn close_all_windows_except_main_prefix(window: WebviewWindow) {
     }
 }
 
+#[tauri::command]
+async fn open_cache_directory(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let cache_dir = app_handle
+        .path()
+        .app_cache_dir()
+        .ok_or("Failed to get cache directory")?;
+
+    #[cfg(target_os = "macos")]
+    Command::new("open")
+        .arg(cache_dir)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+
+    #[cfg(target_os = "windows")]
+    Command::new("explorer")
+        .arg(cache_dir)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+
+    #[cfg(target_os = "linux")]
+    Command::new("xdg-open")
+        .arg(cache_dir)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -52,7 +81,8 @@ pub fn run() {
             close_all_windows_force,
             close_all_windows_except_main_prefix,
             thumbnail::generate_video_thumbnail,
-            thumbnail::generate_video_preview
+            thumbnail::generate_video_preview,
+            open_cache_directory
         ])
         .setup(|app| {
             // Create submenus
@@ -112,6 +142,10 @@ pub fn run() {
                 .text("scroller_scroll_down", "Scroll Down")
                 .build()?;
 
+            let dev_submenu = SubmenuBuilder::new(app, "Dev")
+                .text("open_cache", "Open Cache Folder")
+                .build()?;
+
             // Build the main menu
             let menu = MenuBuilder::new(app)
                 .items(&[
@@ -122,6 +156,7 @@ pub fn run() {
                     &help_submenu,
                     &commands_submenu,
                     &scroller_submenu,
+                    &dev_submenu,
                 ])
                 .build()?;
 
@@ -197,6 +232,9 @@ pub fn run() {
                 "close_all_non_main" => {
                     close_all_windows_except_main_prefix(window.clone());
                     window.emit_to("main", "menu-event", "close_all_non_main").unwrap();
+                }
+                "open_cache" => {
+                    let _ = open_cache_directory(app_handle.clone());
                 }
                 _ => {
                     window.emit_to("main", "menu-event", event.id().0.clone()).unwrap();

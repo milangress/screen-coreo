@@ -6,13 +6,14 @@
     import WaveAudio from '$lib/Actor/Wave';
     import Shell from '$lib/Actor/Shell';
     import { windowManager } from '$lib/WindowManager';
+    import type { Highlighter } from 'shiki';
 
     export let code: string;
-    export let highlightedCode: string;
     export let containerWidth = 400;
     export let containerHeight = 400;
     export let index: number;
     export let executionCount = 0;
+    export let highlighter: Highlighter;
 
     const dispatch = createEventDispatcher();
 
@@ -20,6 +21,17 @@
     let error: string | null = null;
     let localWindowState: typeof $simulatedWindows = [];
     let executing = false;
+    let highlightedCode = '';
+
+    $: {
+        // Update highlighted code whenever the code or highlighter changes
+        if (highlighter && code) {
+            highlightedCode = highlighter.codeToHtml(code, { 
+                lang: 'javascript', 
+                theme: 'min-light' 
+            });
+        }
+    }
 
     // React to executionCount changes
     $: if (executionCount > 0 && !executing && !executed) {

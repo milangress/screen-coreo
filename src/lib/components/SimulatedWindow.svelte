@@ -59,7 +59,7 @@
         {window.label}
     </div>
     <div class="window-content">
-        {#if window.content?.type === 'VideoBlock2'}
+        {#if window.content?.type === 'VideoBlock'}
             <div class="video-placeholder">
                 <div class="video-info">
                     <span class="icon">🎥</span>

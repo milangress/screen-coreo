@@ -16,7 +16,6 @@
   let contentBlocks: Array<{ 
     type: 'text' | 'code', 
     content: string, 
-    highlightedCode?: string,
     executionCount?: number
   }> = [];
   let executing = false;
@@ -82,9 +81,6 @@
       contentBlocks = tokens.map(token => ({
         type: token.type === 'code' ? 'code' : 'text',
         content: token.type === 'code' ? token.text : marked.parser([token]),
-        highlightedCode: token.type === 'code' ? 
-          highlighter?.codeToHtml(token.text, { lang: 'javascript', theme: 'min-light' }) || '' : 
-          '',
         executionCount: 0
       }));
 
@@ -192,10 +188,10 @@
     </div>
     <div class="content">
       {#each contentBlocks as block, i (i)}
-        {#if block.type === 'code'}
+        {#if block.type === 'code' && highlighter}
           <CodeBlockExecutor
             code={block.content}
-            highlightedCode={block.highlightedCode || ''}
+            highlighter={highlighter}
             containerWidth={400}
             containerHeight={400 / screenDimensions.aspectRatio}
             index={i}
@@ -207,7 +203,7 @@
               }
             }}
           />
-        {:else}
+        {:else if block.type === 'text'}
           <div class="text-block">
             {@html block.content}
           </div>

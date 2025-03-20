@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod thumbnail;
+mod ffmpeg_downloader;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 

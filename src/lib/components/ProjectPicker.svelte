@@ -2,7 +2,7 @@
     import { open } from '@tauri-apps/plugin-dialog';
     import { projects } from '$lib/stores/projects';
 
-    export let onProjectSelect: (projectPath: string, markdownFile: string) => void;
+    export let onProjectSelect: (projectPath: string, markdownFile: string, mode: 'scroller' | 'overview') => void;
 
     async function pickProject() {
         try {
@@ -20,8 +20,8 @@
         }
     }
 
-    function handleFileSelect(projectPath: string, fileName: string) {
-        onProjectSelect(projectPath, fileName);
+    function handleFileSelect(projectPath: string, fileName: string, mode: 'scroller' | 'overview') {
+        onProjectSelect(projectPath, fileName, mode);
     }
 
     async function handleRefresh(path: string) {
@@ -61,12 +61,19 @@
                     </div>
                     <ul class="files-list">
                         {#each project.files.filter(f => f.isMarkdown) as file}
-                            <li>
+                            <li class="file-item">
                                 <button 
                                     class="file-button"
-                                    on:click={() => handleFileSelect(project.path, file.name)}
+                                    on:click={() => handleFileSelect(project.path, file.name, 'scroller')}
                                 >
                                     {file.name}
+                                </button>
+                                <button 
+                                    class="overview-button"
+                                    on:click={() => handleFileSelect(project.path, file.name, 'overview')}
+                                    title="Open in overview mode"
+                                >
+                                    🔍
                                 </button>
                             </li>
                         {/each}
@@ -140,5 +147,24 @@
 
     .file-button:hover {
         color: darkblue;
+    }
+
+    .file-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .overview-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        font-size: 1rem;
+        opacity: 0.6;
+    }
+
+    .overview-button:hover {
+        opacity: 1;
     }
 </style> 

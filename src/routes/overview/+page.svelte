@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { FluxWindow } from '$/lib/Actor/Flux';
-  import AbstractWindow from './AbstractWindow.svelte';
-  import type { SerializedScene } from '$lib/types';
+  import { onMount, onDestroy } from 'svelte';
+  import { FluxWindow } from '$lib/Actor/Flux';
+  import { simulatedWindows } from '$lib/stores/simulatedWindows';
+  import SimulatedWindow from '$lib/components/SimulatedWindow.svelte';
   import { createHighlighter } from 'shiki';
+  import { marked } from 'marked';
+  import { readTextFile } from '@tauri-apps/plugin-fs';
+  import { join } from '@tauri-apps/api/path';
   
-  let scenes: SerializedScene[] = [];
   let error: string | null = null;
   let screenDimensions: { width: number; height: number; aspectRatio: number } | null = null;
   let highlighter: Awaited<ReturnType<typeof createHighlighter>> | null = null;
   let highlighterReady = false;
+  let content: string = '';
+  let contentBlocks: Array<{ type: 'text' | 'code', content: string }> = [];
 
   $: {
     if (!highlighterReady) {
@@ -44,136 +48,115 @@
     }
   }
 
-  function simpleIndent(code: string): string {
-    const lines = code.split('\n');
-    let indentLevel = 0;
-    let inChain = false;
-    let chainIndentLevel = 0;
-
-    return lines.map((line, index) => {
-      line = line.trim();
-      
-      // Check for the start or continuation of a function chain
-      if ((line.includes('.') && line.includes('(')) || (inChain && line.startsWith('.'))) {
-        if (!inChain) {
-          chainIndentLevel = indentLevel + 1;
-          inChain = true;
-        }
-        
-        // Split the line at method calls, but keep 'e.function()' together
-        const parts = line.split(/(?=\.(?!e\.)(?:[a-zA-Z_$][a-zA-Z0-9_$]*)\()/);
-        if (parts.length > 1) {
-          return parts.map((part, i) => {
-            if (i === 0 && !part.startsWith('.')) {
-              return '  '.repeat(indentLevel) + part.trim();
-            }
-            return '  '.repeat(chainIndentLevel) + part.trim();
-          }).join('\n');
-        }
-        
-        // If this line ends the chain, reset inChain
-        if (line.endsWith(';') || line.endsWith(')') && !line.includes('(', line.lastIndexOf(')'))) {
-          inChain = false;
-        }
-        return '  '.repeat(chainIndentLevel) + line;
-      }
-
-      // Adjust indent for opening braces or parentheses
-      if (line.endsWith('{') || line.endsWith('(')) {
-        const indentedLine = '  '.repeat(indentLevel) + line;
-        indentLevel++;
-        return indentedLine;
-      } 
-      // Adjust indent for closing braces or parentheses
-      else if (line.startsWith('}') || line.startsWith(')')) {
-        indentLevel = Math.max(0, indentLevel - 1);
-        inChain = false; // Reset chain status at the end of a block
-        return '  '.repeat(indentLevel) + line;
-      } 
-      // Normal lines
-      else {
-        inChain = false; // Reset chain status for normal lines
-        return '  '.repeat(indentLevel) + line;
-      }
-    }).join('\n');
-  }
-
-  async function formatAndHighlightCode(code: string | Promise<string>) {
-    if (!highlighterReady || !highlighter) return 'Highlighter not ready';
-
+  async function loadContent() {
     try {
-      let codeString = await Promise.resolve(code);
-      if (typeof codeString !== 'string') {
-        codeString = JSON.stringify(codeString, null, 2);
+      const params = new URLSearchParams(window.location.search);
+      const projectPath = params.get('project');
+      const markdownFile = params.get('file');
+
+      if (!projectPath || !markdownFile) {
+        throw new Error('Missing project path or markdown file');
       }
 
-      const indentedCode = simpleIndent(codeString);
+      const filePath = await join(projectPath, markdownFile);
+      content = await readTextFile(filePath);
+      
+      // Parse content into blocks
+      const tokens = marked.lexer(content);
+      contentBlocks = tokens.map(token => ({
+        type: token.type === 'code' ? 'code' : 'text',
+        content: token.type === 'code' ? token.text : marked.parser([token])
+      }));
 
-      return highlighter.codeToHtml(indentedCode, { 
-        lang: 'typescript', 
-        theme: 'min-light' 
-      });
-    } catch (error: unknown) {
-    console.error('Error highlighting code:', error);
-    return `Error highlighting code: ${getErrorMessage(error)}`;
-  }
+      // Enable simulation mode for any code execution
+      FluxWindow.enableSimulationMode();
+    } catch (e) {
+      console.error('Error loading content:', e);
+      error = String(e);
+    }
   }
 
-  function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
+  async function executeCode(code: string) {
+    try {
+      // Clear previous windows
+      simulatedWindows.clear();
+
+      // Create a function that wraps the code and provides necessary context
+      const wrappedCode = `
+        return (async () => {
+          const Flux = this.Flux;
+          ${code}
+        })();
+      `;
+
+      // Create a context object with the necessary imports
+      const context = {
+        // Instead of returning a new FluxWindow directly, provide the constructor
+        Flux: FluxWindow
+      };
+
+      // Execute the code within the context
+      const func = new Function(wrappedCode).bind(context);
+      await func();
+    } catch (error) {
+      console.error('Error executing code:', error);
+    }
+  }
 
   onMount(async () => {
     try {
-      // registerScenes();
-      // scenes = sceneManager.getSerializedScenes();
       screenDimensions = await getScreenDimensions();
-      console.log('Scenes in overview:', scenes);
-      if (scenes.length === 0) {
-        error = "No scenes found. Make sure scenes are registered before opening the overview.";
-      }
-    } catch (e: unknown) {
-      console.error('Error loading scenes:', e);
-      error = "An error occurred while loading scenes: " + getErrorMessage(e);
+      await loadContent();
+    } catch (e) {
+      console.error('Error in onMount:', e);
+      error = String(e);
     }
   });
 
-  let scale = 0.5;
+  onDestroy(() => {
+    FluxWindow.disableSimulationMode();
+  });
 </script>
 
 <main>
-  <h1>Scene Overview</h1>
+  <h1>Overview Mode</h1>
   {#if error}
     <p class="error">{error}</p>
-  {:else if !highlighterReady || scenes.length === 0 || !screenDimensions}
+  {:else if !highlighterReady || !screenDimensions}
     <p>Loading...</p>
   {:else}
-    {#each scenes as scene}
-      <div class="scene">
-        <h2>{scene.name}</h2>
-        <div class="scene-content">
-          <div class="screen-container">
-            <div class="screen" style="aspect-ratio: {screenDimensions.aspectRatio}">  
-              <div class="windows">
-                {#each scene.windows as window}
-                  <AbstractWindow {window} {scale} />
+    <div class="content">
+      {#each contentBlocks as block}
+        {#if block.type === 'code'}
+          <div class="code-block">
+            <div class="code-preview">
+              {@html highlighter?.codeToHtml(block.content, { lang: 'javascript', theme: 'min-light' }) || ''}
+              <button class="execute-button" on:click={() => executeCode(block.content)}>
+                Preview Windows
+              </button>
+            </div>
+            <div class="window-preview">
+              <div 
+                class="screen" 
+                style="aspect-ratio: {screenDimensions.aspectRatio};"
+              >
+                {#each $simulatedWindows as window}
+                  <SimulatedWindow 
+                    {window}
+                    containerWidth={500}
+                    containerHeight={500 / screenDimensions.aspectRatio}
+                  />
                 {/each}
               </div>
             </div>
           </div>
-          <div class="code">
-            {#await formatAndHighlightCode(scene.code)}
-              <p>Formatting and highlighting code...</p>
-            {:then highlightedCode}
-              {@html highlightedCode}
-            {:catch error}
-              <p class="error">Error: {error.message}</p>
-            {/await}
+        {:else}
+          <div class="text-block">
+            {@html block.content}
           </div>
-        </div>
-      </div>
-    {/each}
+        {/if}
+      {/each}
+    </div>
   {/if}
 </main>
 
@@ -183,48 +166,69 @@
     max-width: 1200px;
     margin: 0 auto;
   }
-  .scene {
-    margin-bottom: 40px;
-    border: 1px solid #ccc;
-    padding: 20px;
+
+  .content {
+    margin-top: 20px;
   }
-  .scene-content {
+
+  .code-block {
     display: flex;
-    align-items: flex-start;
+    gap: 20px;
+    margin: 20px 0;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
   }
-  .screen-container {
-    width: 50%;
-    flex-shrink: 0;
-    margin-right: 20px;
+
+  .code-preview {
+    flex: 1;
   }
+
+  .window-preview {
+    flex: 1;
+    min-width: 500px;
+  }
+
   .screen {
     width: 100%;
     height: auto;
-    background-color: #f0f0f0;
+    background: #fff;
     border: 1px solid #ccc;
-  }
-  .windows {
+    border-radius: 4px;
     position: relative;
-    width: 100%;
-    height: 100%;
   }
-  .code {
-    width: 50%;
-    overflow-x: auto;
+
+  .text-block {
+    margin: 20px 0;
   }
+
   .error {
     color: red;
     font-weight: bold;
   }
-  .code :global(pre) {
+
+  .execute-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .execute-button:hover {
+    background: #0056b3;
+  }
+
+  :global(pre) {
     margin: 0;
     padding: 1em;
     border-radius: 4px;
     overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
   }
-  .code :global(code) {
+
+  :global(code) {
     font-family: 'Fira Code', monospace;
     font-size: 14px;
     line-height: 1.5;

@@ -3,6 +3,7 @@ import { windowManager } from '$lib/WindowManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { LogicalSize, LogicalPosition, PhysicalSize, PhysicalPosition } from '@tauri-apps/api/dpi';
 import { emitTo, listen } from '@tauri-apps/api/event';
+import { simulatedWindows } from '$lib/stores/simulatedWindows';
 
 import { KeyEventManager } from '$lib/KeyEventManager';
 
@@ -15,13 +16,18 @@ export class FluxWindow {
   private keyEventManager: KeyEventManager;
   private filters: Record<string, string> = {};
   private projectPath: string | null = null;
+  private simulationMode: boolean = false;
 
-  constructor(label: string) {
+  constructor(label: string, options: { simulationMode?: boolean } = {}) {
     this.label = label;
-    console.log('FluxWindow constructor', label);
+    // Check URL for simulation mode
+    const params = new URLSearchParams(window.location.search);
+    const isOverviewMode = window.location.pathname.includes('/overview');
+    this.simulationMode = options.simulationMode || isOverviewMode;
+    
+    console.log('FluxWindow constructor', label, 'simulation:', this.simulationMode);
     this.keyEventManager = KeyEventManager.getInstance();
     // Get project path from URL if available
-    const params = new URLSearchParams(window.location.search);
     this.projectPath = params.get('project');
   }
 
@@ -103,6 +109,17 @@ export class FluxWindow {
 
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
+    if (this.simulationMode) {
+      await this.updateSimulatedWindow();
+      // Return a dummy window to satisfy the type system
+      return new Proxy({} as WebviewWindow, {
+        get: (target, prop) => {
+          // Return no-op functions for window methods
+          return () => Promise.resolve();
+        }
+      });
+    }
+
     let window = windowManager.getWindow(this.label);
     console.log('getOrCreateWindow', this.label, window);
     const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
@@ -291,5 +308,32 @@ export class FluxWindow {
     }
 
     return this;
+  }
+
+  private async updateSimulatedWindow() {
+    const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
+
+    const simulatedWindow = {
+      label: this.label,
+      width: this.options.widthPercent || 100,
+      height: this.options.heightPercent || 100,
+      x: this.options.xPercent || 0,
+      y: this.options.yPercent || 0,
+      content: this.contentComponent ? {
+        type: this.contentComponent,
+        props: this.contentProps
+      } : undefined
+    };
+
+    simulatedWindows.addWindow(simulatedWindow);
+  }
+
+  // Static method to enable simulation mode globally
+  static enableSimulationMode() {
+    FluxWindow.prototype.simulationMode = true;
+  }
+
+  static disableSimulationMode() {
+    FluxWindow.prototype.simulationMode = false;
   }
 }

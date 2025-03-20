@@ -210,14 +210,23 @@ const appWindow = getCurrentWebviewWindow()
         }, 200);
     }
 
-    async function handleProjectSelect(projectPath: string, markdownFile: string) {
-        await windowManager.createWindow("main-scroller", {
-            title: "Scroller",
-            transparent: true,
-            width: 1200,
-            height: 800,
-            url: `scroller/default?project=${encodeURIComponent(projectPath)}&file=${encodeURIComponent(markdownFile)}`,
-        });
+    async function handleProjectSelect(projectPath: string, markdownFile: string, mode: 'scroller' | 'overview') {
+        if (mode === 'overview') {
+            await windowManager.createWindow("main-overview", {
+                title: "Overview",
+                width: 1200,
+                height: 800,
+                url: `overview?project=${encodeURIComponent(projectPath)}&file=${encodeURIComponent(markdownFile)}`,
+            });
+        } else {
+            await windowManager.createWindow("main-scroller", {
+                title: "Scroller",
+                transparent: true,
+                width: 1200,
+                height: 800,
+                url: `scroller/default?project=${encodeURIComponent(projectPath)}&file=${encodeURIComponent(markdownFile)}`,
+            });
+        }
         setFade();
     }
 </script>

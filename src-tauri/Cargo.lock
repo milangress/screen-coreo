@@ -3284,6 +3284,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "ffmpeg-sidecar",
+ "lazy_static",
  "serde",
  "serde_json",
  "tauri",

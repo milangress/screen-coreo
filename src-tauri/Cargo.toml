@@ -25,6 +25,7 @@ tauri-plugin-dialog = "2"
 ffmpeg-sidecar = "0.5.1"
 tokio = { version = "1.36.0", features = ["full"] }
 anyhow = "1.0.80"
+lazy_static = "1.4.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

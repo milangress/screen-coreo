@@ -10,12 +10,10 @@
         audioInstances,
         videoInstances,
     } from "$lib/stores";
-    import { availableMonitors, getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-    import type { Monitor } from "@tauri-apps/api/webviewWindow";
-    import { resourceDir } from "@tauri-apps/api/path";
+    import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+    import { availableMonitors, type Monitor } from "@tauri-apps/api/window";
+    import { LogicalSize } from '@tauri-apps/api/dpi';
     import { listen } from "@tauri-apps/api/event";
-    import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-    import { LogicalSize } from "@tauri-apps/api/webviewWindow";
     import { emit } from "@tauri-apps/api/event";
     import { v4 as uuidv4 } from "uuid";
     import ProjectPicker from '$lib/components/ProjectPicker.svelte';
@@ -61,8 +59,10 @@ const appWindow = getCurrentWebviewWindow()
 
     async function updateWindowSize(faded: boolean) {
         console.log("updateWindowSize", faded);
-        const currentSize = await appWindow.innerSize();
-        console.log("currentSize", currentSize);
+        const factor = await appWindow.scaleFactor();
+        const innerSizePhysical = await appWindow.innerSize();
+        const currentSize = innerSizePhysical.toLogical(factor);
+        console.log("currentSize", currentSize, "factor", factor, "innerSizePhysical", innerSizePhysical);
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         if (faded) {

@@ -196,7 +196,7 @@ fn main() {
                     window.emit_to("main", "menu-event", "close_all_non_main").unwrap();
                 }
                 _ => {
-                    window.emit_to("main", "menu-event", event.id().0).unwrap();
+                    window.emit_to("main", "menu-event", event.id().0.clone()).unwrap();
                 }
             }
         })

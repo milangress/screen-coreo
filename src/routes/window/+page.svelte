@@ -8,6 +8,7 @@
     import RiverBank from './RiverBank.svelte';
     import ScenesMdBlock from './ScenesMdBlock.svelte';
     import { MyWindow } from '../../lib/Actor/MyWindow';
+    import { emit } from '@tauri-apps/api/event';
 const appWindow = getCurrentWebviewWindow()
     let componentName: string | null = null;
     let componentProps: any = {};
@@ -16,12 +17,16 @@ const appWindow = getCurrentWebviewWindow()
 
     $: component = getComponent(componentName);
 
-    onMount(async () => {
+    onMount(() => {
       console.log('Window component mounted');
-      const { emit } = await import('@tauri-apps/api/event');
-      console.log('Emitting window-ready event');
-      await emit('window-ready');
-      console.log('window-ready event emitted');
+      
+      const setup = async () => {
+        // const { emit } = await import('@tauri-apps/api/event');
+        console.log('Emitting window-ready event');
+        await emit('window-ready');
+        console.log('window-ready event emitted');
+      };
+      setup();
 
       // Add keyboard event listener
       const handleKeyPress = async (event: KeyboardEvent) => {
@@ -41,7 +46,6 @@ const appWindow = getCurrentWebviewWindow()
       return () => {
         window.removeEventListener('keydown', handleKeyPress);
       };
-
     });
   
     function getComponent(name: string | null) {
@@ -105,7 +109,7 @@ const appWindow = getCurrentWebviewWindow()
       await writeText(windowString);
       console.log('Window string copied to clipboard:', windowString);
 
-      const { emit } = await import('@tauri-apps/api/event');
+      // const { emit } = await import('@tauri-apps/api/event');
       await emit('window-string-generated', windowString);
     }
 

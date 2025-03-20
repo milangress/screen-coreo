@@ -258,6 +258,7 @@ const appWindow = getCurrentWebviewWindow()
             height: 800,
             url: `scroller/default?project=${encodeURIComponent(projectPath)}&file=${encodeURIComponent(markdownFile)}`,
         });
+        setFade();
     }
 </script>
 
@@ -342,16 +343,7 @@ const appWindow = getCurrentWebviewWindow()
             </ul>
         </div>
         <button on:click={openOverview}>View Overview</button>
-        <button on:click={() => openScroller("scroller")}>Open Scroller</button>
-        <button on:click={() => openScroller("scroller/arachovitika-year2")}
-            >Open Arachovitika Year 2</button
-        >
-        <button on:click={() => openScroller("scroller/arachovitika-salim")}
-            >Open Arachovitika Salim</button
-        >
-        <button on:click={() => openScroller("scroller/arachovitika-short")}
-            >Open Arachovitika short</button
-        >
+        
 
         <div class="audio-controls">
             <h3>Audio Controls:</h3>

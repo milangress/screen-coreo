@@ -14,6 +14,8 @@
     export let index: number;
     export let executionCount = 0;
     export let highlighter: Highlighter;
+    export let screenWidth: number;
+    export let screenHeight: number;
 
     const dispatch = createEventDispatcher();
 
@@ -22,8 +24,14 @@
     let localWindowState: typeof $simulatedWindows = [];
     let executing = false;
     let highlightedCode = '';
+    let scale: number;
 
     $: {
+        // Calculate scale to fit the screen dimensions into the container
+        const widthScale = containerWidth / screenWidth;
+        const heightScale = containerHeight / screenHeight;
+        scale = Math.min(widthScale, heightScale);
+
         // Update highlighted code whenever the code or highlighter changes
         if (highlighter && code) {
             highlightedCode = highlighter.codeToHtml(code, { 
@@ -131,13 +139,19 @@
     </div>
     
     {#if localWindowState.length > 0}
-        <div class="window-preview">
-            <div class="screen">
+        <div 
+            class="window-preview"
+            style="width: {containerWidth}px; height: {containerHeight}px;"
+        >
+            <div 
+                class="screen" 
+                style="width: {screenWidth}px; height: {screenHeight}px; transform: scale({scale}); transform-origin: top left;"
+            >
                 {#each localWindowState as window}
                     <SimulatedWindow 
                         {window}
-                        {containerWidth}
-                        {containerHeight}
+                        containerWidth={screenWidth}
+                        containerHeight={screenHeight}
                     />
                 {/each}
             </div>
@@ -207,17 +221,14 @@
     }
 
     .window-preview {
-        width: 400px;
+        overflow: hidden;
     }
 
     .screen {
-        width: 100%;
-        height: auto;
         background: #fff;
         border: 1px solid #ccc;
         border-radius: 4px;
         position: relative;
-        aspect-ratio: var(--screen-aspect-ratio, 1.6);
     }
 
     .debug-info {

@@ -205,6 +205,8 @@
             highlighter={highlighter}
             containerWidth={400}
             containerHeight={400 / screenDimensions.aspectRatio}
+            screenWidth={screenDimensions.width}
+            screenHeight={screenDimensions.height}
             index={i}
             executionCount={block.executionCount || 0}
             on:executed={e => {

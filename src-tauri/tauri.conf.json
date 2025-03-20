@@ -63,8 +63,7 @@
         "fullscreen": false,
         "decorations": false,
         "transparent": true,
-        "alwaysOnTop": true,
-        "useHttpsScheme": true
+        "alwaysOnTop": true
       }
     ]
   }

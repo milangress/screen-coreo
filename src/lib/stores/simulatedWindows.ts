@@ -17,7 +17,7 @@ const store = writable<SimulatedWindow[]>([]);
 
 export const simulatedWindows = {
     subscribe: store.subscribe,
-    addWindow: (window: SimulatedWindow) => {
+    addWindow: (window: Partial<SimulatedWindow> & { label: string }) => {
         console.log('Adding/updating window:', {
             window,
             existingWindows: get(store)
@@ -26,11 +26,30 @@ export const simulatedWindows = {
         const existingIndex = get(store).findIndex(w => w.label === window.label);
         if (existingIndex !== -1) {
             const updatedWindows = [...get(store)];
-            updatedWindows[existingIndex] = window;
+            const existingWindow = updatedWindows[existingIndex];
+            
+            // Merge the windows, prioritizing existing values for undefined properties
+            updatedWindows[existingIndex] = {
+                ...window,  // New properties first
+                ...existingWindow, // Then existing properties (if not overridden)
+                label: window.label, // Always keep the new label
+                // Explicitly handle content and filters to prevent overwriting
+                content: window.content !== undefined ? window.content : existingWindow.content,
+                filters: window.filters !== undefined ? window.filters : existingWindow.filters,
+            };
+
             console.log('Updating existing window at index', existingIndex, 'new state:', updatedWindows);
             store.set(updatedWindows);
         } else {
-            const newState = [...get(store), window];
+            // For new windows, ensure all required properties are present
+            const newWindow: SimulatedWindow = {
+                width: 100,
+                height: 100,
+                x: 0,
+                y: 0,
+                ...window
+            };
+            const newState = [...get(store), newWindow];
             console.log('Added new window, new state:', newState);
             store.set(newState);
         }

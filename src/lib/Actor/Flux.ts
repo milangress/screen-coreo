@@ -333,18 +333,49 @@ export class FluxWindow {
       filters: this.filters
     });
 
-    const windowData = {
-      label: this.label,
-      width: this.options.widthPercent || 100,
-      height: this.options.heightPercent || 100,
-      x: this.options.xPercent || 0,
-      y: this.options.yPercent || 0,
-      content: this.contentComponent ? {
+    interface WindowUpdate {
+      label: string;
+      width?: number;
+      height?: number;
+      x?: number;
+      y?: number;
+      content?: {
+        type: string;
+        props: Record<string, any>;
+      };
+      filters?: Record<string, string>;
+    }
+
+    const windowData: WindowUpdate = {
+      label: this.label
+    };
+
+    // Only add properties that are explicitly set
+    if (this.options.widthPercent !== undefined) {
+      windowData.width = this.options.widthPercent;
+    }
+    if (this.options.heightPercent !== undefined) {
+      windowData.height = this.options.heightPercent;
+    }
+    if (this.options.xPercent !== undefined) {
+      windowData.x = this.options.xPercent;
+    }
+    if (this.options.yPercent !== undefined) {
+      windowData.y = this.options.yPercent;
+    }
+
+    // Only add content if it's being set
+    if (this.contentComponent) {
+      windowData.content = {
         type: this.contentComponent,
         props: { ...this.contentProps }
-      } : null,
-      filters: { ...this.filters }
-    };
+      };
+    }
+
+    // Only add filters if they're being set
+    if (Object.keys(this.filters).length > 0) {
+      windowData.filters = { ...this.filters };
+    }
 
     console.log('Adding simulated window:', windowData);
     simulatedWindows.addWindow(windowData);

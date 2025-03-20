@@ -44,7 +44,7 @@ async fn open_cache_directory(app_handle: tauri::AppHandle) -> Result<(), String
     let cache_dir = app_handle
         .path()
         .app_cache_dir()
-        .ok_or("Failed to get cache directory")?;
+        .map_err(|e| e.to_string())?;
 
     #[cfg(target_os = "macos")]
     Command::new("open")

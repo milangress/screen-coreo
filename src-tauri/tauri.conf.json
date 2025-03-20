@@ -35,8 +35,23 @@
         ],
         "enable": true
       },
-      "dangerousDisableAssetCspModification": true,
-      "csp": null
+      "dangerousDisableAssetCspModification": false,
+      "csp": {
+        "default-src": ["'self'"],
+        "img-src": ["'self'", "asset:", "https://asset.localhost", "data:", "blob:"],
+        "connect-src": [
+          "'self'", 
+          "ipc:", 
+          "ipc://localhost/*",
+          "http://ipc.localhost",
+          "asset:", 
+          "https://asset.localhost"
+        ],
+        "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'wasm-unsafe-eval'"],
+        "style-src": ["'self'", "'unsafe-inline'"],
+        "media-src": ["'self'", "asset:", "https://asset.localhost"],
+        "font-src": ["'self'"]
+      }
     },
     "windows": [
       {

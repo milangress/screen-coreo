@@ -117,12 +117,7 @@
             {/if}
         </div>
     </div>
-    <!-- <div class="debug-info">
-        <p>Store state: {$simulatedWindows.length} windows</p>
-        <p>Local state: {localWindowState.length} windows</p>
-        <p>Status: {executing ? 'Executing' : executed ? 'Executed' : error ? 'Error' : 'Pending'}</p>
-        <p>Execution count: {executionCount}</p>
-    </div> -->
+    
     {#if localWindowState.length > 0}
         <div class="window-preview">
             <div class="screen">
@@ -137,6 +132,10 @@
         </div>
     {/if}
     <!-- <pre class="state-debug">{JSON.stringify({ localWindowState, storeState: $simulatedWindows }, null, 2)}</pre> -->
+    <div class="debug-info">
+        <p>Store state: {$simulatedWindows.length} windows</p>
+        <p>Local state: {localWindowState.length} windows</p>
+    </div>
 </div>
 
 <style>
@@ -153,6 +152,8 @@
     .code-preview {
         position: relative;
         min-width: 0;
+        background-color: #fff;
+        padding: 20px;
     }
 
     .code-preview :global(pre) {

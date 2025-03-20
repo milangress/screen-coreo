@@ -21,10 +21,8 @@ impl ThumbnailGenerator {
     pub fn new(app_handle: tauri::AppHandle) -> Result<Self> {
         // Get the app's data directory for FFmpeg installation
         let app_cache_dir = app_handle.path().app_cache_dir()
-            .map_err(|e| anyhow::anyhow!("Failed to get app data directory: {}", e))?;
+            .map_err(|e| anyhow::anyhow!("Failed to get app cache directory: {}", e))?;
         let ffmpeg_dir = app_cache_dir.join("ffmpeg");
-
-        println!("FFmpeg directory: {:?}", ffmpeg_dir);
         
         // Use our new FfmpegDownloader to ensure FFmpeg is installed
         let downloader = FfmpegDownloader::new(ffmpeg_dir);
@@ -44,7 +42,7 @@ impl ThumbnailGenerator {
         
         // Get the app data directory and create cache folder if it doesn't exist
         let app_cache_dir = self.app_handle.path().app_cache_dir()
-            .map_err(|e| anyhow::anyhow!("Failed to get app data directory: {}", e))?;
+            .map_err(|e| anyhow::anyhow!("Failed to get app cache directory: {}", e))?;
         let cache_dir = app_cache_dir.join("cache").join(suffix);
         fs::create_dir_all(&cache_dir)?;
         
@@ -162,6 +160,7 @@ pub async fn generate_video_thumbnail(
     app_handle: tauri::AppHandle,
     video_path: String,
 ) -> Result<String, String> {
+    println!("generate_video_thumbnail for: {}", video_path);
     let generator = ThumbnailGenerator::new(app_handle)
         .map_err(|e| e.to_string())?;
     generator
@@ -176,6 +175,7 @@ pub async fn generate_video_preview(
     app_handle: tauri::AppHandle,
     video_path: String,
 ) -> Result<String, String> {
+    println!("generate_video_preview for: {}", video_path);
     let generator = ThumbnailGenerator::new(app_handle)
         .map_err(|e| e.to_string())?;
     generator

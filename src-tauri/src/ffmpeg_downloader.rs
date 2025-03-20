@@ -1,9 +1,15 @@
 use std::path::PathBuf;
 use ffmpeg_sidecar::{
-    download::{check_latest_version, download_ffmpeg_package, ffmpeg_download_url, unpack_ffmpeg, auto_download},
+    download::{check_latest_version, download_ffmpeg_package, ffmpeg_download_url, unpack_ffmpeg},
     version::ffmpeg_version_with_path,
 };
 use anyhow::{Result, anyhow};
+use std::sync::Mutex;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref DOWNLOAD_MUTEX: Mutex<()> = Mutex::new(());
+}
 
 pub struct FfmpegDownloader {
     destination: PathBuf,
@@ -22,6 +28,16 @@ impl FfmpegDownloader {
             return Ok(ffmpeg_path);
         }
 
+        // Acquire lock before starting download process
+        let _lock = DOWNLOAD_MUTEX.lock()
+            .map_err(|e| anyhow!("Failed to acquire download lock: {}", e))?;
+
+        // Check again after acquiring lock in case another thread finished the download
+        if ffmpeg_path.exists() {
+            println!("FFmpeg was downloaded by another thread");
+            return Ok(ffmpeg_path);
+        }
+
         println!("FFmpeg not found, starting download process...");
         self.download_and_extract()?;
         
@@ -32,14 +48,6 @@ impl FfmpegDownloader {
         // Create directory if it doesn't exist
         std::fs::create_dir_all(&self.destination)
             .map_err(|e| anyhow!("Failed to create FFmpeg directory: {}", e))?;
-
-        // Try auto download first as it's more reliable
-        if let Ok(()) = auto_download() {
-            return Ok(());
-        }
-
-        // Fallback to manual download if auto download fails
-        println!("Auto download failed, trying manual download...");
 
         // Check latest version
         if let Ok(version) = check_latest_version() {

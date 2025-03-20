@@ -4,7 +4,7 @@
     import { parse as parseYaml } from 'yaml';
     import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
     import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
-    import { listen } from "@tauri-apps/api/event";
+    import { listen, type UnlistenFn } from "@tauri-apps/api/event";
     import ExecutableCodeBlock from "../ExecutableCodeBlock.svelte";
     import { readTextFile } from '@tauri-apps/plugin-fs';
     import { join } from '@tauri-apps/api/path';
@@ -58,87 +58,101 @@ const appWindow = getCurrentWebviewWindow()
         requestAnimationFrame(autoScroll);
     }
 
-    onMount(async () => {
-        try {
-            // Get URL parameters
-            const params = new URLSearchParams(window.location.search);
-            const projectPath = params.get('project');
-            const markdownFile = params.get('file');
+    onMount(() => {
+        let cleanup: (() => void) | null = null;
 
-            if (!projectPath || !markdownFile) {
-                throw new Error('Missing project path or markdown file');
-            }
+        const init = async () => {
+            try {
+                // Get URL parameters
+                const params = new URLSearchParams(window.location.search);
+                const projectPath = params.get('project');
+                const markdownFile = params.get('file');
 
-            // Read the markdown file using Tauri's fs API
-            const filePath = await join(projectPath, markdownFile);
-            const content = await readTextFile(filePath);
-            
-            // Parse frontmatter
-            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-            if (frontmatterMatch) {
-                const frontmatter = parseYaml(frontmatterMatch[1]);
-                if (frontmatter.template && frontmatter.template !== 'default') {
-                    throw new Error(`Invalid template: ${frontmatter.template}`);
+                if (!projectPath || !markdownFile) {
+                    throw new Error('Missing project path or markdown file');
                 }
-                await compileContent(frontmatterMatch[2]);
-            } else {
-                await compileContent(content);
-            }
 
-            // Set window properties
-            await appWindow.setAlwaysOnTop(false);
-            await appWindow.setDecorations(false);
-
-            // Register global shortcuts
-            await register("Control+Space", async () => {
-                console.log("bringing scroller window to focus");
-                await bringWindowToFocus();
-            });
-
-            await register("Left", () => {
-                console.log("Left arrow pressed");
-                handleScrollUp();
-            });
-
-            await register("Right", () => {
-                console.log("Right arrow pressed");
-                handleScrollDown();
-            });
-
-            // Start auto-scroll
-            if (scrollerElement) {
-                autoScroll();
-            }
-
-            // Listen for menu events
-            await listen("menu-event", (event) => {
-                switch (event.payload) {
-                    case "scroller_pause":
-                        handleScrollerPause();
-                        break;
-                    case "scroller_scroll_up":
-                        handleScrollUp();
-                        break;
-                    case "scroller_scroll_down":
-                        handleScrollDown();
-                        break;
+                // Read the markdown file using Tauri's fs API
+                const filePath = await join(projectPath, markdownFile);
+                const content = await readTextFile(filePath);
+                
+                // Parse frontmatter
+                const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+                if (frontmatterMatch) {
+                    const frontmatter = parseYaml(frontmatterMatch[1]);
+                    if (frontmatter.template && frontmatter.template !== 'default') {
+                        throw new Error(`Invalid template: ${frontmatter.template}`);
+                    }
+                    await compileContent(frontmatterMatch[2]);
+                } else {
+                    await compileContent(content);
                 }
-            });
-        } catch (err) {
-            console.error('Error loading content:', err);
-        }
 
+                // Set window properties
+                await appWindow.setAlwaysOnTop(false);
+                await appWindow.setDecorations(false);
+
+                // Register global shortcuts
+                await register("Control+Space", async () => {
+                    console.log("bringing scroller window to focus");
+                    await bringWindowToFocus();
+                });
+
+                await register("Left", () => {
+                    console.log("Left arrow pressed");
+                    handleScrollUp();
+                });
+
+                await register("Right", () => {
+                    console.log("Right arrow pressed");
+                    handleScrollDown();
+                });
+
+                // Start auto-scroll
+                if (scrollerElement) {
+                    autoScroll();
+                }
+
+                // Set up menu event listener
+                let unlistenMenu: UnlistenFn | null = null;
+                await listen("menu-event", (event) => {
+                    switch (event.payload) {
+                        case "scroller_pause":
+                            handleScrollerPause();
+                            break;
+                        case "scroller_scroll_up":
+                            handleScrollUp();
+                            break;
+                        case "scroller_scroll_down":
+                            handleScrollDown();
+                            break;
+                    }
+                }).then(unlisten => unlistenMenu = unlisten);
+
+                // Set up cleanup function
+                cleanup = async () => {
+                    // Clean up the shortcuts
+                    try {
+                        await unregister("Control+Space");
+                        await unregister("Left");
+                        await unregister("Right");
+                        if (unlistenMenu) unlistenMenu();
+                    } catch (err) {
+                        console.error("Error during cleanup:", err);
+                    }
+                };
+
+            } catch (err) {
+                console.error('Error loading content:', err);
+            }
+        };
+
+        // Start initialization
+        init();
+
+        // Return cleanup function
         return () => {
-            // Clean up the shortcuts when the component is destroyed
-            unregister("Control+Space").catch((err) =>
-                console.error("Error unregistering Control+Space shortcut:", err)
-            );
-            unregister("Left").catch((err) =>
-                console.error("Error unregistering Left shortcut:", err)
-            );
-            unregister("Right").catch((err) =>
-                console.error("Error unregistering Right shortcut:", err)
-            );
+            if (cleanup) cleanup();
         };
     });
 

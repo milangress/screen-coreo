@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { listen } from '@tauri-apps/api/event';
+    import { listen, type UnlistenFn } from '@tauri-apps/api/event';
     import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
     // import { writeText } from '@tauri-apps/plugin-clipboard-manager';
     import VideoBlock from './VideoBlock.svelte';
@@ -19,6 +19,9 @@
     $: component = getComponent(componentName);
 
     onMount(() => {
+      let unlistenContentSet: UnlistenFn | null = null;
+      let unlistenFilters: UnlistenFn | null = null;
+
       console.log('Window component mounted');
       
       const setup = async () => {
@@ -38,14 +41,28 @@
       
       window.addEventListener('keydown', handleKeyPress);
 
+      // Set up event listeners and store their cleanup functions
+      appWindow.listen('set-content', async (event: any) => {
+        console.log(`${appWindow.label} Received set-content event`, event);
+        const { component: newComponentName, props: newComponentProps } = event.payload;
+        componentName = newComponentName;
+        componentProps = newComponentProps;
+        key += 1; // Increment key to force re-render
+        console.log('Component set:', componentName);
+        console.log('Emitting content-set event');
+        await emit('content-set', { label: appWindow.label });
+      }).then(unlisten => unlistenContentSet = unlisten);
+
       appWindow.listen('apply-filters', (event: any) => {
         console.log('Received apply-filters event', event);
         filters = event.payload;
         applyFilters();
-      });
+      }).then(unlisten => unlistenFilters = unlisten);
 
       return () => {
         window.removeEventListener('keydown', handleKeyPress);
+        if (unlistenContentSet) unlistenContentSet();
+        if (unlistenFilters) unlistenFilters();
       };
     });
   
@@ -64,17 +81,6 @@
           return null;
       }
     }
-
-    appWindow.listen('set-content', async (event: any) => {
-      console.log(`${appWindow.label} Received set-content event`, event);
-      const { component: newComponentName, props: newComponentProps } = event.payload;
-      componentName = newComponentName;
-      componentProps = newComponentProps;
-      key += 1; // Increment key to force re-render
-      console.log('Component set:', componentName);
-      console.log('Emitting content-set event');
-      await emit('content-set', { label: appWindow.label });
-    });
 
     async function generateWindowString() {
       const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();

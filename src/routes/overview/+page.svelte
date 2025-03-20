@@ -125,7 +125,7 @@
       contentBlocks = [...contentBlocks]; // Trigger reactivity
 
       // Wait for execution and delay
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       currentBlockIndex++;
       await executeNextBlock();
     }
@@ -200,6 +200,7 @@
       {#each contentBlocks as block, i (i)}
         {#if block.type === 'code' && highlighter}
           <CodeBlockExecutor
+            className="code-block-container"
             code={block.content}
             highlighter={highlighter}
             containerWidth={400}

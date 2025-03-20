@@ -152,6 +152,10 @@
     }
   }
 
+  async function handlePrint() {
+    window.print();
+  }
+
   onMount(async () => {
     try {
       console.log('[Overview] Component mounted');
@@ -184,6 +188,12 @@
         disabled={executing}
       >
         {executing ? 'Executing...' : 'Execute All Code Blocks'}
+      </button>
+      <button 
+        on:click={handlePrint}
+        class="print-button"
+      >
+        Print / Generate PDF
       </button>
     </div>
     <div class="content">
@@ -220,8 +230,33 @@
     margin: 0 auto;
   }
 
+  /* Add print-specific styles */
+  @media print {
+    .controls {
+      display: none; /* Hide buttons when printing */
+    }
+    
+    main {
+      padding: 0; /* Remove padding for print */
+    }
+
+    .content {
+      break-inside: avoid; /* Prevent content from breaking across pages */
+    }
+
+    /* Ensure code blocks print well */
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #f5f5f5 !important;
+      border: 1px solid #ddd;
+    }
+  }
+
   .controls {
     margin: 20px 0;
+    display: flex;
+    gap: 10px;
   }
 
   button {
@@ -232,6 +267,10 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  .print-button {
+    background: #4CAF50;
   }
 
   button:disabled {

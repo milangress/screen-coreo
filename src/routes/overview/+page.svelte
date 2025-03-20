@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { MyWindow } from '$lib/Actor/MyWindow';
+  import { FluxWindow } from '$/lib/Actor/Flux';
   import AbstractWindow from './AbstractWindow.svelte';
   import type { SerializedScene } from '$lib/types';
   import { createHighlighter } from 'shiki';
@@ -21,7 +21,7 @@
   }
 
   async function getScreenDimensions() {
-    const logicalSize = await MyWindow.getLogicalScreenSize();
+    const logicalSize = await FluxWindow.getLogicalScreenSize();
     const aspectRatio = logicalSize.width / logicalSize.height;
     return {
       width: logicalSize.width,

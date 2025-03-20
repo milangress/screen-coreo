@@ -6,7 +6,7 @@ import { emitTo, listen } from '@tauri-apps/api/event';
 
 import { KeyEventManager } from '$lib/KeyEventManager';
 
-export class MyWindow {
+export class FluxWindow {
   private label: string;
   private options: any = {};
   private customOptions: any = {};
@@ -18,49 +18,49 @@ export class MyWindow {
 
   constructor(label: string) {
     this.label = label;
-    console.log('MyWindow constructor', label);
+    console.log('FluxWindow constructor', label);
     this.keyEventManager = KeyEventManager.getInstance();
     // Get project path from URL if available
     const params = new URLSearchParams(window.location.search);
     this.projectPath = params.get('project');
   }
 
-  size(widthPercent: number, heightPercent: number): MyWindow {
+  size(widthPercent: number, heightPercent: number): FluxWindow {
     this.options.widthPercent = widthPercent;
     this.options.heightPercent = heightPercent;
     return this;
   }
 
-  position(xPercent: number, yPercent: number): MyWindow {
+  position(xPercent: number, yPercent: number): FluxWindow {
     this.options.xPercent = xPercent;
     this.options.yPercent = yPercent;
     return this;
   }
 
-  content(component: string, props: any = {}): MyWindow {
+  content(component: string, props: any = {}): FluxWindow {
     this.contentComponent = component;
     this.contentProps = props;
     return this;
   }
 
-  video(src: string): MyWindow {
+  video(src: string): FluxWindow {
     this.contentComponent = 'VideoBlock';
     this.contentProps.src = src;
     return this;
   }
 
-  image(src: string): MyWindow {
+  image(src: string): FluxWindow {
     this.contentComponent = 'ImageBlock';
     this.contentProps.src = src;
     return this;
   }
 
-  volume(volume: number): MyWindow {
+  volume(volume: number): FluxWindow {
     this.contentProps.volume = volume;
     return this;
   }
 
-  async listen(event: string, callback: () => void): Promise<MyWindow> {
+  async listen(event: string, callback: () => void): Promise<FluxWindow> {
     // let window = windowManager.getWindow(this.label);
     // if (window) {
     //   await window.listen(event, callback);
@@ -71,12 +71,12 @@ export class MyWindow {
     return this;
   }
 
-  async open(): Promise<MyWindow> {
+  async open(): Promise<FluxWindow> {
     await this.getOrCreateWindow();
     return this;
   }
 
-  on(event: string, callback: (e: any) => void): MyWindow {
+  on(event: string, callback: (e: any) => void): FluxWindow {
     if (event.startsWith('KEY_')) {
       const key = event.replace('KEY_', '');
       this.keyEventManager.addKeyHandler(key, (keyEvent) => {
@@ -96,7 +96,7 @@ export class MyWindow {
     }
   }
 
-  filter(filters: Record<string, string>): MyWindow {
+  filter(filters: Record<string, string>): FluxWindow {
     this.filters = { ...this.filters, ...filters };
     return this;
   }
@@ -105,7 +105,7 @@ export class MyWindow {
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);
     console.log('getOrCreateWindow', this.label, window);
-    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
+    const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
 
     if (!window) {
       // Construct URL with project path if available
@@ -245,11 +245,11 @@ export class MyWindow {
     };
     duration: number;
     steps: number;
-  }): Promise<MyWindow> {
+  }): Promise<FluxWindow> {
     const window = await this.getOrCreateWindow();
     const { from, to, duration, steps } = options;
 
-    const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
+    const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
 
     const currentSize = await window.innerSize();
     const currentPosition = await window.outerPosition();

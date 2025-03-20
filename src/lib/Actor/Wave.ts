@@ -2,8 +2,8 @@ import { getAssetUrl } from '$lib/utils';
 import { emit, listen } from '@tauri-apps/api/event';
 import { v4 as uuidv4 } from 'uuid';
 
-export class MyAudio {
-  private static instances: { [key: string]: MyAudio } = {};
+export class WaveAudio {
+  private static instances: { [key: string]: WaveAudio } = {};
   private audioContext: AudioContext;
   private audioElement: HTMLAudioElement | null = null;
   private source: MediaElementAudioSourceNode | null = null;
@@ -44,15 +44,15 @@ export class MyAudio {
     });
   }
 
-  static getInstance(id: string): MyAudio {
-    if (!MyAudio.instances[id]) {
-      MyAudio.instances[id] = new MyAudio(id);
+  static getInstance(id: string): WaveAudio {
+    if (!WaveAudio.instances[id]) {
+      WaveAudio.instances[id] = new WaveAudio(id);
       emit('audio-instance-created', { id });
     }
-    return MyAudio.instances[id];
+    return WaveAudio.instances[id];
   }
 
-  async load(url: string): Promise<MyAudio> {
+  async load(url: string): Promise<WaveAudio> {
     // Early escape if already loaded with same URL
     if (this.isLoaded && this.url === url) {
       console.log(`Audio ${this.id} already loaded`);
@@ -93,7 +93,7 @@ export class MyAudio {
     return this;
   }
 
-  play(eventId: string | null = null): MyAudio {
+  play(eventId: string | null = null): WaveAudio {
     const now = Date.now();
     if (now - this.lastActionTime < this.DEBOUNCE_TIME) {
       return this;
@@ -124,7 +124,7 @@ export class MyAudio {
     return this;
   }
 
-  stop(eventId: string | null = null): MyAudio {
+  stop(eventId: string | null = null): WaveAudio {
     const now = Date.now();
     if (now - this.lastActionTime < this.DEBOUNCE_TIME) {
       return this;
@@ -142,7 +142,7 @@ export class MyAudio {
     return this;
   }
 
-  setVolume(level: number, eventId: string | null = null): MyAudio {
+  setVolume(level: number, eventId: string | null = null): WaveAudio {
     this.volume = level;
     this.gainNode.gain.setValueAtTime(level, this.audioContext.currentTime);
     const newEventId = eventId || uuidv4();
@@ -164,6 +164,6 @@ export class MyAudio {
   }
 }
 
-export default function(id: string): MyAudio {
-  return MyAudio.getInstance(id);
+export default function(id: string): WaveAudio {
+  return WaveAudio.getInstance(id);
 }

@@ -7,7 +7,7 @@
     import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
     import ScenesMdBlock from './ScenesMdBlock.svelte';
-    import { MyWindow } from '../../lib/Actor/MyWindow';
+    import { FluxWindow } from '../../lib/Actor/Flux';
 
     const appWindow = getCurrentWebviewWindow()
     let componentName: string | null = null;
@@ -82,7 +82,7 @@
     }
 
     async function generateWindowString() {
-      const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
+      const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
       const innerSize = await appWindow.innerSize();
       const innerPosition = await appWindow.innerPosition();
       const scaleFactor = await appWindow.scaleFactor();
@@ -109,7 +109,7 @@
           '';
 
       // Use appWindow.label as a property, not a function
-      const windowString = `MyWindow('${appWindow.label}').size(${sizeX}, ${sizeY}).position(${posX}, ${posY})${componentString}.open();`;
+      const windowString = `Flux('${appWindow.label}').size(${sizeX}, ${sizeY}).position(${posX}, ${posY})${componentString}.open();`;
 
       // await writeText(windowString);
       console.log('Window string copied to clipboard:', windowString);

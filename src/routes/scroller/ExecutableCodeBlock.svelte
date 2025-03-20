@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { MyWindow } from '$lib/Actor/MyWindow';
+    import { FluxWindow } from '$/lib/Actor/Flux';
     import { windowManager } from '$lib/WindowManager';
     import Shell from '$lib/Actor/Shell';
-    import MyAudio from '$lib/Actor/MyAudio';
+    import WaveAudio from '$/lib/Actor/Wave';
     import { emit } from '@tauri-apps/api/event';
     import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 const appWindow = getCurrentWebviewWindow()
@@ -66,8 +66,8 @@ const appWindow = getCurrentWebviewWindow()
 
             // Create a context object with the necessary imports
             const context = {
-                Flux: MyWindow,
-                Wave: MyAudio,
+                Flux: FluxWindow,
+                Wave: WaveAudio,
                 Shell: Shell,
                 windowManager,
             };

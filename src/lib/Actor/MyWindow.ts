@@ -3,6 +3,7 @@ import { windowManager } from '$lib/WindowManager';
 import { sceneManager } from '$lib/SceneManager';
 import { currentMonitor } from '@tauri-apps/api/window';
 import { LogicalSize, LogicalPosition, PhysicalSize, PhysicalPosition } from '@tauri-apps/api/dpi';
+import { emitTo, listen } from '@tauri-apps/api/event';
 
 import { KeyEventManager } from '$lib/KeyEventManager';
 
@@ -108,6 +109,7 @@ export class MyWindow {
 
   private async getOrCreateWindow(): Promise<WebviewWindow> {
     let window = windowManager.getWindow(this.label);
+    console.log('getOrCreateWindow', this.label, window);
     const { width: screenWidth, height: screenHeight } = await MyWindow.getLogicalScreenSize();
 
     if (!window) {
@@ -154,7 +156,7 @@ export class MyWindow {
   }
 
   private async applyFilters(window: WebviewWindow): Promise<void> {
-    await window.emit('apply-filters', this.filters);
+    await this.emitToWindow('apply-filters', this.filters);
   }
 
   public static async getLogicalScreenSize() {
@@ -175,7 +177,7 @@ export class MyWindow {
     return Math.round((percent / 100) * total);
   }
 
-  private async setWindowContent(window: WebviewWindow, maxRetries = 3): Promise<void> {
+  private async setWindowContent(window: WebviewWindow, maxRetries = 10): Promise<void> {
     if (!this.contentComponent) return;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -183,31 +185,58 @@ export class MyWindow {
         // Include the window label (which serves as the ID) in the props
         const propsWithId = { ...this.contentProps, id: this.label };
         
-        await window.emit('set-content', { 
+        console.log('setWindowContent attempt', attempt, 'for window', this.label, this.contentComponent, propsWithId);
+        
+        // Set up the content-set listener before emitting
+        const contentSetPromise = new Promise<void>((resolve, reject) => {
+          let unlisten: (() => void) | undefined;
+          
+          const timeout = setTimeout(async () => {
+            console.log(`Timeout on attempt ${attempt} for window ${this.label}`);
+            if (unlisten) await unlisten();
+            reject(new Error('Timeout waiting for content-set event'));
+          }, 200); // 100ms timeout per attempt
+
+          const setup = async () => {
+            unlisten = await listen('content-set', (event: { payload?: { label?: string } }) => {
+              console.log('Received content-set event', event, 'for window', this.label);
+              if (event.payload?.label === this.label) {
+                clearTimeout(timeout);
+                if (unlisten) unlisten();
+                resolve();
+              }
+            });
+          };
+          setup();
+        });
+
+        // Emit the content setting event
+        await this.emitToWindow('set-content', { 
           component: this.contentComponent, 
           props: propsWithId 
         });
+
+        // Wait for confirmation or timeout
+        await contentSetPromise;
+        console.log(`Content set successfully for window: ${this.label} on attempt ${attempt}`);
+        return; // Only return on successful content set
         
-        await new Promise<void>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            reject(new Error('Timeout waiting for content-set event'));
-          }, 500);
-
-          window.once('content-set', () => {
-            clearTimeout(timeout);
-            resolve();
-          });
-        });
-
-        console.log(`Content set successfully for window: ${this.label}`);
-        return;
       } catch (error) {
-        console.error(`Attempt ${attempt} failed to set content for window: ${this.label}`, error);
+        console.log(`Attempt ${attempt} failed for window ${this.label}, will${attempt === maxRetries ? ' not' : ''} retry`);
         if (attempt === maxRetries) {
-          throw new Error(`Failed to set content after ${maxRetries} attempts for window: ${this.label}`);
+          console.error(`All ${maxRetries} attempts failed to set content for window: ${this.label}`, error);
+          throw error;
         }
+        // Small delay before next retry
+        await new Promise(resolve => setTimeout(resolve, 100));
+        continue; // Explicitly continue to next retry
       }
     }
+  }
+
+  private async emitToWindow(event: string, payload: any) {
+    console.log('emitToWindow', this.label, event, payload);
+    await emitTo(this.label, event, payload);
   }
 
   async animate(options: {

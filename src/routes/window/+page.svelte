@@ -9,7 +9,8 @@
     import ScenesMdBlock from './ScenesMdBlock.svelte';
     import { MyWindow } from '../../lib/Actor/MyWindow';
     import { emit } from '@tauri-apps/api/event';
-const appWindow = getCurrentWebviewWindow()
+
+    const appWindow = getCurrentWebviewWindow()
     let componentName: string | null = null;
     let componentProps: any = {};
     let key = 0; // Add this line to force re-renders
@@ -37,7 +38,7 @@ const appWindow = getCurrentWebviewWindow()
       
       window.addEventListener('keydown', handleKeyPress);
 
-      listen('apply-filters', (event: any) => {
+      appWindow.listen('apply-filters', (event: any) => {
         console.log('Received apply-filters event', event);
         filters = event.payload;
         applyFilters();
@@ -64,16 +65,15 @@ const appWindow = getCurrentWebviewWindow()
       }
     }
 
-    listen('set-content', async (event: any) => {
-      console.log('Received set-content event', event);
+    appWindow.listen('set-content', async (event: any) => {
+      console.log(`${appWindow.label} Received set-content event`, event);
       const { component: newComponentName, props: newComponentProps } = event.payload;
       componentName = newComponentName;
       componentProps = newComponentProps;
       key += 1; // Increment key to force re-render
       console.log('Component set:', componentName);
       console.log('Emitting content-set event');
-      const { emit } = await import('@tauri-apps/api/event');
-      await emit('content-set');
+      await emit('content-set', { label: appWindow.label });
     });
 
     async function generateWindowString() {
@@ -109,7 +109,6 @@ const appWindow = getCurrentWebviewWindow()
       // await writeText(windowString);
       console.log('Window string copied to clipboard:', windowString);
 
-      // const { emit } = await import('@tauri-apps/api/event');
       await emit('window-string-generated', windowString);
     }
 

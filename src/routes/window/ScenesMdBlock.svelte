@@ -4,6 +4,8 @@ import { createHighlighter } from 'shiki';
 import { onMount } from 'svelte';
 
 let html: string;
+export let showThumbnail = false;
+
 
 onMount(async () => {
     const highlighter = await createHighlighter({

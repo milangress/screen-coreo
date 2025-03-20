@@ -4,6 +4,8 @@
     export let title: string;
     export let imageSrc: string;
     let assetSrc: string;
+    export let showThumbnail = false;
+
 
     $: if (imageSrc) {
         (async () => {

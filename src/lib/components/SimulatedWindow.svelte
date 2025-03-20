@@ -59,7 +59,7 @@
         {window.label}
     </div>
     <div class="window-content">
-        {#if window.content?.type === 'VideoBlock'}
+        {#if window.content?.type === 'VideoBlock2'}
             <div class="video-placeholder">
                 <div class="video-info">
                     <span class="icon">🎥</span>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         {:else if component && window.content}
-            <svelte:component this={component} {...window.content.props} />
+            <svelte:component this={component} showThumbnail={true} {...window.content.props} />
         {:else if window.content}
             <div class="content-placeholder">
                 {window.content.type}

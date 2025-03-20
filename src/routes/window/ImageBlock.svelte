@@ -3,6 +3,8 @@
 
     export let src: string;
     let assetSrc: string;
+    export let showThumbnail = false;
+
 
     $: if (src) {
         (async () => {

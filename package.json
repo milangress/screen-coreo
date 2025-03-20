@@ -9,6 +9,7 @@
     "svelte:preview": "vite preview",
     "svelte:check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "svelte:check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "tauri:rebuild": "cd src-tauri && cargo clean && cargo build",
     "tauri": "tauri",
     "dev": "tauri dev",
     "dev:debug": "RUST_BACKTRACE=1 tauri dev --verbose",

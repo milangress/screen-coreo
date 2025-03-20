@@ -4,7 +4,7 @@
   import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
   import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
   import { listen } from "@tauri-apps/api/event";
-  import scenesContent from "./scenes.md?raw";
+  import scenesContent from "../../../projects/arachovitika/scenes-old.md?raw";
   import ExecutableCodeBlock from "./ExecutableCodeBlock.svelte";
 const appWindow = getCurrentWebviewWindow()
 

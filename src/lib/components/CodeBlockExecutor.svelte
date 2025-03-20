@@ -161,6 +161,10 @@
     <div class="debug-info">
         <p>Store state: {$simulatedWindows.length} windows</p>
         <p>Local state: {localWindowState.length} windows</p>
+        <details>
+            <summary>localWindowState</summary>
+            <pre>{JSON.stringify({ localWindowState}, null, 2)}</pre>
+        </details>
     </div>
 </div>
 

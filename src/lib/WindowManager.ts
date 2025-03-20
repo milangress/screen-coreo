@@ -1,6 +1,5 @@
-import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/webviewWindow';
+import { WebviewWindow, getCurrentWebviewWindow, getAllWebviewWindows } from '@tauri-apps/api/webviewWindow';
 import { currentWindows } from '$lib/stores';
-import { get } from 'svelte/store';
 import { emit } from '@tauri-apps/api/event';
 
 interface WindowInfo {
@@ -14,7 +13,7 @@ class WindowManager {
   private defaultZIndex = 10;
 
   constructor() {
-    const mainWindow = getCurrent();
+    const mainWindow = getCurrentWebviewWindow();
     this.windows.set('main', {
       window: mainWindow,
       zIndex: this.defaultZIndex,
@@ -23,10 +22,12 @@ class WindowManager {
     this.updateCurrentWindows();
 
     // Listen for window close events
-    getAll().forEach(window => {
-      window.onCloseRequested(() => {
-        this.windows.delete(window.label);
-        this.updateCurrentWindows();
+    getAllWebviewWindows().then(windows => {
+      windows.forEach(window => {
+        window.onCloseRequested(() => {
+          this.windows.delete(window.label);
+          this.updateCurrentWindows();
+        });
       });
     });
   }

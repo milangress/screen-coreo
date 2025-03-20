@@ -44,7 +44,6 @@ fn main() {
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_persisted_scope::init())
         .invoke_handler(tauri::generate_handler![
             close_all_windows_force,
             close_all_windows_except_main_prefix

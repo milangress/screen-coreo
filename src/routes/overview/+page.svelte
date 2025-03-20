@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { FluxWindow } from '$lib/Actor/Flux';
   import { simulatedWindows } from '$lib/stores/simulatedWindows';
-  import SimulatedWindow from '$lib/components/SimulatedWindow.svelte';
+  import CodeBlockExecutor from '$lib/components/CodeBlockExecutor.svelte';
   import { createHighlighter } from 'shiki';
   import { marked } from 'marked';
   import { readTextFile } from '@tauri-apps/plugin-fs';
@@ -13,13 +13,29 @@
   let highlighter: Awaited<ReturnType<typeof createHighlighter>> | null = null;
   let highlighterReady = false;
   let content: string = '';
-  let contentBlocks: Array<{ type: 'text' | 'code', content: string }> = [];
+  let contentBlocks: Array<{ 
+    type: 'text' | 'code', 
+    content: string, 
+    highlightedCode?: string,
+    executionCount?: number
+  }> = [];
+  let executing = false;
+  let currentBlockIndex = 0;
 
   $: {
     if (!highlighterReady) {
       initializeShiki().catch(e => {
         console.error('Failed to initialize Shiki:', e);
         error = `Failed to initialize syntax highlighter: ${e.message}`;
+      });
+    }
+  }
+
+  $: {
+    if ($simulatedWindows.length > 0) {
+      console.log('[Overview] Store updated:', {
+        windowCount: $simulatedWindows.length,
+        windows: $simulatedWindows
       });
     }
   }
@@ -65,50 +81,89 @@
       const tokens = marked.lexer(content);
       contentBlocks = tokens.map(token => ({
         type: token.type === 'code' ? 'code' : 'text',
-        content: token.type === 'code' ? token.text : marked.parser([token])
+        content: token.type === 'code' ? token.text : marked.parser([token]),
+        highlightedCode: token.type === 'code' ? 
+          highlighter?.codeToHtml(token.text, { lang: 'javascript', theme: 'min-light' }) || '' : 
+          '',
+        executionCount: 0
       }));
 
       // Enable simulation mode for any code execution
       FluxWindow.enableSimulationMode();
+      console.log('[Overview] Simulation mode enabled');
+
+      // Verify simulation mode is enabled
+      if (!FluxWindow.isSimulationMode()) {
+        throw new Error('Failed to enable simulation mode');
+      }
     } catch (e) {
       console.error('Error loading content:', e);
       error = String(e);
     }
   }
 
-  async function executeCode(code: string) {
-    try {
-      // Clear previous windows
-      simulatedWindows.clear();
+  async function executeNextBlock() {
+    if (!executing) return;
 
-      // Create a function that wraps the code and provides necessary context
-      const wrappedCode = `
-        return (async () => {
-          const Flux = this.Flux;
-          ${code}
-        })();
-      `;
+    const codeBlocks = contentBlocks.filter(block => block.type === 'code');
+    if (currentBlockIndex >= codeBlocks.length) {
+      executing = false;
+      currentBlockIndex = 0;
+      console.log('[Overview] All blocks executed');
+      return;
+    }
 
-      // Create a context object with the necessary imports
-      const context = {
-        // Instead of returning a new FluxWindow directly, provide the constructor
-        Flux: FluxWindow
+    // Find the index in the original array
+    const blockIndex = contentBlocks.findIndex(block => 
+      block === codeBlocks[currentBlockIndex]
+    );
+
+    if (blockIndex !== -1) {
+      console.log(`[Overview] Executing block ${currentBlockIndex}/${codeBlocks.length}:`, contentBlocks[blockIndex].content);
+      
+      // Update the execution count to trigger the component
+      contentBlocks[blockIndex] = {
+        ...contentBlocks[blockIndex],
+        executionCount: (contentBlocks[blockIndex].executionCount || 0) + 1
       };
+      contentBlocks = [...contentBlocks]; // Trigger reactivity
 
-      // Execute the code within the context
-      const func = new Function(wrappedCode).bind(context);
-      await func();
-    } catch (error) {
-      console.error('Error executing code:', error);
+      // Wait for execution and delay
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      currentBlockIndex++;
+      await executeNextBlock();
+    }
+  }
+
+  async function executeAllCodeBlocks() {
+    if (executing) {
+      console.log('[Overview] Already executing, skipping');
+      return;
+    }
+
+    executing = true;
+    currentBlockIndex = 0;
+    console.log('[Overview] Starting execution of all code blocks');
+
+    try {
+      await executeNextBlock();
+    } catch (e) {
+      console.error('[Overview] Error executing code blocks:', e);
+      error = String(e);
+      executing = false;
     }
   }
 
   onMount(async () => {
     try {
+      console.log('[Overview] Component mounted');
       screenDimensions = await getScreenDimensions();
+      console.log('[Overview] Screen dimensions:', screenDimensions);
+      
       await loadContent();
+      console.log('[Overview] Content loaded');
     } catch (e) {
-      console.error('Error in onMount:', e);
+      console.error('[Overview] Error in onMount:', e);
       error = String(e);
     }
   });
@@ -125,31 +180,31 @@
   {:else if !highlighterReady || !screenDimensions}
     <p>Loading...</p>
   {:else}
+    <div class="controls">
+      <button 
+        on:click={executeAllCodeBlocks} 
+        disabled={executing}
+      >
+        {executing ? 'Executing...' : 'Execute All Code Blocks'}
+      </button>
+    </div>
     <div class="content">
-      {#each contentBlocks as block}
+      {#each contentBlocks as block, i (i)}
         {#if block.type === 'code'}
-          <div class="code-block">
-            <div class="code-preview">
-              {@html highlighter?.codeToHtml(block.content, { lang: 'javascript', theme: 'min-light' }) || ''}
-              <button class="execute-button" on:click={() => executeCode(block.content)}>
-                Preview Windows
-              </button>
-            </div>
-            <div class="window-preview">
-              <div 
-                class="screen" 
-                style="aspect-ratio: {screenDimensions.aspectRatio};"
-              >
-                {#each $simulatedWindows as window}
-                  <SimulatedWindow 
-                    {window}
-                    containerWidth={500}
-                    containerHeight={500 / screenDimensions.aspectRatio}
-                  />
-                {/each}
-              </div>
-            </div>
-          </div>
+          <CodeBlockExecutor
+            code={block.content}
+            highlightedCode={block.highlightedCode || ''}
+            containerWidth={400}
+            containerHeight={400 / screenDimensions.aspectRatio}
+            index={i}
+            executionCount={block.executionCount || 0}
+            on:executed={e => {
+              if (!e.detail.success) {
+                error = e.detail.error;
+                executing = false;
+              }
+            }}
+          />
         {:else}
           <div class="text-block">
             {@html block.content}
@@ -167,35 +222,27 @@
     margin: 0 auto;
   }
 
+  .controls {
+    margin: 20px 0;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
   .content {
     margin-top: 20px;
-  }
-
-  .code-block {
-    display: flex;
-    gap: 20px;
-    margin: 20px 0;
-    padding: 20px;
-    background: #f5f5f5;
-    border-radius: 8px;
-  }
-
-  .code-preview {
-    flex: 1;
-  }
-
-  .window-preview {
-    flex: 1;
-    min-width: 500px;
-  }
-
-  .screen {
-    width: 100%;
-    height: auto;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    position: relative;
   }
 
   .text-block {
@@ -205,32 +252,5 @@
   .error {
     color: red;
     font-weight: bold;
-  }
-
-  .execute-button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .execute-button:hover {
-    background: #0056b3;
-  }
-
-  :global(pre) {
-    margin: 0;
-    padding: 1em;
-    border-radius: 4px;
-    overflow-x: auto;
-  }
-
-  :global(code) {
-    font-family: 'Fira Code', monospace;
-    font-size: 14px;
-    line-height: 1.5;
   }
 </style>

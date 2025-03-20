@@ -17,39 +17,50 @@ export class FluxWindow {
   private filters: Record<string, string> = {};
   private projectPath: string | null = null;
   private simulationMode: boolean = false;
+  private static simulationModeEnabled = false;
 
   constructor(label: string, options: { simulationMode?: boolean } = {}) {
     this.label = label;
     // Check URL for simulation mode
     const params = new URLSearchParams(window.location.search);
     const isOverviewMode = window.location.pathname.includes('/overview');
-    this.simulationMode = options.simulationMode || isOverviewMode;
+    this.simulationMode = options.simulationMode || isOverviewMode || FluxWindow.simulationModeEnabled;
     
-    console.log('FluxWindow constructor', label, 'simulation:', this.simulationMode);
+    console.log('FluxWindow constructor', {
+      label,
+      simulationMode: this.simulationMode,
+      isOverviewMode,
+      pathname: window.location.pathname,
+      globalSimulationMode: FluxWindow.simulationModeEnabled
+    });
+    
     this.keyEventManager = KeyEventManager.getInstance();
-    // Get project path from URL if available
     this.projectPath = params.get('project');
   }
 
   size(widthPercent: number, heightPercent: number): FluxWindow {
+    console.log('Setting size:', { widthPercent, heightPercent });
     this.options.widthPercent = widthPercent;
     this.options.heightPercent = heightPercent;
     return this;
   }
 
   position(xPercent: number, yPercent: number): FluxWindow {
+    console.log('Setting position:', { xPercent, yPercent });
     this.options.xPercent = xPercent;
     this.options.yPercent = yPercent;
     return this;
   }
 
   content(component: string, props: any = {}): FluxWindow {
+    console.log('Setting content:', { component, props });
     this.contentComponent = component;
     this.contentProps = props;
     return this;
   }
 
   video(src: string): FluxWindow {
+    console.log('Setting video:', { src });
     this.contentComponent = 'VideoBlock';
     this.contentProps.src = src;
     return this;
@@ -78,6 +89,10 @@ export class FluxWindow {
   }
 
   async open(): Promise<FluxWindow> {
+    console.log('Opening window:', {
+      label: this.label,
+      simulationMode: this.simulationMode
+    });
     await this.getOrCreateWindow();
     return this;
   }
@@ -310,10 +325,15 @@ export class FluxWindow {
     return this;
   }
 
-  private async updateSimulatedWindow() {
-    const { width: screenWidth, height: screenHeight } = await FluxWindow.getLogicalScreenSize();
+  private updateSimulatedWindow() {
+    console.log('Updating simulated window:', {
+      label: this.label,
+      options: this.options,
+      content: this.contentComponent,
+      filters: this.filters
+    });
 
-    const simulatedWindow = {
+    const windowData = {
       label: this.label,
       width: this.options.widthPercent || 100,
       height: this.options.heightPercent || 100,
@@ -321,19 +341,24 @@ export class FluxWindow {
       y: this.options.yPercent || 0,
       content: this.contentComponent ? {
         type: this.contentComponent,
-        props: this.contentProps
-      } : undefined
+        props: { ...this.contentProps }
+      } : null,
+      filters: { ...this.filters }
     };
 
-    simulatedWindows.addWindow(simulatedWindow);
+    console.log('Adding simulated window:', windowData);
+    simulatedWindows.addWindow(windowData);
   }
 
-  // Static method to enable simulation mode globally
   static enableSimulationMode() {
-    FluxWindow.prototype.simulationMode = true;
+    FluxWindow.simulationModeEnabled = true;
   }
 
   static disableSimulationMode() {
-    FluxWindow.prototype.simulationMode = false;
+    FluxWindow.simulationModeEnabled = false;
+  }
+
+  static isSimulationMode(): boolean {
+    return FluxWindow.simulationModeEnabled;
   }
 }

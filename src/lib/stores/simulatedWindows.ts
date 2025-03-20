@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 
 export type SimulatedWindow = {
     label: string;
@@ -9,22 +9,40 @@ export type SimulatedWindow = {
     content?: {
         type: string;
         props: Record<string, any>;
-    };
+    } | null;
+    filters?: Record<string, string>;
 };
 
-function createSimulatedWindowsStore() {
-    const { subscribe, set, update } = writable<SimulatedWindow[]>([]);
+const store = writable<SimulatedWindow[]>([]);
 
-    return {
-        subscribe,
-        addWindow: (window: SimulatedWindow) => update(windows => [...windows, window]),
-        removeWindow: (label: string) => update(windows => windows.filter(w => w.label !== label)),
-        updateWindow: (label: string, updates: Partial<SimulatedWindow>) => 
-            update(windows => windows.map(w => 
-                w.label === label ? { ...w, ...updates } : w
-            )),
-        clear: () => set([])
-    };
-}
-
-export const simulatedWindows = createSimulatedWindowsStore(); 
+export const simulatedWindows = {
+    subscribe: store.subscribe,
+    addWindow: (window: SimulatedWindow) => {
+        console.log('Adding/updating window:', {
+            window,
+            existingWindows: get(store)
+        });
+        
+        const existingIndex = get(store).findIndex(w => w.label === window.label);
+        if (existingIndex !== -1) {
+            const updatedWindows = [...get(store)];
+            updatedWindows[existingIndex] = window;
+            console.log('Updating existing window at index', existingIndex, 'new state:', updatedWindows);
+            store.set(updatedWindows);
+        } else {
+            const newState = [...get(store), window];
+            console.log('Added new window, new state:', newState);
+            store.set(newState);
+        }
+    },
+    removeWindow: (label: string) => {
+        console.log('Removing window:', label);
+        const newState = get(store).filter(w => w.label !== label);
+        console.log('State after removal:', newState);
+        store.set(newState);
+    },
+    clear: () => {
+        console.log('Clearing all windows');
+        store.set([]);
+    }
+}; 

@@ -40,29 +40,43 @@ fn close_all_windows_except_main_prefix(window: WebviewWindow) {
 }
 
 #[tauri::command]
-async fn open_cache_directory(app_handle: tauri::AppHandle) -> Result<(), String> {
+fn open_cache_directory(app_handle: tauri::AppHandle) -> Result<(), String> {
     let cache_dir = app_handle
         .path()
         .app_cache_dir()
         .map_err(|e| e.to_string())?;
 
+    // Create the directory if it doesn't exist
+    std::fs::create_dir_all(&cache_dir)
+        .map_err(|e| format!("Failed to create cache directory: {}", e))?;
+
+    println!("Cache directory: {:?}", cache_dir);
+
     #[cfg(target_os = "macos")]
-    Command::new("open")
-        .arg(cache_dir)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    {
+        println!("Opening cache directory on macOS");
+        Command::new("open")
+            .arg("-R") // Reveal in Finder instead of trying to open the directory
+            .arg(&cache_dir)
+            .spawn()
+            .map_err(|e| format!("Failed to open cache directory: {}", e))?;
+    }
 
     #[cfg(target_os = "windows")]
-    Command::new("explorer")
-        .arg(cache_dir)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    {
+        Command::new("explorer")
+            .arg(&cache_dir)
+            .spawn()
+            .map_err(|e| format!("Failed to open cache directory: {}", e))?;
+    }
 
     #[cfg(target_os = "linux")]
-    Command::new("xdg-open")
-        .arg(cache_dir)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    {
+        Command::new("xdg-open")
+            .arg(&cache_dir)
+            .spawn()
+            .map_err(|e| format!("Failed to open cache directory: {}", e))?;
+    }
 
     Ok(())
 }
@@ -227,17 +241,27 @@ pub fn run() {
             match event.id().0.as_str() {
                 "close_all_force" => {
                     close_all_windows_force(window.clone());
-                    window.emit_to("main", "menu-event", "close_all").unwrap();
+                    if let Err(e) = window.emit_to("main", "menu-event", "close_all") {
+                        eprintln!("Failed to emit menu event: {}", e);
+                    }
                 }
                 "close_all_non_main" => {
                     close_all_windows_except_main_prefix(window.clone());
-                    window.emit_to("main", "menu-event", "close_all_non_main").unwrap();
+                    if let Err(e) = window.emit_to("main", "menu-event", "close_all_non_main") {
+                        eprintln!("Failed to emit menu event: {}", e);
+                    }
                 }
                 "open_cache" => {
-                    let _ = open_cache_directory(app_handle.clone());
+                    println!("Opening cache directory");
+                    if let Err(e) = open_cache_directory(app_handle.clone()) {
+                        eprintln!("Failed to open cache directory: {}", e);
+                    }
                 }
-                _ => {
-                    window.emit_to("main", "menu-event", event.id().0.clone()).unwrap();
+                id => {
+                    // For all other menu items, emit the event to the main window
+                    if let Err(e) = window.emit_to("main", "menu-event", id) {
+                        eprintln!("Failed to emit menu event: {}", e);
+                    }
                 }
             }
         })

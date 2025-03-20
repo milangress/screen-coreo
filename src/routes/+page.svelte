@@ -244,21 +244,7 @@ const appWindow = getCurrentWebviewWindow()
     <div class="fade-box" class:faded={isFaded}>
         <!-- <h2>coreo</h2>   -->
         <div class="controlls" data-tauri-drag-region>
-            <div class="scene-info">
-                <h1>
-                    <select value={$currentScene} on:change={handleSceneChange}>
-                        <option value="">Select a scene</option>
-                        {#each scenes as scene}
-                            <option value={scene}>{scene}</option>
-                        {/each}
-                    </select>
-                </h1>
-            </div>
-            <button on:click={registerAllScenes}>Register Scenes</button>
-            <button on:click={startPresentation}>Start</button>
-            <button on:click={reloadScene}>Reload This</button>
             <button on:click={windowManager.closeAllWindows}>Close All</button>
-            <button on:click={nextScene}>Next</button>
         </div>
 
         <div class="monitor-selector">
@@ -279,7 +265,7 @@ const appWindow = getCurrentWebviewWindow()
             {/if}
         </div>
         <div class="open-windows flex">
-            <p>Open Windows -></p>
+            <p>Open Windows →</p>
             <ul class="open-windows-list flex-list">
                 {#each $currentWindows as window}
                     <li>{window}</li>
@@ -287,7 +273,7 @@ const appWindow = getCurrentWebviewWindow()
             </ul>
         </div>
         <div class="audio-streams flex">
-            <p>Loaded Audio Streams -></p>
+            <p>Loaded Audio Streams →</p>
             <ul class="open-windows-list flex-list">
                 {#each Array.from($audioStreams.loaded) as stream}
                     <li>{stream}</li>
@@ -295,7 +281,7 @@ const appWindow = getCurrentWebviewWindow()
             </ul>
         </div>
         <div class="audio-streams flex">
-            <p>Playing Audio Streams -></p>
+            <p>Playing Audio Streams →</p>
             <ul class="open-windows-list flex-list">
                 {#each Array.from($audioStreams.playing) as stream}
                     <li>{stream}</li>

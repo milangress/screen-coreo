@@ -160,22 +160,20 @@ fn main() {
             
             handle.listen_any("code-executed", move |event| {
                 println!("Scroller code executed: {:?}", event.payload());
-                if let Some(payload_str) = event.payload() {
-                    if let Ok(payload) = serde_json::from_str::<Value>(payload_str) {
-                        let success = payload
-                            .get("success")
-                            .and_then(|v| v.as_bool())
-                            .unwrap_or(true);
-                        if !success {
-                            let error = payload
-                                .get("error")
-                                .and_then(|v| v.as_str())
-                                .unwrap_or("Unknown error");
-                            println!("Scroller code evaluation error: {:?}", error);
-                        }
-                    } else {
-                        println!("Failed to parse payload as JSON");
+                if let Ok(payload) = serde_json::from_str::<Value>(event.payload().as_ref()) {
+                    let success = payload
+                        .get("success")
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(true);
+                    if !success {
+                        let error = payload
+                            .get("error")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("Unknown error");
+                        println!("Scroller code evaluation error: {:?}", error);
                     }
+                } else {
+                    println!("Failed to parse payload as JSON");
                 }
             });
             

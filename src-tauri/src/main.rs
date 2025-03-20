@@ -4,14 +4,18 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 use serde_json::Value;
-use tauri::{CustomMenuItem, Manager, Menu, MenuItem, Submenu, Window};
+use tauri::{
+    menu::{MenuBuilder, MenuItem, SubmenuBuilder, CheckMenuItemBuilder, PredefinedMenuItem},
+    Manager,
+    WebviewWindow,
+};
 
 // New Tauri command
 #[tauri::command]
-fn close_all_windows_force(window: Window) {
+fn close_all_windows_force(window: WebviewWindow) {
     let app = window.app_handle();
-    let windows = app.windows();
-
+    let windows = app.webview_windows();
+    
     for (window_label, window) in windows.iter() {
         if window_label != "main" {
             window.close().unwrap();
@@ -21,10 +25,10 @@ fn close_all_windows_force(window: Window) {
 
 // New Tauri command
 #[tauri::command]
-fn close_all_windows_except_main_prefix(window: Window) {
+fn close_all_windows_except_main_prefix(window: WebviewWindow) {
     let app = window.app_handle();
-    let windows = app.windows();
-
+    let windows = app.webview_windows();
+    
     for (window_label, window) in windows.iter() {
         if !window_label.starts_with("main") {
             window.close().unwrap();
@@ -33,101 +37,6 @@ fn close_all_windows_except_main_prefix(window: Window) {
 }
 
 fn main() {
-    // Custom menu items
-    let start = CustomMenuItem::new("start".to_string(), "Start");
-    let reload = CustomMenuItem::new("reload".to_string(), "Reload This");
-    let close_all = CustomMenuItem::new("close_all".to_string(), "Close All");
-    let close_all_non_main =
-        CustomMenuItem::new("close_all_non_main".to_string(), "Close All (No Main)");
-    let close_all_force = CustomMenuItem::new("close_all_force".to_string(), "Close All (Force)");
-    let next = CustomMenuItem::new("next".to_string(), "Next");
-    let view_overview = CustomMenuItem::new("view_overview".to_string(), "View Overview");
-
-    let scroller_open = CustomMenuItem::new("scroller_open".to_string(), "Open");
-    let scroller_focus = CustomMenuItem::new("scroller_focus".to_string(), "Focus");
-    let scroller_close = CustomMenuItem::new("scroller_close".to_string(), "Close");
-    let scroller_hide = CustomMenuItem::new("scroller_hide".to_string(), "Hide");
-    let scroller_show = CustomMenuItem::new("scroller_show".to_string(), "Show");
-    let scroller_pause = CustomMenuItem::new("scroller_pause".to_string(), "Pause");
-    let scroller_scroll_up = CustomMenuItem::new("scroller_scroll_up".to_string(), "Scroll Up");
-    let scroller_scroll_down =
-        CustomMenuItem::new("scroller_scroll_down".to_string(), "Scroll Down");
-    // Commands submenu (custom)
-    let commands = Submenu::new(
-        "Commands",
-        Menu::new()
-            .add_item(next)
-            .add_native_item(MenuItem::Separator)
-            .add_item(start)
-            .add_item(reload)
-            .add_native_item(MenuItem::Separator)
-            .add_item(close_all)
-            .add_item(close_all_force)
-            .add_item(close_all_non_main)
-            .add_native_item(MenuItem::Separator)
-            .add_item(view_overview),
-    );
-
-    let scroller_menu = Submenu::new(
-        "Scroller",
-        Menu::new()
-            .add_item(scroller_open)
-            .add_item(scroller_focus)
-            .add_item(scroller_close)
-            .add_native_item(MenuItem::Separator)
-            .add_item(scroller_hide)
-            .add_item(scroller_show)
-            .add_native_item(MenuItem::Separator)
-            .add_item(scroller_pause)
-            .add_item(scroller_scroll_up)
-            .add_item(scroller_scroll_down),
-    );
-
-    // Default menu items
-    let file_menu = Submenu::new(
-        "File",
-        Menu::new()
-            .add_item(CustomMenuItem::new("new", "New"))
-            .add_item(CustomMenuItem::new("open", "Open"))
-            .add_item(CustomMenuItem::new("save", "Save"))
-            .add_native_item(MenuItem::Separator)
-            .add_native_item(MenuItem::Quit),
-    );
-
-    let edit_menu = Submenu::new(
-        "Edit",
-        Menu::new()
-            .add_native_item(MenuItem::Undo)
-            .add_native_item(MenuItem::Redo)
-            .add_native_item(MenuItem::Separator)
-            .add_native_item(MenuItem::Cut)
-            .add_native_item(MenuItem::Copy)
-            .add_native_item(MenuItem::Paste),
-    );
-
-    let view_menu = Submenu::new(
-        "View",
-        Menu::new().add_native_item(MenuItem::EnterFullScreen),
-    );
-
-    // Combine default and custom menus
-    let menu = Menu::new()
-        .add_submenu(file_menu)
-        .add_submenu(edit_menu)
-        .add_submenu(view_menu)
-        .add_submenu(Submenu::new(
-            "Window",
-            Menu::new()
-                .add_native_item(MenuItem::Minimize)
-                .add_native_item(MenuItem::CloseWindow),
-        ))
-        .add_submenu(Submenu::new(
-            "Help",
-            Menu::new().add_item(CustomMenuItem::new("about", "About")),
-        ))
-        .add_submenu(commands)
-        .add_submenu(scroller_menu);
-
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
@@ -138,59 +47,119 @@ fn main() {
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
-        .menu(menu)
         .plugin(tauri_plugin_persisted_scope::init())
         .invoke_handler(tauri::generate_handler![
             close_all_windows_force,
             close_all_windows_except_main_prefix
         ])
-        .on_menu_event(|event| match event.menu_item_id() {
-            "close_all_force" => {
-                let window = event.window();
-                close_all_windows_force(window.clone());
-                event.window().emit("menu-event", "close_all").unwrap();
-            }
-            "close_all_non_main" => {
-                let window = event.window();
-                close_all_windows_except_main_prefix(window.clone());
-                event
-                    .window()
-                    .emit("menu-event", "close_all_non_main")
-                    .unwrap();
-            }
-            _ => {
-                event
-                    .window()
-                    .emit("menu-event", event.menu_item_id())
-                    .unwrap();
-            }
-        })
         .setup(|app| {
-            app.listen_global("audio-instance-created", |event| {
+            // Create submenus
+            let file_submenu = SubmenuBuilder::new(app, "File")
+                .text("new", "New")
+                .text("open", "Open")
+                .text("save", "Save")
+                .separator()
+                .item(&PredefinedMenuItem::quit(app, None)?)
+                .build()?;
+
+            let edit_submenu = SubmenuBuilder::new(app, "Edit")
+                .item(&PredefinedMenuItem::undo(app, None)?)
+                .item(&PredefinedMenuItem::redo(app, None)?)
+                .separator()
+                .item(&PredefinedMenuItem::cut(app, None)?)
+                .item(&PredefinedMenuItem::copy(app, None)?)
+                .item(&PredefinedMenuItem::paste(app, None)?)
+                .build()?;
+
+            let view_submenu = SubmenuBuilder::new(app, "View")
+                .item(&PredefinedMenuItem::enter_full_screen(app, None)?)
+                .build()?;
+
+            let window_submenu = SubmenuBuilder::new(app, "Window")
+                .item(&PredefinedMenuItem::minimize(app, None)?)
+                .item(&PredefinedMenuItem::close_window(app, None)?)
+                .build()?;
+
+            let help_submenu = SubmenuBuilder::new(app, "Help")
+                .text("about", "About")
+                .build()?;
+
+            let commands_submenu = SubmenuBuilder::new(app, "Commands")
+                .text("next", "Next")
+                .separator()
+                .text("start", "Start")
+                .text("reload", "Reload")
+                .separator()
+                .text("close_all", "Close All")
+                .text("close_all_force", "Close All (Force)")
+                .text("close_all_non_main", "Close All (No Main)")
+                .separator()
+                .text("view_overview", "View Overview")
+                .build()?;
+
+            let scroller_submenu = SubmenuBuilder::new(app, "Scroller")
+                .text("scroller_open", "Open")
+                .text("scroller_focus", "Focus")
+                .text("scroller_close", "Close")
+                .separator()
+                .text("scroller_hide", "Hide")
+                .text("scroller_show", "Show")
+                .separator()
+                .text("scroller_pause", "Pause")
+                .text("scroller_scroll_up", "Scroll Up")
+                .text("scroller_scroll_down", "Scroll Down")
+                .build()?;
+
+            // Build the main menu
+            let menu = MenuBuilder::new(app)
+                .items(&[
+                    &file_submenu,
+                    &edit_submenu,
+                    &view_submenu,
+                    &window_submenu,
+                    &help_submenu,
+                    &commands_submenu,
+                    &scroller_submenu,
+                ])
+                .build()?;
+
+            app.set_menu(menu)?;
+
+            let handle = app.handle();
+            
+            handle.listen("audio-instance-created", move |event| {
                 println!("Audio instance created: {:?}", event.payload());
             });
-            app.listen_global("audio-loaded", |event| {
+            
+            handle.listen("audio-loaded", move |event| {
                 println!("Audio loaded: {:?}", event.payload());
             });
-            app.listen_global("audio-play", |event| {
+            
+            handle.listen("audio-play", move |event| {
                 println!("Audio play: {:?}", event.payload());
             });
-            app.listen_global("audio-stop", |event| {
+            
+            handle.listen("audio-stop", move |event| {
                 println!("Audio stop: {:?}", event.payload());
             });
-            app.listen_global("audio-volume-change", |event| {
+            
+            handle.listen("audio-volume-change", move |event| {
                 println!("Audio volume change: {:?}", event.payload());
             });
-            app.listen_global("set-content", |event| {
+            
+            handle.listen("set-content", move |event| {
                 println!("Set content: {:?}", event.payload());
             });
-            app.listen_global("apply-filters", |event| {
+            
+            handle.listen("apply-filters", move |event| {
                 println!("Apply filters: {:?}", event.payload());
             });
-            app.listen_global("window-ready", |event| {
+            
+            handle.listen("window-ready", move |event| {
                 println!("Window ready: {:?}", event.payload());
             });
-            app.listen_global("code-executed", |event| {
+            
+            handle.listen("code-executed", move |event| {
                 println!("Scroller code executed: {:?}", event.payload());
                 if let Some(payload_str) = event.payload() {
                     if let Ok(payload) = serde_json::from_str::<Value>(payload_str) {
@@ -210,12 +179,29 @@ fn main() {
                     }
                 }
             });
+            
             #[cfg(debug_assertions)]
             {
-                let window = app.get_window("main").unwrap();
+                let window = app.get_webview_window("main").unwrap();
                 window.open_devtools();
             }
             Ok(())
+        })
+        .on_menu_event(|app_handle, event| {
+            let window = app_handle.get_webview_window("main").unwrap();
+            match event.id().0.as_str() {
+                "close_all_force" => {
+                    close_all_windows_force(window.clone());
+                    window.emit("menu-event", "close_all").unwrap();
+                }
+                "close_all_non_main" => {
+                    close_all_windows_except_main_prefix(window.clone());
+                    window.emit("menu-event", "close_all_non_main").unwrap();
+                }
+                _ => {
+                    window.emit("menu-event", event.id().0).unwrap();
+                }
+            }
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

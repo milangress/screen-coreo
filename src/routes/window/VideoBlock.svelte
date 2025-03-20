@@ -33,9 +33,9 @@
             assetSrc = await getAssetUrl(src);
             if (showThumbnail) {
                 try {
-                    thumbnailUrl = await ThumbnailService.getInstance().getThumbnail(assetSrc);
+                    thumbnailUrl = await ThumbnailService.getInstance().getThumbnail(src);
                     if (usePreview) {
-                        previewUrl = await ThumbnailService.getInstance().getPreview(assetSrc);
+                        previewUrl = await ThumbnailService.getInstance().getPreview(src);
                     }
                 } catch (error) {
                     console.error('Failed to load thumbnail/preview:', error);
@@ -111,13 +111,19 @@
         loop
     />    
 {:else if showThumbnail && thumbnailUrl}
-    <div class="thumbnail-container">
+    <button 
+    class="thumbnail-container" 
+    on:click={() => {  
+        showThumbnail = false;
+        usePreview = false;
+        video.play();
+    }}>
         <img
             src={thumbnailUrl}
             alt="Video thumbnail"
             class="thumbnail"
         />
-    </div>
+    </button>
 {:else}
     <video
         bind:this={video}
@@ -143,6 +149,15 @@
         object-fit: cover;
     }
 
+    button {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+    }
+
     .loading {
         display: flex;
         align-items: center;
@@ -162,7 +177,7 @@
     .thumbnail {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         cursor: pointer;
     }
 
@@ -175,9 +190,5 @@
         object-fit: contain;
         opacity: 0;
         transition: opacity 0.3s ease;
-    }
-
-    .preview:hover {
-        opacity: 1;
     }
 </style>

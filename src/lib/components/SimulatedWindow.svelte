@@ -38,7 +38,7 @@
         console.log('Getting component for:', name);
         switch (name) {
             case 'VideoBlock':
-                return null; // Don't use actual video component in simulation
+                return VideoBlock; 
             case 'ImageBlock':
                 return ImageBlock;
             case 'RiverBank':
@@ -59,7 +59,7 @@
         {window.label}
     </div>
     <div class="window-content">
-        {#if window.content?.type === 'VideoBlock'}
+        {#if window.content?.type === 'VideoBlock2'}
             <div class="video-placeholder">
                 <div class="video-info">
                     <span class="icon">🎥</span>

@@ -141,6 +141,8 @@
       return;
     }
 
+    simulatedWindows.clear()
+
     executing = true;
     currentBlockIndex = 0;
     console.log('[Overview] Starting execution of all code blocks');

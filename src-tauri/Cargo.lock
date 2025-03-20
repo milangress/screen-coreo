@@ -889,6 +889,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ffmpeg-sidecar"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5b56b7872b0cbc828e83043a82268b111e3648dab25f29079fce448648e572a"
+
+[[package]]
 name = "field-offset"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3276,6 +3282,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 name = "screen-coreo"
 version = "0.0.0"
 dependencies = [
+ "ffmpeg-sidecar",
  "serde",
  "serde_json",
  "tauri",
@@ -3287,6 +3294,7 @@ dependencies = [
  "tauri-plugin-os",
  "tauri-plugin-process",
  "tauri-plugin-shell",
+ "tokio",
 ]
 
 [[package]]
@@ -4281,6 +4289,7 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
+ "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",

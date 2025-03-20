@@ -22,7 +22,7 @@
     $: style = `
         position: absolute;
         left: ${(window.x / 100) * containerWidth}px;
-        top: ${(window.y / 100) * containerHeight}px;
+        top: ${(window.y / 100) * containerHeight - 12}px;
         width: ${(window.width / 100) * containerWidth}px;
         height: ${(window.height / 100) * containerHeight}px;
         ${window.filters ? `filter: ${Object.entries(window.filters).map(([key, value]) => `${key}(${value})`).join(' ')};` : ''}
@@ -59,17 +59,7 @@
         {window.label}
     </div>
     <div class="window-content">
-        {#if window.content?.type === 'VideoBlock2'}
-            <div class="video-placeholder">
-                <div class="video-info">
-                    <span class="icon">🎥</span>
-                    <span class="filename">{window.content.props.src}</span>
-                    {#if window.content.props.volume !== undefined}
-                        <span class="volume">🔊 {Math.round(window.content.props.volume * 100)}%</span>
-                    {/if}
-                </div>
-            </div>
-        {:else if component && window.content}
+        {#if component && window.content}
             <svelte:component this={component} showThumbnail={true} {...window.content.props} />
         {:else if window.content}
             <div class="content-placeholder">
@@ -93,13 +83,13 @@
         color: white;
         padding: 4px 8px;
         font-size: 12px;
-        height: 28px;
+        height: 12px;
         display: flex;
         align-items: center;
     }
 
     .window-content {
-        height: calc(100% - 28px);
+        height: calc(100% - 12px);
         overflow: hidden;
     }
 

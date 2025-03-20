@@ -26,6 +26,7 @@
   "plugins": {},
   "app": {
     "macOSPrivateApi": true,
+    "withGlobalTauri": true,
     "security": {
       "assetProtocol": {
         "scope": [
@@ -35,7 +36,7 @@
       },
       "dangerousDisableAssetCspModification": false,
       "csp": {
-        "default-src": ["'self'", "asset:", "ipc:", "https://asset.localhost", "http://localhost:1420"],
+        "default-src": ["'self'", "asset:", "ipc:", "http://ipc.localhost", "https://asset.localhost", "http://localhost:1420"],
         "img-src": ["'self'", "asset:", "https://asset.localhost", "data:", "blob:"],
         "media-src": ["'self'", "asset:", "https://asset.localhost", "http://localhost:1420"],
         "connect-src": ["ipc:", "http://ipc.localhost", "'self'", "asset:", "https://asset.localhost", "http://localhost:1420"],

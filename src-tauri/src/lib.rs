@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod thumbnail;
+
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 use serde_json::Value;
@@ -47,7 +49,9 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
             close_all_windows_force,
-            close_all_windows_except_main_prefix
+            close_all_windows_except_main_prefix,
+            thumbnail::generate_video_thumbnail,
+            thumbnail::generate_video_preview
         ])
         .setup(|app| {
             // Create submenus

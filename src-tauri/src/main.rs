@@ -5,7 +5,7 @@
 
 use serde_json::Value;
 use tauri::{
-    menu::{MenuBuilder, MenuItem, SubmenuBuilder, CheckMenuItemBuilder, PredefinedMenuItem},
+    menu::{MenuBuilder, SubmenuBuilder, PredefinedMenuItem},
     Manager, WebviewWindow, Listener, Emitter,
 };
 
@@ -71,7 +71,7 @@ fn main() {
                 .build()?;
 
             let view_submenu = SubmenuBuilder::new(app, "View")
-                .item(&PredefinedMenuItem::enter_full_screen(app, None)?)
+                .item(&PredefinedMenuItem::fullscreen(app, None)?)
                 .build()?;
 
             let window_submenu = SubmenuBuilder::new(app, "Window")

@@ -6,8 +6,7 @@
 use serde_json::Value;
 use tauri::{
     menu::{MenuBuilder, MenuItem, SubmenuBuilder, CheckMenuItemBuilder, PredefinedMenuItem},
-    Manager,
-    WebviewWindow,
+    Manager, WebviewWindow, Listener, Emitter,
 };
 
 // New Tauri command
@@ -127,39 +126,39 @@ fn main() {
 
             let handle = app.handle();
             
-            handle.listen("audio-instance-created", move |event| {
+            handle.listen_any("audio-instance-created", move |event| {
                 println!("Audio instance created: {:?}", event.payload());
             });
             
-            handle.listen("audio-loaded", move |event| {
+            handle.listen_any("audio-loaded", move |event| {
                 println!("Audio loaded: {:?}", event.payload());
             });
             
-            handle.listen("audio-play", move |event| {
+            handle.listen_any("audio-play", move |event| {
                 println!("Audio play: {:?}", event.payload());
             });
             
-            handle.listen("audio-stop", move |event| {
+            handle.listen_any("audio-stop", move |event| {
                 println!("Audio stop: {:?}", event.payload());
             });
             
-            handle.listen("audio-volume-change", move |event| {
+            handle.listen_any("audio-volume-change", move |event| {
                 println!("Audio volume change: {:?}", event.payload());
             });
             
-            handle.listen("set-content", move |event| {
+            handle.listen_any("set-content", move |event| {
                 println!("Set content: {:?}", event.payload());
             });
             
-            handle.listen("apply-filters", move |event| {
+            handle.listen_any("apply-filters", move |event| {
                 println!("Apply filters: {:?}", event.payload());
             });
             
-            handle.listen("window-ready", move |event| {
+            handle.listen_any("window-ready", move |event| {
                 println!("Window ready: {:?}", event.payload());
             });
             
-            handle.listen("code-executed", move |event| {
+            handle.listen_any("code-executed", move |event| {
                 println!("Scroller code executed: {:?}", event.payload());
                 if let Some(payload_str) = event.payload() {
                     if let Ok(payload) = serde_json::from_str::<Value>(payload_str) {
@@ -192,14 +191,14 @@ fn main() {
             match event.id().0.as_str() {
                 "close_all_force" => {
                     close_all_windows_force(window.clone());
-                    window.emit("menu-event", "close_all").unwrap();
+                    window.emit_to("main", "menu-event", "close_all").unwrap();
                 }
                 "close_all_non_main" => {
                     close_all_windows_except_main_prefix(window.clone());
-                    window.emit("menu-event", "close_all_non_main").unwrap();
+                    window.emit_to("main", "menu-event", "close_all_non_main").unwrap();
                 }
                 _ => {
-                    window.emit("menu-event", event.id().0).unwrap();
+                    window.emit_to("main", "menu-event", event.id().0).unwrap();
                 }
             }
         })

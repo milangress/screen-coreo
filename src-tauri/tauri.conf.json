@@ -37,7 +37,7 @@
       },
       "dangerousDisableAssetCspModification": false,
       "csp": {
-        "default-src": ["'self'"],
+        "default-src": ["'self'", "ipc:", "tauri:", "http://ipc.localhost"],
         "img-src": ["'self'", "asset:", "https://asset.localhost", "data:", "blob:"],
         "connect-src": [
           "'self'", 
@@ -45,7 +45,9 @@
           "ipc://localhost/*",
           "http://ipc.localhost",
           "asset:", 
-          "https://asset.localhost"
+          "https://asset.localhost",
+          "tauri://localhost",
+          "tauri://*"
         ],
         "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'wasm-unsafe-eval'"],
         "style-src": ["'self'", "'unsafe-inline'"],

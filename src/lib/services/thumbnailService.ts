@@ -1,4 +1,5 @@
 import { invoke, convertFileSrc } from '@tauri-apps/api/core';
+import { getAssetPath } from '$lib/utils';
 
 export class ThumbnailService {
     private static instance: ThumbnailService;
@@ -22,7 +23,8 @@ export class ThumbnailService {
         if (cached) return cached;
 
         try {
-            const thumbnailPath = await invoke<string>('generate_video_thumbnail', { videoPath });
+            const actualPath = await getAssetPath(videoPath);
+            const thumbnailPath = await invoke<string>('generate_video_thumbnail', { videoPath: actualPath });
             const thumbnailUrl = convertFileSrc(thumbnailPath);
             this.thumbnailCache.set(videoPath, thumbnailUrl);
             return thumbnailUrl;
@@ -37,7 +39,8 @@ export class ThumbnailService {
         if (cached) return cached;
 
         try {
-            const previewPath = await invoke<string>('generate_video_preview', { videoPath });
+            const actualPath = await getAssetPath(videoPath);
+            const previewPath = await invoke<string>('generate_video_preview', { videoPath: actualPath });
             const previewUrl = convertFileSrc(previewPath);
             this.previewCache.set(videoPath, previewUrl);
             return previewUrl;

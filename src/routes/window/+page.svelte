@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { listen } from '@tauri-apps/api/event';
     import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
-    import { writeText } from '@tauri-apps/plugin-clipboard-manager';
+    // import { writeText } from '@tauri-apps/plugin-clipboard-manager';
     import VideoBlock from './VideoBlock.svelte';
     import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
@@ -106,7 +106,7 @@ const appWindow = getCurrentWebviewWindow()
       // Use appWindow.label as a property, not a function
       const windowString = `MyWindow('${appWindow.label}').size(${sizeX}, ${sizeY}).position(${posX}, ${posY})${componentString}.open();`;
 
-      await writeText(windowString);
+      // await writeText(windowString);
       console.log('Window string copied to clipboard:', windowString);
 
       // const { emit } = await import('@tauri-apps/api/event');

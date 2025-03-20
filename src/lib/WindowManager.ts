@@ -1,4 +1,4 @@
-import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/window';
+import { WebviewWindow, getCurrent, getAll } from '@tauri-apps/api/webviewWindow';
 import { currentWindows } from '$lib/stores';
 import { get } from 'svelte/store';
 import { emit } from '@tauri-apps/api/event';

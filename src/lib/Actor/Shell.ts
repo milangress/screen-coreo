@@ -1,5 +1,5 @@
-import { Command } from '@tauri-apps/api/shell';
-import { type } from '@tauri-apps/api/os';
+import { Command } from '@tauri-apps/plugin-shell';
+import { type } from '@tauri-apps/plugin-os';
 
 export class Shell {
   /**

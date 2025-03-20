@@ -1,8 +1,8 @@
-import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/window';
+import { LogicalPosition, LogicalSize, WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { windowManager } from '$lib/WindowManager';
 import { sceneManager } from '$lib/SceneManager';
-import { currentMonitor } from '@tauri-apps/api/window';
-import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/window';
+import { currentMonitor } from '@tauri-apps/api/webviewWindow';
+import { PhysicalSize, PhysicalPosition } from '@tauri-apps/api/webviewWindow';
 import { KeyEventManager } from '$lib/KeyEventManager';
 
 export class MyWindow {

@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { marked } from "marked";
-  import { appWindow } from "@tauri-apps/api/window";
-  import { register, unregister } from "@tauri-apps/api/globalShortcut";
+  import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+  import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
   import { listen } from "@tauri-apps/api/event";
   import scenesContent from "./scenes.md?raw";
   import ExecutableCodeBlock from "../ExecutableCodeBlock.svelte";
+const appWindow = getCurrentWebviewWindow()
 
   type CodeContentBlock = {
     type: "component";

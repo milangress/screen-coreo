@@ -1,13 +1,14 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { listen } from '@tauri-apps/api/event';
-    import { appWindow } from '@tauri-apps/api/window';
-    import { writeText } from '@tauri-apps/api/clipboard';
+    import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+    import { writeText } from '@tauri-apps/plugin-clipboard-manager';
     import VideoBlock from './VideoBlock.svelte';
     import ImageBlock from './ImageBlock.svelte';
     import RiverBank from './RiverBank.svelte';
     import ScenesMdBlock from './ScenesMdBlock.svelte';
     import { MyWindow } from '../../lib/Actor/MyWindow';
+const appWindow = getCurrentWebviewWindow()
     let componentName: string | null = null;
     let componentProps: any = {};
     let key = 0; // Add this line to force re-renders

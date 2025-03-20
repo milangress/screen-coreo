@@ -2,12 +2,13 @@
     import { onMount } from "svelte";
     import { marked } from "marked";
     import { parse as parseYaml } from 'yaml';
-    import { appWindow } from "@tauri-apps/api/window";
-    import { register, unregister } from "@tauri-apps/api/globalShortcut";
+    import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+    import { register, unregister } from "@tauri-apps/plugin-global-shortcut";
     import { listen } from "@tauri-apps/api/event";
     import ExecutableCodeBlock from "../ExecutableCodeBlock.svelte";
-    import { readTextFile } from '@tauri-apps/api/fs';
+    import { readTextFile } from '@tauri-apps/plugin-fs';
     import { join } from '@tauri-apps/api/path';
+const appWindow = getCurrentWebviewWindow()
 
     type CodeContentBlock = {
         type: "component";

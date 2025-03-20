@@ -10,15 +10,16 @@
         audioInstances,
         videoInstances,
     } from "$lib/stores";
-    import { availableMonitors, appWindow } from "@tauri-apps/api/window";
-    import type { Monitor } from "@tauri-apps/api/window";
+    import { availableMonitors, getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+    import type { Monitor } from "@tauri-apps/api/webviewWindow";
     import { resourceDir } from "@tauri-apps/api/path";
     import { listen } from "@tauri-apps/api/event";
-    import { WebviewWindow } from "@tauri-apps/api/window";
-    import { LogicalSize } from "@tauri-apps/api/window";
+    import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+    import { LogicalSize } from "@tauri-apps/api/webviewWindow";
     import { emit } from "@tauri-apps/api/event";
     import { v4 as uuidv4 } from "uuid";
     import ProjectPicker from '$lib/components/ProjectPicker.svelte';
+const appWindow = getCurrentWebviewWindow()
 
     let isFaded = false;
     let fadeTimeout: ReturnType<typeof setTimeout> | null = null;

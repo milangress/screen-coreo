@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { open } from '@tauri-apps/api/dialog';
+    import { open } from '@tauri-apps/plugin-dialog';
     import { projects } from '$lib/stores/projects';
 
     export let onProjectSelect: (projectPath: string, markdownFile: string) => void;

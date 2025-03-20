@@ -6,7 +6,8 @@
     import Shell from '$lib/Actor/Shell';
     import MyAudio from '$lib/Actor/MyAudio';
     import { emit } from '@tauri-apps/api/event';
-    import { appWindow } from '@tauri-apps/api/window';
+    import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+const appWindow = getCurrentWebviewWindow()
 
     export let code: string;
 

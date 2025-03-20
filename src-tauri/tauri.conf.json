@@ -2,70 +2,39 @@
   "build": {
     "beforeDevCommand": "npm run svelte:dev",
     "beforeBuildCommand": "npm run svelte:build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../build"
+    "frontendDist": "../build",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "screen-coreo",
-    "version": "0.1.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [
+      "../static/*"
+    ]
   },
-  "tauri": {
+  "productName": "screen-coreo",
+  "mainBinaryName": "screen-coreo",
+  "version": "0.1.0",
+  "identifier": "com.milan.screen-coreo.app",
+  "plugins": {},
+  "app": {
     "macOSPrivateApi": true,
-    "allowlist": {
-      "all": true,
-      "protocol": {
-        "asset": true,
-        "assetScope": ["**"]
-      },
-      "shell": {
-        "all": true,
-        "execute": true,
+    "security": {
+      "assetProtocol": {
         "scope": [
-          {
-            "name": "ls-command",
-            "cmd": "ls",
-            "args": true
-          },
-          {
-            "name": "dir-command",
-            "cmd": "dir",
-            "args": true
-          },
-          {
-            "name": "open-command",
-            "cmd": "open",
-            "args": true
-          },
-          {
-            "name": "start-command",
-            "cmd": "start",
-            "args": true
-          },
-          {
-            "name": "xdg-command",
-            "cmd": "xdg-open",
-            "args": true
-          }
-        ]
+          "**"
+        ],
+        "enable": true
       },
-      "window": {
-        "all": true,
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true
-      },
-      "fs": {
-        "all": true,
-        "scope": ["**"]
-      },
-      "globalShortcut": {
-        "all": true
-      }
+      "dangerousDisableAssetCspModification": false,
+      "csp": "default-src 'self' asset: https://asset.localhost http://localhost:1420; img-src 'self' asset: https://asset.localhost data: blob:; media-src 'self' asset: https://asset.localhost http://localhost:1420; connect-src ipc: http://ipc.localhost 'self' asset: https://asset.localhost http://localhost:1420; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'"
     },
     "windows": [
       {
@@ -77,27 +46,9 @@
         "fullscreen": false,
         "decorations": false,
         "transparent": true,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "useHttpsScheme": true
       }
-    ],
-    "security": {
-      "csp": "default-src 'self' asset: https://asset.localhost http://localhost:1420; img-src 'self' asset: https://asset.localhost data: blob:; media-src 'self' asset: https://asset.localhost http://localhost:1420; connect-src 'self' asset: https://asset.localhost http://localhost:1420; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'",
-      "dangerousDisableAssetCspModification": false
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.milan.screen-coreo.app",
-      "resources": [
-        "../static/*"
-      ],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    }
+    ]
   }
 }

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { readDir } from '@tauri-apps/api/fs';
+import { readDir } from '@tauri-apps/plugin-fs';
 
 export type Project = {
     path: string;

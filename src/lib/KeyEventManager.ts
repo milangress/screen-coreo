@@ -1,4 +1,4 @@
-import { register, unregister } from '@tauri-apps/api/globalShortcut';
+import { register, unregister } from '@tauri-apps/plugin-global-shortcut';
 
 type KeyHandler = (event: KeyboardEvent) => void;
 

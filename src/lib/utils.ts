@@ -1,5 +1,5 @@
 import { resolveResource, join } from '@tauri-apps/api/path'
-import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { convertFileSrc } from '@tauri-apps/api/core';
 
 export async function getAssetUrl(path: string, projectPath?: string | null) {
     console.log('getAssetUrl', path);
